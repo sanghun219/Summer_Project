@@ -23,6 +23,8 @@ internal class SpawnObj
 
 public class Spawner : MonoBehaviour
 {
+    private static Spawner Instance = null;
+
     // Player와 Spawner 사이의 거리
     private float distSpawnerToPlayer;
 
@@ -33,13 +35,13 @@ public class Spawner : MonoBehaviour
     private float elaspedSpawn;
 
     // Spawn될 요소를 미리 만들어두는 풀
-    private Queue<SpawnObj> spawningPool;
+    private Queue<GameObject> spawningPool;
 
     // Spawn될 요소의 개수
     private int numOfSpawnedObj;
 
     // Spawner의 대각선 길이
-    private float distSpawner;
+    private float distSpawner = 300.0f;
 
     // numOfspawnPoint로 일정 거리마다 스폰되는 지점이 정해짐
     private int numOfspawnPoint;
@@ -48,10 +50,41 @@ public class Spawner : MonoBehaviour
     private Vector2[] EndOfSpawnPoint;
 
     [SerializeField]
-    private GameObject[] InstOfItems;
+    private List<GameObject> InstOfItems = new List<GameObject>();
 
     [SerializeField]
-    private GameObject[] InstOfObstacles;
+    private List<GameObject> InstOfObstacles = new List<GameObject>();
+
+    private float StartSpawn = 0.0f;
+
+    public static Spawner GetInstance
+    {
+        get
+        {
+            if (!Instance)
+            {
+                Instance = FindObjectOfType(typeof(Spawner)) as Spawner;
+                if (Instance == null)
+                {
+                    Debug.Log("no singleton obj");
+                }
+            }
+            return Instance;
+        }
+    }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        DontDestroyOnLoad(gameObject);
+    }
 
     public void Init(Vector3 startPlayerPos, float startSpawnTime,
         int numOfSpawnedObj, float distSpawnerToPlayer, float elaspedSpawn, int numOfSpawnPoint)
@@ -62,6 +95,7 @@ public class Spawner : MonoBehaviour
         this.elaspedSpawn = elaspedSpawn;
         this.numOfspawnPoint = numOfSpawnPoint;
         EndOfSpawnPoint = new Vector2[2];
+        UpdateSpawnerPosition(new Vector3(0, 0, 0));
         InitSpawningPool();
     }
 
@@ -72,13 +106,19 @@ public class Spawner : MonoBehaviour
             playerPos.y + distSpawnerToPlayer * Mathf.Sin(45));
 
         transform.position = new Vector3(center.x, center.y, 0);
-
+        transform.rotation = Quaternion.Euler(0, 0, -135);
         // Spawner 대각선의 양 끝점을 지정
-        EndOfSpawnPoint[0].x = center.x - Mathf.Sqrt(2) * distSpawner / 2;
-        EndOfSpawnPoint[0].y = center.y + Mathf.Sqrt(2) * distSpawner / 2;
-        EndOfSpawnPoint[1].x = center.x + Mathf.Sqrt(2) * distSpawner / 2;
-        EndOfSpawnPoint[1].y = center.y - Mathf.Sqrt(2) * distSpawner / 2;
-        Invoke("SpawnObjects", elaspedSpawn);
+        EndOfSpawnPoint[0].x = center.x - (Mathf.Sqrt(2) / 2) * distSpawner / 2;
+        EndOfSpawnPoint[0].y = center.y + (Mathf.Sqrt(2) / 2) * distSpawner / 2;
+        EndOfSpawnPoint[1].x = center.x + (Mathf.Sqrt(2) / 2) * distSpawner / 2;
+        EndOfSpawnPoint[1].y = center.y - (Mathf.Sqrt(2) / 2) * distSpawner / 2;
+
+        startSpawnTime += Time.deltaTime;
+        if (startSpawnTime >= elaspedSpawn)
+        {
+            startSpawnTime = 0.0f;
+            SpawnObjects();
+        }
     }
 
     // 매 주기마다 스폰이 됨
@@ -89,27 +129,15 @@ public class Spawner : MonoBehaviour
         int numOfEmpty = (int)(Random.Range(0, numOfspawnPoint - numOfEnemy));
         int numOfItem = (int)(Random.Range(0, numOfspawnPoint - numOfEnemy - numOfEmpty));
         Debug.Log(numOfEnemy + "," + numOfEmpty + "," + numOfItem);
-        List<SpawnObj> line = new List<SpawnObj>();
+        List<GameObject> line = new List<GameObject>();
         for (int i = 0; i < numOfEnemy; i++)
         {
-            SpawnObj spawnObj = GetSpawnedObj();
-            if (spawnObj == null)
-            {
-                Debug.LogError("Spawn 되는 Object 개수가 총 Object 개수를 못따라감");
-                return;
-            }
-            spawnObj.ObjType = SPAWN_OBJ_TYPE.OBSTACLE;
+            GameObject spawnObj = GetSpawnedObj();
             line.Add(spawnObj);
         }
         for (int i = 0; i < numOfItem; i++)
         {
-            SpawnObj spawnObj = GetSpawnedObj();
-            if (spawnObj == null)
-            {
-                Debug.LogError("Spawn 되는 Object 개수가 총 Object 개수를 못따라감");
-                return;
-            }
-            spawnObj.ObjType = SPAWN_OBJ_TYPE.ITEM;
+            GameObject spawnObj = GetSpawnedObj();
             line.Add(spawnObj);
         }
         // 안에 요소들을 다 섞음.
@@ -118,32 +146,24 @@ public class Spawner : MonoBehaviour
         // 안에 요소들 포지션이 정해짐 (내분)
         for (int i = 0; i < line.Count; i++)
         {
-            float px = (EndOfSpawnPoint[0].x + EndOfSpawnPoint[1].x) * (i + 1) / line.Count;
-            float py = (EndOfSpawnPoint[0].y + EndOfSpawnPoint[1].y) * (i + 1) / line.Count;
-            float randY = Random.Range(py - 50, py + 50);
-            line[i].Obj.transform.position = new Vector3(px, randY, 0);
-        }
+            float px = ((i * EndOfSpawnPoint[1].x) + (line.Count - i) * EndOfSpawnPoint[0].x) / (line.Count);
+            float py = ((i * EndOfSpawnPoint[1].y) + (line.Count - i) * EndOfSpawnPoint[0].y) / (line.Count);
+            float randY = Random.Range(py - 20, py + 20);
 
-        // Instantiate , 다시 spawningpool이 수거해감.
-
-        for (int i = 0; i < line.Count; i++)
-        {
-            GameObject Go = Instantiate(line[i].Obj, line[i].Obj.transform);
-            line[i].Obj.SetActive(false);
-            line[i].ObjType = SPAWN_OBJ_TYPE.NONE;
-            spawningPool.Enqueue(line[i]);
+            line[i].transform.position = new Vector3(px, randY, 0);
+            line[i].SetActive(true);
         }
     }
 
-    private void GetShuffledSpawnedObj(ref List<SpawnObj> spawnObjs)
+    private void GetShuffledSpawnedObj(ref List<GameObject> spawnObjs)
     {
         int maxValue = spawnObjs.Count;
         int tmpValue;
-        SpawnObj swapValue = new SpawnObj();
+        GameObject swapValue;
 
         for (int i = 0; i < maxValue; i++)
         {
-            tmpValue = Random.Range(0, maxValue - 1);
+            tmpValue = Random.Range(0, maxValue);
             swapValue = spawnObjs[i];
             spawnObjs[i] = spawnObjs[tmpValue];
             spawnObjs[tmpValue] = swapValue;
@@ -152,39 +172,58 @@ public class Spawner : MonoBehaviour
 
     private void InitSpawningPool()
     {
-        spawningPool = new Queue<SpawnObj>(numOfSpawnedObj);
+        spawningPool = new Queue<GameObject>(numOfSpawnedObj);
 
-        for (int i = 0; i < numOfSpawnedObj; i++)
+        for (int i = 0; i < numOfSpawnedObj * 2; i++)
         {
-            SpawnObj spawned = new SpawnObj();
-            spawned.Obj = new GameObject();
-            // 생성만 해두고 Sceen에서 안보이게 만듬
+            GameObject spawned;
+            if (i % 2 == 0)
+            {
+                spawned = Instantiate(InstOfObstacles[Random.Range(0, InstOfObstacles.Count)]
+                    , transform.position, transform.rotation);
+            }
+            else
+            {
+                spawned = Instantiate(InstOfItems[Random.Range(0, InstOfItems.Count)]
+                    , transform.position, transform.rotation);
+            }
 
-            spawned.Obj.SetActive(false);
-            spawned.ObjType = SPAWN_OBJ_TYPE.NONE;
-
-            // 처음엔 Spawner의 중앙에 위치시킴, 회전각도 같이 줘서 플레이어쪽으로 보게 함.
-            spawned.Obj.transform.position = transform.position;
-            spawned.Obj.transform.rotation = transform.rotation;
+            spawned.SetActive(false);
             spawningPool.Enqueue(spawned);
         }
     }
 
-    private SpawnObj GetSpawnedObj()
+    private GameObject GetSpawnedObj()
     {
-        while (spawningPool.Count > 0)
+        if (spawningPool.Count > 0)
         {
             var spawned = spawningPool.Dequeue();
-            if (spawned.Obj.activeSelf == false)
+            spawned.SetActive(false);
+            return spawned;
+        }
+        else
+        {
+            GameObject spawned = new GameObject();
+            if (Random.Range(0, 1) == 0)
             {
-                spawned.Obj.SetActive(true);
-                return spawned;
+                spawned = Instantiate(InstOfObstacles[Random.Range(0, InstOfObstacles.Count)]
+                    , transform.position, transform.rotation);
             }
             else
             {
-                spawningPool.Enqueue(spawned);
+                spawned = Instantiate(InstOfItems[Random.Range(0, InstOfItems.Count)]
+                    , transform.position, transform.rotation);
             }
+
+            spawned.SetActive(false);
+
+            return spawned;
         }
-        return null;
+    }
+
+    public void ReturnObj(SpawnedObj obj)
+    {
+        obj.gameObject.SetActive(false);
+        spawningPool.Enqueue(obj.gameObject);
     }
 }
