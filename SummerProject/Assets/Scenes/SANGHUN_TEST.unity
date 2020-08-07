@@ -552,6 +552,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1601345093}
   - component: {fileID: 1601345092}
+  - component: {fileID: 1601345094}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameManager
@@ -571,12 +572,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffa69a4a329ee1f47afb61848bd7d7d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnerPrefab: {fileID: 572105808}
   StartSpawnTime: 0
-  distSpawnerToPlayer: 100
+  distSpawnerToPlayer: 500
   numOfSpawnedObj: 1000
   elaspedSpawn: 2
   numOfSpawnPoint: 30
+  lengOfSpawner: 3000
 --- !u!4 &1601345093
 Transform:
   m_ObjectHideFlags: 0
@@ -591,6 +592,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1601345094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1601345091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6cb02d41a73ac14981d02af071fa9ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1841529577
 PrefabInstance:
   m_ObjectHideFlags: 0

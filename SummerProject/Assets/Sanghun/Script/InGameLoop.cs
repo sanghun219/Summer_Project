@@ -1,27 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class InGameLoop : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject spawnerPrefab;
+    public float StartSpawnTime;
 
-    [SerializeField]
-    private float StartSpawnTime;
+    public float distSpawnerToPlayer;
 
-    [SerializeField]
-    private float distSpawnerToPlayer;
+    public int numOfSpawnedObj;
 
-    [SerializeField]
-    private int numOfSpawnedObj;
+    public float elaspedSpawn;
 
-    [SerializeField]
-    private float elaspedSpawn;
+    public int numOfSpawnPoint;
 
-    [SerializeField]
-    private int numOfSpawnPoint;
+    public float lengOfSpawner;
 
     private TestPlayer testPlayer;
     private bool IsRunning = false;
@@ -29,6 +24,7 @@ public class InGameLoop : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
+        // TODO : 나중에 진짜 Player로 대체됨
         testPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<TestPlayer>();
         CreateSpawner();
         IsRunning = true;
@@ -44,8 +40,6 @@ public class InGameLoop : MonoBehaviour
     private void CreateSpawner()
     {
         Spawner.GetInstance.Init(testPlayer.transform.position, StartSpawnTime,
-            numOfSpawnedObj, distSpawnerToPlayer, elaspedSpawn, numOfSpawnPoint);
-        // 회전.. 135도 회전하면 플레이어 쪽을 바라보게 만들어짐
-        GameObject Go = Instantiate(spawnerPrefab, Spawner.GetInstance.transform.position, Spawner.GetInstance.transform.rotation);
+            numOfSpawnedObj, distSpawnerToPlayer, elaspedSpawn, numOfSpawnPoint, lengOfSpawner);
     }
 }

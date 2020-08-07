@@ -23,4 +23,6 @@ public class SpawnedObj : MonoBehaviour
         Spawner.GetInstance.ReturnObj(this);
         DestroyImmediate(this);
     }
+
+   
 }
