@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 public class WebServer : MonoBehaviour
 {
-    private bool UseWebServer = true;
+    private bool UseWebServer = false;
     public void SetUserWebServer(bool useServer)
     {
         UseWebServer = useServer;
@@ -12,7 +12,7 @@ public class WebServer : MonoBehaviour
     private ScoreData[] scoreDatas;
     private void Start()
     {
-        InsertScoreInRank("sanghun2191", 101);
+        //InsertScoreInRank("sanghun219", 101);
     }
     public void Login(string userID, string userPass)
     {
