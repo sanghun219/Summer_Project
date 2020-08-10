@@ -71,8 +71,9 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(h);
 
         currentSpeed = IncrementSide(currentSpeed, targetSpeed, acceleration);
-
-        transform.Translate(currentSpeed * Time.deltaTime, 0f, forwardSpeed * Time.deltaTime, Space.World);
+        
+        // 좌우 입력이 들어오면 월드 기준 좌우 이동 아니면 셀프.. 수정요망.. 
+        transform.Translate(currentSpeed * Time.deltaTime, 0f, forwardSpeed * Time.deltaTime, (Input.GetAxisRaw("Horizontal")!=0 ? Space.World:Space.Self));
         //transform.localPosition = Vector3.Lerp(transform.position, new Vector3(currentSpeed * Time.deltaTime, 0f, forwardSpeed + Time.deltaTime), Time.deltaTime);
 
 
