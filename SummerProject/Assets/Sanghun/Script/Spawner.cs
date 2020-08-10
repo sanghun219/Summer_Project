@@ -6,7 +6,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-enum SPAWN_OBJ
+internal enum SPAWN_OBJ
 {
     ITEM,
     OBSTACLE,
@@ -15,36 +15,45 @@ enum SPAWN_OBJ
 public class Spawner : MonoBehaviour
 {
     // Player와 Spawner 사이의 거리
-    private float distSpawnerToPlayer;
+
+    public float distSpawnerToPlayer;
 
     // Spawn이 시작되는 시간
-    private float startSpawnTime;
+
+    public float startSpawnTime;
 
     // Spawn 되는 시간 간격
-    private float elaspedSpawn;
+
+    public float elaspedSpawn;
 
     // Spawn될 요소를 미리 만들어두는 풀
-    private Queue<GameObject> spawningPool;
+    private Queue<GameObject>[] spawningPool = new Queue<GameObject>[2];
 
     // spawningPool의 크기 (큐가 가변 배열같은거니 딱히 필요 없을지도..)
-    private int numOfSpawnedObj;
+
+    public int numOfSpawnedObj;
 
     // Spawner의 대각선 길이
-    private float lengOfSpawner = 300.0f;
+
+    public float lengOfSpawner = 300.0f;
 
     // numOfspawnPoint로 일정 거리마다 스폰되는 지점이 정해짐
-    private int numOfspawnPoint;
+
+    public int numOfspawnPoint;
+
+    [Range(0, 1)]
+    public float ratioOfObstacle;
 
     // Spawner 대각선의 양 끝점 (여기서부터 일정 간격으로 스폰 됨)
     private Vector2[] EndOfSpawnPoint;
 
     // 아이템 종류를 리스트로 받음
     [SerializeField]
-    private List<GameObject> InstOfItems = new List<GameObject>();
+    private List<Item> InstOfItems = new List<Item>();
 
     // 장애물 종류를 리스트로 받음
     [SerializeField]
-    private List<GameObject> InstOfObstacles = new List<GameObject>();
+    private List<Obstacle> InstOfObstacles = new List<Obstacle>();
 
     // Spawn 되는 간격에 필요한 변수 (왜 static이 안되는지 몰겠음)
     private float deltaSpawnTime = 0.0f;
@@ -79,20 +88,9 @@ public class Spawner : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
-    }
 
-    public void Init(Vector3 startPlayerPos, float startSpawnTime,
-        int numOfSpawnedObj, float distSpawnerToPlayer, float elaspedSpawn, int numOfSpawnPoint
-        , float lengOfSpawner)
-    {
-        this.startSpawnTime = startSpawnTime;
-        this.numOfSpawnedObj = numOfSpawnedObj;
-        this.distSpawnerToPlayer = distSpawnerToPlayer;
-        this.elaspedSpawn = elaspedSpawn;
-        this.numOfspawnPoint = numOfSpawnPoint + 1;
-        this.lengOfSpawner = lengOfSpawner;
         EndOfSpawnPoint = new Vector2[2];
-        UpdateSpawnerPosition(new Vector3(0, 0, 0));
+        UpdateSpawnerPosition(GameObject.FindGameObjectWithTag("Player").transform.position);
         InitSpawningPool();
     }
 
@@ -113,8 +111,8 @@ public class Spawner : MonoBehaviour
         deltaSpawnTime += Time.deltaTime;
         if (deltaSpawnTime >= elaspedSpawn)
         {
-            deltaSpawnTime = 0.0f;
             SpawnObjects();
+            deltaSpawnTime = 0.0f;
         }
     }
 
@@ -122,11 +120,9 @@ public class Spawner : MonoBehaviour
     private void SpawnObjects()
     {
         // 한 wave에 생길수 있는 장애물 비율/빈 공간 비율/ 아이템 비율 (장애물 비율은 50%이상)
-        int numOfObstacle = (int)(Random.Range((int)(numOfspawnPoint * 8 / 10), numOfspawnPoint));
-        int numOfEmpty = (int)(Random.Range(0, (int)(numOfspawnPoint - numOfObstacle)));
-        int numOfItem = (int)(Random.Range(0, numOfspawnPoint - numOfObstacle - numOfEmpty));
-
-        Debug.Log(numOfObstacle + "," + numOfEmpty + "," + numOfItem);
+        int numOfObstacle = (int)((numOfspawnPoint + 1) * ratioOfObstacle);
+        int numOfItem = (int)Mathf.Max(numOfObstacle / 10, 1);
+        int numOfEmpty = numOfspawnPoint - numOfObstacle - numOfItem;
         List<GameObject> line = new List<GameObject>();
         for (int i = 0; i < numOfObstacle; i++)
         {
@@ -146,7 +142,7 @@ public class Spawner : MonoBehaviour
         {
             float px = ((i * EndOfSpawnPoint[1].x) + (line.Count - i) * EndOfSpawnPoint[0].x) / (line.Count);
             float py = ((i * EndOfSpawnPoint[1].y) + (line.Count - i) * EndOfSpawnPoint[0].y) / (line.Count);
-            float randY = Random.Range(py - distSpawnerToPlayer/10, py + distSpawnerToPlayer/10);
+            float randY = Random.Range(py - 150, py + 150);
 
             line[i].transform.position = new Vector3(px, randY, 0);
             line[i].SetActive(true);
@@ -170,81 +166,82 @@ public class Spawner : MonoBehaviour
 
     private void InitSpawningPool()
     {
-        spawningPool = new Queue<GameObject>(numOfSpawnedObj);
+        for (int i = 0; i < 2; i++)
+        {
+            spawningPool[i] = new Queue<GameObject>(numOfSpawnedObj);
+        }
 
         for (int i = 0; i < numOfSpawnedObj * 2; i++)
         {
             GameObject spawned;
             if (i % 2 == 0)
             {
-                spawned = Instantiate(InstOfObstacles[Random.Range(0, InstOfObstacles.Count)]
+                // 장애물 비율 적당히 조절해서 instantiate
+                spawned = Instantiate(InstOfObstacles[Random.Range(0, InstOfObstacles.Count)].gameObject
                     , transform.position, transform.rotation);
+                spawned.SetActive(false);
+                spawningPool[(int)SPAWN_OBJ.OBSTACLE].Enqueue(spawned);
             }
             else
             {
-                spawned = Instantiate(InstOfItems[Random.Range(0, InstOfItems.Count)]
+                spawned = Instantiate(InstOfItems[Random.Range(0, InstOfItems.Count)].gameObject
                     , transform.position, transform.rotation);
+                spawned.SetActive(false);
+                spawningPool[(int)SPAWN_OBJ.ITEM].Enqueue(spawned);
             }
-
-            spawned.SetActive(false);
-            spawningPool.Enqueue(spawned);
         }
     }
 
     private GameObject GetSpawnedObj(SPAWN_OBJ spawnedObj)
     {
-        string spawnedTag;
-        if(spawnedObj == SPAWN_OBJ.ITEM)
+        if (spawnedObj == SPAWN_OBJ.ITEM)
         {
-            spawnedTag = "Item";
-        }
-        else
-        {
-            spawnedTag = "Obstacle";
-        }
-
-        if (spawningPool.Count > 0)
-        {
-            while (true)
+            if (spawningPool[(int)SPAWN_OBJ.ITEM].Count > 0)
             {
-                var spawned = spawningPool.Dequeue();
-                if (spawned.CompareTag(spawnedTag))
-                {
-                    spawned.SetActive(false);
-                    return spawned;
-                }
-                else
-                {
-                    spawningPool.Enqueue(spawned);
-                }
-               
-            }
-           
-        }
-        else
-        {
-            GameObject spawned = new GameObject();
-            if (spawnedObj == SPAWN_OBJ.OBSTACLE)
-            {
-                spawned = Instantiate(InstOfObstacles[Random.Range(0, InstOfObstacles.Count)]
-                    , transform.position, transform.rotation);
+                GameObject spawned = spawningPool[(int)SPAWN_OBJ.ITEM].Dequeue();
+                spawned.SetActive(false);
+                return spawned;
             }
             else
             {
-                spawned = Instantiate(InstOfItems[Random.Range(0, InstOfItems.Count)]
+                GameObject spawned = Instantiate(InstOfItems[Random.Range(0, InstOfItems.Count)].gameObject
                     , transform.position, transform.rotation);
+                spawned.SetActive(false);
+                return spawned;
             }
+        }
+        else
+        {
+            if (spawningPool[(int)SPAWN_OBJ.OBSTACLE].Count > 0)
+            {
+                GameObject spawned = spawningPool[(int)SPAWN_OBJ.OBSTACLE].Dequeue();
+                spawned.SetActive(false);
+                return spawned;
+            }
+            else
+            {
+                GameObject spawned;
 
-            spawned.SetActive(false);
+                spawned = Instantiate(InstOfObstacles[Random.Range(0, InstOfObstacles.Count)].gameObject
+                    , transform.position, transform.rotation);
 
-            return spawned;
+                spawned.SetActive(false);
+                return spawned;
+            }
         }
     }
 
     // SpawnedObj가 Destroy될 때 다시 회수함( 실제로는 사본이 넘겨지는 것)
-    public void ReturnObj(SpawnedObj obj)
+    public void ReturnObj(GameObject obj)
     {
-        obj.gameObject.SetActive(false);
-        spawningPool.Enqueue(obj.gameObject);
+        obj.SetActive(false);
+        if (obj.CompareTag("Item"))
+        {
+            spawningPool[(int)SPAWN_OBJ.ITEM].Enqueue(obj);
+        }
+        else if (obj.CompareTag("Obstacle"))
+        {
+            spawningPool[(int)SPAWN_OBJ.OBSTACLE].Enqueue(obj);
+        }
     }
 }
