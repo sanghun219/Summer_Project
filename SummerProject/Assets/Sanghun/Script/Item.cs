@@ -29,14 +29,21 @@ public class Item : MonoBehaviour, ISpawned
 
     public float destroyTime { get { return _destroyTime; } set { _destroyTime = value; } }
 
-    public void Awake()
+    public void Start()
     {
         Invoke("DestroyItem", destroyTime);
+
+        StartCoroutine(IUpdate());
     }
 
-    private void FixedUpdate()
+    private IEnumerator IUpdate()
     {
-        transform.position += transform.right * speed;
+        while (true)
+        {
+            yield return new WaitForFixedUpdate();
+            if (gameObject.activeSelf)
+                transform.position += transform.forward * speed;
+        }
     }
 
     private void DestroyItem()

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Dynamic;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -10,6 +11,7 @@ internal enum SPAWN_OBJ
 {
     ITEM,
     OBSTACLE,
+    END,
 }
 
 public class Spawner : MonoBehaviour
@@ -45,7 +47,7 @@ public class Spawner : MonoBehaviour
     public float ratioOfObstacle;
 
     // Spawner 대각선의 양 끝점 (여기서부터 일정 간격으로 스폰 됨)
-    private Vector2[] EndOfSpawnPoint;
+    private Vector3[] EndOfSpawnPoint;
 
     // 아이템 종류를 리스트로 받음
     [SerializeField]
@@ -77,7 +79,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    private void Awake()
+    private void Start()
     {
         if (Instance == null)
         {
@@ -89,31 +91,27 @@ public class Spawner : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
 
-        EndOfSpawnPoint = new Vector2[2];
-        UpdateSpawnerPosition(GameObject.FindGameObjectWithTag("Player").transform.position);
+        EndOfSpawnPoint = new Vector3[2];
         InitSpawningPool();
     }
 
     public void UpdateSpawnerPosition(Vector3 playerPos)
     {
-        // 대각선 (player 기준 45도 (1시방향)에 지정한 거리만큼 떨어진 곳에 spawner 생성
-        Vector2 center = new Vector2(playerPos.x + distSpawnerToPlayer * Mathf.Cos(45),
-            playerPos.y + distSpawnerToPlayer * Mathf.Sin(45));
-
-        transform.position = new Vector3(center.x, center.y, 0);
-        transform.rotation = Quaternion.Euler(0, 0, -135);
-        // Spawner 대각선의 양 끝점을 지정
-        EndOfSpawnPoint[0].x = center.x - (Mathf.Sqrt(2) / 2) * lengOfSpawner / 2;
-        EndOfSpawnPoint[0].y = center.y + (Mathf.Sqrt(2) / 2) * lengOfSpawner / 2;
-        EndOfSpawnPoint[1].x = center.x + (Mathf.Sqrt(2) / 2) * lengOfSpawner / 2;
-        EndOfSpawnPoint[1].y = center.y - (Mathf.Sqrt(2) / 2) * lengOfSpawner / 2;
-
         deltaSpawnTime += Time.deltaTime;
         if (deltaSpawnTime >= elaspedSpawn)
         {
             SpawnObjects();
             deltaSpawnTime = 0.0f;
         }
+
+        Vector3 center = new Vector3(0, 0, playerPos.z + distSpawnerToPlayer);
+        transform.position = new Vector3(0, center.y, center.z);
+
+        // Spawner 대각선의 양 끝점을 지정
+        EndOfSpawnPoint[0].x = center.x - lengOfSpawner / 2;
+        EndOfSpawnPoint[0].z = center.z;
+        EndOfSpawnPoint[1].x = center.x + lengOfSpawner / 2;
+        EndOfSpawnPoint[1].z = center.z;
     }
 
     // 매 주기마다 스폰이 됨
@@ -121,31 +119,30 @@ public class Spawner : MonoBehaviour
     {
         // 한 wave에 생길수 있는 장애물 비율/빈 공간 비율/ 아이템 비율 (장애물 비율은 50%이상)
         int numOfObstacle = (int)((numOfspawnPoint + 1) * ratioOfObstacle);
-        int numOfItem = (int)Mathf.Max(numOfObstacle / 10, 1);
+        int numOfItem = (int)Mathf.Min(ratioOfObstacle * 0.1f, 1);
         int numOfEmpty = numOfspawnPoint - numOfObstacle - numOfItem;
-        List<GameObject> line = new List<GameObject>();
+        List<GameObject> wave = new List<GameObject>();
+
         for (int i = 0; i < numOfObstacle; i++)
         {
-            GameObject spawnObj = GetSpawnedObj(SPAWN_OBJ.OBSTACLE);
-            line.Add(spawnObj);
+            wave.Add(GetSpawnedObj(SPAWN_OBJ.OBSTACLE));
         }
         for (int i = 0; i < numOfItem; i++)
         {
-            GameObject spawnObj = GetSpawnedObj(SPAWN_OBJ.ITEM);
-            line.Add(spawnObj);
+            wave.Add(GetSpawnedObj(SPAWN_OBJ.ITEM));
         }
-        // 안에 요소들을 다 섞음.
-        GetShuffledSpawnedObj(ref line);
+
+        GetShuffledSpawnedObj(ref wave);
 
         // 안에 요소들 포지션이 정해짐 (내분)
-        for (int i = 0; i < line.Count; i++)
+        for (int i = 0; i < wave.Count; i++)
         {
-            float px = ((i * EndOfSpawnPoint[1].x) + (line.Count - i) * EndOfSpawnPoint[0].x) / (line.Count);
-            float py = ((i * EndOfSpawnPoint[1].y) + (line.Count - i) * EndOfSpawnPoint[0].y) / (line.Count);
-            float randY = Random.Range(py - 150, py + 150);
+            float px = ((i * EndOfSpawnPoint[1].x) + (wave.Count - i) * EndOfSpawnPoint[0].x) / (wave.Count);
+            float pz = ((i * EndOfSpawnPoint[1].z) + (wave.Count - i) * EndOfSpawnPoint[0].z) / (wave.Count);
+            float randZ = Random.Range(pz - 150, pz + 150);
 
-            line[i].transform.position = new Vector3(px, randY, 0);
-            line[i].SetActive(true);
+            wave[i].transform.position = new Vector3(px, 0, randZ);
+            wave[i].SetActive(true);
         }
     }
 
@@ -158,8 +155,8 @@ public class Spawner : MonoBehaviour
         for (int i = 0; i < maxValue; i++)
         {
             tmpValue = Random.Range(0, maxValue);
-            swapValue = spawnObjs[i];
-            spawnObjs[i] = spawnObjs[tmpValue];
+            swapValue = spawnObjs.ToArray()[i];
+            spawnObjs[i] = spawnObjs.ToArray()[tmpValue];
             spawnObjs[tmpValue] = swapValue;
         }
     }
@@ -179,6 +176,7 @@ public class Spawner : MonoBehaviour
                 // 장애물 비율 적당히 조절해서 instantiate
                 spawned = Instantiate(InstOfObstacles[Random.Range(0, InstOfObstacles.Count)].gameObject
                     , transform.position, transform.rotation);
+
                 spawned.SetActive(false);
                 spawningPool[(int)SPAWN_OBJ.OBSTACLE].Enqueue(spawned);
             }
@@ -221,10 +219,8 @@ public class Spawner : MonoBehaviour
             else
             {
                 GameObject spawned;
-
                 spawned = Instantiate(InstOfObstacles[Random.Range(0, InstOfObstacles.Count)].gameObject
                     , transform.position, transform.rotation);
-
                 spawned.SetActive(false);
                 return spawned;
             }
