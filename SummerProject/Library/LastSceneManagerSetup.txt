@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/SANGHUN_TEST.unity
+- path: Assets/Scenes/ByeongCheol.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

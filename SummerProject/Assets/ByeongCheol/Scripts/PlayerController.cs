@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     public float forwardSpeed = 0;
     public float maxSpeed = 200;
 
-    public float acceleration = 10;//속도
+    public float acceleration = 10;// 가속도 - 좌 우 이동시 맥스 스피드까지 도달하는 속도
     public float currentSpeed;
 
 
@@ -35,35 +35,31 @@ public class PlayerController : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
     }
 
-    // Collider 컴포넌트의 is Trigger가 false인 상태로 충돌을 시작했을 때
+    // Player가 오브젝트와 충돌 시 에니메이터 종료
     private void OnCollisionEnter(Collision collision)
     {
+
+        // 충돌 발생 시 애니매이션 비활성화 및 쿼터뷰 카메라 정지
+        // floor 오브
         anim.enabled = false;
-        Debug.Log("충돌 시작!");
+        Follow vari = GameObject.Find("Main Camera").GetComponent<Follow>();
+        vari.target = null;
+
+        Debug.Log("Game Over");
+
+        
     }
 
-    // Collider 컴포넌트의 is Trigger가 false인 상태로 충돌중일 때
-    private void OnCollisionStay(Collision collision)
-    {
-        anim.enabled = false;
-        Debug.Log("충돌 중!");
-    }
-
-    // Collider 컴포넌트의 is Trigger가 false인 상태로 충돌이 끝났을 때
     private void OnCollisionExit(Collision collision)
     {
-        RecoverRotation();
-        anim.enabled = true;
-        Debug.Log("충돌 끝!");
-    }
-
-    private void RecoverRotation()
-    {
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, 0), 0.1f);
+        //충돌 발생 시 입력 비활성화를 위해 작성 -  수정요망
+        gameObject.GetComponent<PlayerController>().enabled = false;
     }
 
 
-    void Update()
+
+
+void Update()
     {
 
         forwardSpeed += Input.GetAxisRaw("Vertical") * 0.5f;
@@ -73,16 +69,16 @@ public class PlayerController : MonoBehaviour
         currentSpeed = IncrementSide(currentSpeed, targetSpeed, acceleration);
         
         // 좌우 입력이 들어오면 월드 기준 좌우 이동 아니면 셀프.. 수정요망.. 
-        transform.Translate(currentSpeed * Time.deltaTime, 0f, forwardSpeed * Time.deltaTime, (Input.GetAxisRaw("Horizontal")!=0 ? Space.World:Space.Self));
+        transform.Translate(currentSpeed * Time.deltaTime, 0f, forwardSpeed * Time.deltaTime, Space.World);
         //transform.localPosition = Vector3.Lerp(transform.position, new Vector3(currentSpeed * Time.deltaTime, 0f, forwardSpeed + Time.deltaTime), Time.deltaTime);
 
-
+        // 좌,우 이동 버튼 입력 시 애니매이션 작동
         anim.SetBool("isRight", isRight);
         anim.SetBool("isLeft", isLeft);
 
     }
 
-
+    // 좌(우) 키 입력 도중 우(좌)입력 시 입력 값이 0(좌, 우 이동 둘다 안됨)을 하지않게 하는 함수
     private IEnumerator SimultaniousInput()
     {
         while (true)
@@ -173,6 +169,8 @@ public class PlayerController : MonoBehaviour
     }
 
 
+
+    // 좌우 이동 시 가속도 적용 함수
     private float IncrementSide(float n, float target, float a)
     {
         if (n == target)
@@ -189,7 +187,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-
+    // 게임 플레이 시작 시 일정 시간에 따라 속도 증가 < MaxSpeed
     IEnumerator GameSpeedController()
     {
         while (forwardSpeed <= maxSpeed)
