@@ -6,17 +6,17 @@ public class PlayerController : MonoBehaviour
 {
 
     public float forwardSpeed = 0;
-    public float maxSpeed = 200;
+    public float fMaxSpeed = 200;
 
     public float acceleration = 10;// 가속도 - 좌 우 이동시 맥스 스피드까지 도달하는 속도
-    public float currentSpeed;
 
 
-    public float moveSpeed = 0;
+    public float hCurrentSpeed;
+    public float hMaxSpeed = 0;
+    private float hTargetSpeed;
 
     private bool isRight, isLeft;
 
-    private float targetSpeed;
 
     Animator anim;
 
@@ -26,8 +26,10 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(GameSpeedController());
-        StartCoroutine(this.SimultaniousInput());
+        StartCoroutine(this.GameSpeedController());
+
+        //좌우 동시입력문제 해결 - 사용x 2020.8.14
+        //StartCoroutine(this.SimultaniousInput());
     }
 
     void Awake()
@@ -47,7 +49,7 @@ public class PlayerController : MonoBehaviour
 
         Debug.Log("Game Over");
 
-        
+
     }
 
     private void OnCollisionExit(Collision collision)
@@ -59,40 +61,67 @@ public class PlayerController : MonoBehaviour
 
 
 
-void Update()
+    void Update()
     {
-
+        // 전진 키 입력 속도증가
         forwardSpeed += Input.GetAxisRaw("Vertical") * 0.5f;
-        targetSpeed = Input.GetAxisRaw("Horizontal") * moveSpeed;
-        //Debug.Log(h);
 
-        currentSpeed = IncrementSide(currentSpeed, targetSpeed, acceleration);
-        
+
+        //Debug.Log("GetAxisRaw(Horizontal) : "+Input.GetAxisRaw("Horizontal"));
+        //Debug.Log("get key D : "+Input.GetKey(KeyCode.D));
+
+        //한쪽 횡방향 입력중 다른방향 입력시 방향전환 및 횡방향 방향전환
+        if (Input.GetKey(KeyCode.D) && Input.GetAxisRaw("Horizontal") == 0)
+        {
+            Debug.Log("오른쪽 진행 도중 왼쪽진행");
+            hTargetSpeed = -1 * hMaxSpeed;
+        }
+        else if (Input.GetKey(KeyCode.A) && Input.GetAxisRaw("Horizontal") == 0)
+        {
+            Debug.Log("왼쪽 진행 도중 오른쪽 진행");
+            hTargetSpeed = 1 * hMaxSpeed;
+        }
+        else
+        {
+            hTargetSpeed = Input.GetAxisRaw("Horizontal") * hMaxSpeed;
+        }
+
+
+        hCurrentSpeed = IncrementSide(hCurrentSpeed, hTargetSpeed, acceleration);
+
+
         // 좌우 입력이 들어오면 월드 기준 좌우 이동 아니면 셀프.. 수정요망.. 
-        transform.Translate(currentSpeed * Time.deltaTime, 0f, forwardSpeed * Time.deltaTime, Space.World);
-        //transform.localPosition = Vector3.Lerp(transform.position, new Vector3(currentSpeed * Time.deltaTime, 0f, forwardSpeed + Time.deltaTime), Time.deltaTime);
+        transform.Translate(hCurrentSpeed * Time.deltaTime, 0f, forwardSpeed * Time.deltaTime, Space.World);
+        //transform.localPosition = Vector3.Lerp(transform.position, new Vector3(hCurrentSpeed * Time.deltaTime, 0f, forwardSpeed + Time.deltaTime), Time.deltaTime);
 
         // 좌,우 이동 버튼 입력 시 애니매이션 작동
-        anim.SetBool("isRight", isRight);
-        anim.SetBool("isLeft", isLeft);
+        anim.SetBool("isRight", hCurrentSpeed > 0);
+        anim.SetBool("isLeft", hCurrentSpeed < 0);
 
     }
 
+
+
+
     // 좌(우) 키 입력 도중 우(좌)입력 시 입력 값이 0(좌, 우 이동 둘다 안됨)을 하지않게 하는 함수
+    /*
     private IEnumerator SimultaniousInput()
     {
         while (true)
         {
             switch (Input.inputString)
             {
-                case "AD":
-                case "ad":
-                    //Debug.Log("AD");
-                    break;
+                //case "AD":
+                //case "ad":
+                //    //Debug.Log("AD");
+                //    break;
+
+
                 case "A":
                 case "a":
                     if (this.inputKeyRoutine == null)
                     {
+                        //Debug.Log("A 입력 함수 실행");
                         this.inputKeyRoutine = StartCoroutine(this.InputA());
                     }
                     break;
@@ -101,9 +130,12 @@ void Update()
                 case "d":
                     if (this.inputKeyRoutine == null)
                     {
-                        this.inputKeyRoutine = StartCoroutine(this.InputB());
+                        //Debug.Log("D 입력 함수 실행");
+                        this.inputKeyRoutine = StartCoroutine(this.InputD());
                     }
                     break;
+
+
 
             }
             yield return null;
@@ -125,20 +157,15 @@ void Update()
             yield return null;
         }
 
-        if (d == true)
+        if(d == false)
         {
-            //Debug.Log("A+D");
-        }
-        else
-        {
-            Debug.Log("A");
+            //Debug.Log("A");
             isLeft = true;
             isRight = false;
         }
         this.inputKeyRoutine = null;
     }
-
-    private IEnumerator InputB()
+    private IEnumerator InputD()
     {
         float i = this.inputLate;
         bool a = false;
@@ -154,20 +181,21 @@ void Update()
             yield return null;
         }
 
-        if (a == true)
+        //if (a == true)
+        //{
+        //    //Debug.Log("D+A");
+        //}
+        //else
+        if(a==false)
         {
-            //Debug.Log("D+A");
-        }
-        else
-        {
-            Debug.Log("D");
+            //Debug.Log("D");
             isRight = true;
             isLeft = false;
 
         }
         this.inputKeyRoutine = null;
     }
-
+    */
 
 
     // 좌우 이동 시 가속도 적용 함수
@@ -190,10 +218,9 @@ void Update()
     // 게임 플레이 시작 시 일정 시간에 따라 속도 증가 < MaxSpeed
     IEnumerator GameSpeedController()
     {
-        while (forwardSpeed <= maxSpeed)
+        while (forwardSpeed <= fMaxSpeed)
         {
             forwardSpeed += 15.0f;
-            //Debug.Log(dummySpeed);
             yield return new WaitForSeconds(1);
         }
     }
