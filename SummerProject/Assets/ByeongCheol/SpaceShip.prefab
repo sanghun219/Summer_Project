@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 650657227470427244}
   - component: {fileID: 650657227470427234}
   - component: {fileID: 650657227470427246}
-  - component: {fileID: 650657227470427245}
   m_Layer: 0
   m_Name: SpaceShip
   m_TagString: Untagged
@@ -101,23 +100,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &650657227470427245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 650657227470427247}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73fdd27ce36613e4b8fbeb0981058afe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  forwardSpeed: 0
-  maxSpeed: 0
-  acceleration: 800
-  currentSpeed: 0
-  moveSpeed: 200
 --- !u!1 &8096232158779233337
 GameObject:
   m_ObjectHideFlags: 0

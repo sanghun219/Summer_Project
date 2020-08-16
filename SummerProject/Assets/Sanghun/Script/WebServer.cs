@@ -10,17 +10,24 @@ public class WebServer : MonoBehaviour
         UseWebServer = useServer;
     }
     private ScoreData[] scoreDatas;
+    
     private void Start()
     {
-        //InsertScoreInRank("sanghun219", 101);
+       if(UseWebServer)
+        StartCoroutine(IGetRank());
     }
+   
     public void Login(string userID, string userPass)
     {
         StartCoroutine(ILogin(userID, userPass));
     }
     public ScoreData[] GetRank()
     {
-        StartCoroutine(IGetRank());
+        if (scoreDatas == null)
+        {
+            Debug.Log("Score Data가 아직 갱신되지 않음");
+            StartCoroutine(IGetRank());
+        }
         return scoreDatas;
     }
     public void InsertScoreInRank(string userID, int userScore)
@@ -68,6 +75,7 @@ public class WebServer : MonoBehaviour
                 if(jsonArray != "error")
                 {
                     scoreDatas = JsonHelper.FromJson<ScoreData>("{\"items\":" + jsonArray + "}");
+                   
                 }
                        
             }

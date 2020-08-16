@@ -5,6 +5,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
+    float h;
+
+
     public float forwardSpeed = 0;
     public float fMaxSpeed = 200;
 
@@ -25,7 +28,8 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         StartCoroutine(this.GameSpeedController());
-        anim = GetComponentInChildren<Animator>();
+        anim = GetComponent<Animator>();
+        rigid = GetComponent<Rigidbody>();
 
     }
 
@@ -55,9 +59,9 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // 전진 키 입력 속도증가
-        forwardSpeed += Input.GetAxisRaw("Vertical") * 0.5f;
+        forwardSpeed += Input.GetAxisRaw("Vertical") * 1f;
 
-        Debug.Log(Input.inputString);
+        h = Input.GetAxisRaw("Horizontal");
         //Debug.Log("GetAxisRaw(Horizontal) : "+Input.GetAxisRaw("Horizontal"));
         //Debug.Log("get key D : "+Input.GetKey(KeyCode.D));
 
@@ -65,30 +69,58 @@ public class PlayerController : MonoBehaviour
 
         //오른쪽-왼쪽 은 되지만 왼쪽-오른쪽도 가능하게 코드를 짜야함 - 수정 요망
 
-        if (Input.GetKey(KeyCode.D) && Input.GetAxisRaw("Horizontal") == 0)
-        {
-            Debug.Log("오른쪽 진행 도중 왼쪽진행");
-            hTargetSpeed = -1 * hMaxSpeed;
-        }
-        else if (Input.GetKey(KeyCode.A) && Input.GetAxisRaw("Horizontal") == 0)
-        {
-            Debug.Log("왼쪽 진행 도중 오른쪽 진행");
-            hTargetSpeed = 1 * hMaxSpeed;
-        }
-        else
-        {
-            hTargetSpeed = Input.GetAxisRaw("Horizontal") * hMaxSpeed;
-        }
 
-
-        hCurrentSpeed = IncrementSide(hCurrentSpeed, hTargetSpeed, acceleration);
-
-
-        transform.Translate(hCurrentSpeed * Time.deltaTime, 0f, forwardSpeed * Time.deltaTime, Space.World);
 
         // 좌,우 이동 버튼 입력 시 애니매이션 작동
         anim.SetBool("isRight", hCurrentSpeed > 0);
         anim.SetBool("isLeft", hCurrentSpeed < 0);
+
+        //if (Input.GetButtonDown("Horizontal") || Input.GetButtonUp("Horizontal"))
+        //{
+        //    anim.SetInteger("Input", (int)h);
+        //}
+
+
+    }
+
+    void FixedUpdate()
+    {
+
+        //Debug.Log("Input key : " + Input.inputString);
+        //Debug.Log("input d"+Input.GetKey(KeyCode.D));
+        //Debug.Log("input a"+Input.GetKey(KeyCode.A));
+        hTargetSpeed = h * hMaxSpeed;
+
+        if (Input.GetKey(KeyCode.D))
+        {
+            //Debug.Log("왼쪽 이동중");
+            if (Input.GetKey(KeyCode.A) && Input.GetAxisRaw("Horizontal") == 0)
+            {
+                //Debug.Log("오른쪽 진행 도중 왼쪽진행");
+                hTargetSpeed = -1 * hMaxSpeed;
+            }
+        }
+
+        if (Input.GetKey(KeyCode.A))
+        {
+            //Debug.Log("오른쪽 이동중");
+
+            if (Input.GetKey(KeyCode.D) && Input.GetAxisRaw("Horizontal") == 0)
+            {
+                //Debug.Log("왼쪽 진행 도중 오른쪽 진행");
+                hTargetSpeed = 1 * hMaxSpeed;
+            }
+        }
+        else
+        {
+            hTargetSpeed = h * hMaxSpeed;
+        }
+
+        hCurrentSpeed = IncrementSide(hCurrentSpeed, hTargetSpeed, acceleration);
+        //transform.Translate(hCurrentSpeed * Time.deltaTime, 0f, forwardSpeed * Time.deltaTime, Space.World);
+        rigid.MovePosition(transform.position + new Vector3(hCurrentSpeed * Time.deltaTime, 0f, forwardSpeed * Time.deltaTime));
+        //rigid.AddForce(new Vector3(hCurrentSpeed * Time.deltaTime, 0f, forwardSpeed * Time.deltaTime), ForceMode.Impulse);
+
     }
 
     // 좌우 이동 시 가속도 적용 함수
