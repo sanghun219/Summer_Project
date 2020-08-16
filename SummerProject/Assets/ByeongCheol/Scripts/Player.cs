@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController2 : MonoBehaviour
+public class Player : MonoBehaviour
 {
 
     Animator anim;
@@ -82,7 +82,7 @@ public class PlayerController2 : MonoBehaviour
     {
         //물체와 충돌시 질질끌림현상이 발생하여 콜리전 진입후에 플레이어의 콜리전 컴포넌트와 스크립트를 비활성화
         gameObject.GetComponent<CapsuleCollider>().enabled = false;
-        gameObject.GetComponent<PlayerController2>().enabled = false;
+        gameObject.GetComponent<Player>().enabled = false;
     }
     private void OnCollisionExit(Collision collision)
     {
