@@ -13,7 +13,6 @@ public class InGameLoop : MonoBehaviour
     {
         // TODO : 나중에 진짜 Player로 대체됨
         testPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<TestPlayer>();
-
         StartCoroutine(IUpdate());
     }
 
@@ -23,6 +22,7 @@ public class InGameLoop : MonoBehaviour
         while (true)
         {
             yield return new WaitForFixedUpdate();
+
             Spawner.GetInstance.UpdateSpawnerPosition(testPlayer.transform.position);
         }
     }

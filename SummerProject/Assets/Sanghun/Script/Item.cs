@@ -29,26 +29,20 @@ public class Item : MonoBehaviour, ISpawned
 
     public float destroyTime { get { return _destroyTime; } set { _destroyTime = value; } }
 
-    public void Start()
+    private void OnEnable()
     {
         Invoke("DestroyItem", destroyTime);
-
-        StartCoroutine(IUpdate());
     }
 
-    private IEnumerator IUpdate()
+    private void FixedUpdate()
     {
-        while (true)
-        {
-            yield return new WaitForFixedUpdate();
-            if (gameObject.activeSelf)
-                transform.position += transform.forward * speed;
-        }
+        if (gameObject.activeSelf)
+            transform.position += transform.forward * speed;
     }
 
     private void DestroyItem()
     {
-        Spawner.GetInstance.ReturnObj(gameObject);
+        Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.ITEM);
     }
 
     private void OnTriggerEnter(Collider other)

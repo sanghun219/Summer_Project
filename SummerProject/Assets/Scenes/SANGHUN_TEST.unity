@@ -477,8 +477,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 134
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 20
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -594,10 +594,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distSpawnerToPlayer: 300
   startSpawnTime: 0
-  elaspedSpawn: 0.15
-  numOfSpawnedObj: 10000
-  lengOfSpawner: 400
-  numOfspawnPoint: 20
+  elaspedSpawn: 0.5
+  numOfSpawnedObj: 20
+  lengOfSpawner: 3000
   ratioOfObstacle: 1
   InstOfItems:
   - {fileID: 1477213631222418039, guid: f344ce1ba4e7913409b159f001778ca6, type: 3}

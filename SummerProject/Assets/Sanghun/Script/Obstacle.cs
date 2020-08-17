@@ -24,41 +24,33 @@ public class Obstacle : MonoBehaviour, ISpawned
 
     public OBSTACLE_TYPE Obs_type;
 
-    private IEnumerator IUpdate()
+    private void FixedUpdate()
     {
-        while (true)
-        {
-            yield return new WaitForFixedUpdate();
-            if (gameObject.activeSelf)
-            {
-                if (transform.position.z < 0 && Mathf.Abs(player.transform.position.z - transform.position.z) >= distOffset)
-                    DestroyObs();
-                transform.position += transform.forward * speed;
-            }
-        }
+        if (gameObject.activeSelf)
+            transform.position += transform.forward * speed;
     }
 
-    private static int i = 0;
-
-    // Start와 Awake 차이는 Awake가 순서가 빠르며, active가 꺼진 상태에도 작동되지만
+    // Start와 Awake 차이는 Awake가 순서가 빠르며, Awake는 active가 꺼진 상태에도 작동되지만
     // Start는 active가 꺼진 오브젝트에 대해 실행되지 않음.
-    //
+    // OnEnable은 setactive가 true가 될 때마다 동작함
     private TestPlayer player;
 
-    private float distOffset;
-
-    public void Start()
+    private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<TestPlayer>();
-        distOffset = Spawner.GetInstance.distSpawnerToPlayer * 2;
+    }
+
+    private void OnEnable()
+    {
         Invoke("DestroyObs", destroyTime);
-        StartCoroutine(IUpdate());
     }
 
     private void DestroyObs()
     {
         if (gameObject.activeSelf)
-            Spawner.GetInstance.ReturnObj(gameObject);
+        {
+            Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.OBSTACLE);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
