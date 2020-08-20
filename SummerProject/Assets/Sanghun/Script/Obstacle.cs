@@ -33,11 +33,11 @@ public class Obstacle : MonoBehaviour, ISpawned
     // Start와 Awake 차이는 Awake가 순서가 빠르며, Awake는 active가 꺼진 상태에도 작동되지만
     // Start는 active가 꺼진 오브젝트에 대해 실행되지 않음.
     // OnEnable은 setactive가 true가 될 때마다 동작함
-    private TestPlayer player;
+    private Player player;
 
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<TestPlayer>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
 
     private void OnEnable()

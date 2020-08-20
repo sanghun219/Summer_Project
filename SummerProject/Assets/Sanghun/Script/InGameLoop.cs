@@ -6,13 +6,13 @@ using UnityEngine;
 
 public class InGameLoop : MonoBehaviour
 {
-    private TestPlayer testPlayer;
+    private Player player;
 
     // Start is called before the first frame update
     private void Start()
     {
         // TODO : 나중에 진짜 Player로 대체됨
-        testPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<TestPlayer>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         StartCoroutine(IUpdate());
     }
 
@@ -23,7 +23,7 @@ public class InGameLoop : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
 
-            Spawner.GetInstance.UpdateSpawnerPosition(testPlayer.transform.position);
+            Spawner.GetInstance.UpdateSpawnerPosition(player.transform.position);
         }
     }
 }
