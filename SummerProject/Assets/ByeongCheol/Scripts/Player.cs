@@ -52,26 +52,26 @@ public class Player : MonoBehaviour
         }
     }
 
-    private IEnumerator IncreaseSpeed()
-    {
-        //TODO : 특정시간에 따라 속도가 단계적으로 증가해야 함.
-        float timer = 0.0f;
-        while (true)
-        {
-            yield return new WaitForFixedUpdate();
-            timer += Time.fixedDeltaTime;
+    //private IEnumerator IncreaseSpeed()
+    //{
+    //    //TODO : 특정시간에 따라 속도가 단계적으로 증가해야 함.
+    //    float timer = 0.0f;
+    //    while (true)
+    //    {
+    //        yield return new WaitForFixedUpdate();
+    //        timer += Time.fixedDeltaTime;
 
-            if (timer >= IncreaseSpeedTimer)
-            {
-                timer -= IncreaseSpeedTimer;
-                if (forwardSpeed >= fMaxSpeed)
-                {
-                    continue;
-                }
-                forwardSpeed += acceleration;
-            }
-        }
-    }
+    //        if (timer >= IncreaseSpeedTimer)
+    //        {
+    //            timer -= IncreaseSpeedTimer;
+    //            if (forwardSpeed >= fMaxSpeed)
+    //            {
+    //                continue;
+    //            }
+    //            forwardSpeed += acceleration;
+    //        }
+    //    }
+    //}
 
     public void IncreaseSpeedByItem(float speed)
     {
@@ -93,7 +93,7 @@ public class Player : MonoBehaviour
     {
         //플레이어 고정 속도증가 코루틴
         StartCoroutine(this.GameSpeedController());
-        StartCoroutine(this.IncreaseSpeed());
+        //StartCoroutine(this.IncreaseSpeed());
     }
 
     private void Update()
@@ -141,26 +141,27 @@ public class Player : MonoBehaviour
     //200을 넘어갈 경우 200에 고정하게끔 코드 수정 필요 2020.8.17
     private IEnumerator GameSpeedController()
     {
-        while (!isGameOver)
-        {
-            yield return new WaitForFixedUpdate();
-            transform.position += new Vector3(0, 0, forwardSpeed * Time.fixedDeltaTime);
-        }
-
-        //while (rigid.velocity.z <= fMaxSpeed)
+        //while (!isGameOver)
         //{
-        //    transform.position += new Vector3(0, 0, forwardSpeed * Time.deltaTime);
-        //    //rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Acceleration);
-        //    Debug.Log("Velocity of Z : " + rigid.velocity.z);
-        //    yield return null;
+        //    yield return new WaitForFixedUpdate();
+        //    Debug.Log("MoveHirizontal");
+        //    transform.position += new Vector3(0, 0, forwardSpeed * Time.fixedDeltaTime);
         //}
+
+        while (rigid.velocity.z <= fMaxSpeed)
+        {
+            //transform.position += new Vector3(0, 0, forwardSpeed * Time.deltaTime);
+            rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Impulse);
+            Debug.Log("Velocity of Z : " + rigid.velocity.z);
+            yield return null;
+        }
     }
 
     //플레이어 가속 함수
     private void AccelerateForward()
     {
-        //rigid.AddForce(new Vector3(0, 0, AccForward));
-        //Debug.Log("Acc : Velocity of Z : " + rigid.velocity.z);
+        rigid.AddForce(new Vector3(0, 0, AccForward));
+        Debug.Log("Acc : Velocity of Z : " + rigid.velocity.z);
     }
 
     //좌우로 이동을 수행해주는 함수
