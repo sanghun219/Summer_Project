@@ -11,19 +11,36 @@ public class InGameLoop : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        // TODO : 나중에 진짜 Player로 대체됨
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        StartCoroutine(IFixedUpdate());
         StartCoroutine(IUpdate());
     }
 
-    // Update is called once per frame
     private IEnumerator IUpdate()
     {
+        while (player.isGameOver == false)
+        {
+            yield return null;
+            player.PlayerUpdate();
+        }
+    }
+
+    // Update is called once per frame
+    private IEnumerator IFixedUpdate()
+    {
+        while (player.isGameOver == false)
+        {
+            yield return new WaitForFixedUpdate();
+            player.PlayerFixedUpdate();
+            Spawner.GetInstance.UpdateSpawnerPosition(player.transform.position);
+        }
+
         while (true)
         {
             yield return new WaitForFixedUpdate();
-
-            Spawner.GetInstance.UpdateSpawnerPosition(player.transform.position);
+            // player를 극적으로 날려보낼수 있음
+            player.transform.Rotate(new Vector3(1, 1, 1) * 120 * Time.deltaTime);
+            player.transform.position += transform.forward * 30 * Time.deltaTime;
         }
     }
 }

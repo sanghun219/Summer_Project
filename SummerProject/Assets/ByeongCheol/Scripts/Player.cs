@@ -48,13 +48,16 @@ public class Player : MonoBehaviour
         if (GameOverEvent != null)
         {
             isGameOver = true;
+            anim.enabled = false;
+
+            Debug.Log("Game Over");
             GameOverEvent();
         }
     }
 
     //private IEnumerator IncreaseSpeed()
     //{
-    //    //TODO : 특정시간에 따라 속도가 단계적으로 증가해야 함.
+    //
     //    float timer = 0.0f;
     //    while (true)
     //    {
@@ -73,39 +76,13 @@ public class Player : MonoBehaviour
     //    }
     //}
 
-    public void IncreaseSpeedByItem(float speed)
-    {
-        if (forwardSpeed + speed >= fMaxSpeed)
-            forwardSpeed = fMaxSpeed;
-        else
-        {
-            forwardSpeed += speed;
-        }
-    }
-
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
     }
 
-    private void Start()
-    {
-        //플레이어 고정 속도증가 코루틴
-        StartCoroutine(this.GameSpeedController());
-        //StartCoroutine(this.IncreaseSpeed());
-    }
-
-    private void Update()
-    {
-        h = Input.GetAxisRaw("Horizontal");
-        v = Input.GetAxisRaw("Vertical");
-    }
-
-    // 플레이어 이동
-    // 전진 이동은 rigidbody에 가속도를 더함
-    // 좌 우 이동은 rigidbody의 moveposition함수 사용
-    private void FixedUpdate()
+    public void PlayerFixedUpdate()
     {
         MoveHorizontal(hCurrentSpeed);
 
@@ -117,42 +94,40 @@ public class Player : MonoBehaviour
         //Debug.Log(rigid.velocity);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void PlayerUpdate()
     {
-        // 충돌 발생 시 애니매이션 비활성화 및 쿼터뷰 카메라 정지
-        // isGameOver를 통해서 외부의 객체들이 플레이어가 죽은 것을 알림 받음
-
-        GameOver();
-        anim.enabled = false;
-        Follow vari = GameObject.Find("Main Camera").GetComponent<Follow>();
-        vari.target = null;
-
-        Debug.Log("Game Over");
+        h = Input.GetAxisRaw("Horizontal");
+        v = Input.GetAxisRaw("Vertical");
     }
+
+    private void Start()
+    {
+        //플레이어 고정 속도증가 코루틴
+        StartCoroutine(this.GameSpeedController());
+        //StartCoroutine(this.IncreaseSpeed());
+    }
+
+    // 플레이어 이동
+    // 전진 이동은 rigidbody에 가속도를 더함
+    // 좌 우 이동은 rigidbody의 moveposition함수 사용
 
     private void OnCollisionStay(Collision collision)
     {
         //물체와 충돌시 질질끌림현상이 발생하여 콜리전 진입후에 플레이어의 콜리전 컴포넌트와 스크립트를 비활성화
-        gameObject.GetComponent<CapsuleCollider>().enabled = false;
-        gameObject.GetComponent<Player>().enabled = false;
+        //if (collision.gameObject.CompareTag("Obstacle"))
+        //{
+        //    gameObject.GetComponent<CapsuleCollider>().enabled = false;
+        //    gameObject.GetComponent<Player>().enabled = false;
+        //}
     }
 
     // 게임 플레이 시작 시 일정 시간에 따라 속도 증가 < MaxSpeed
     //200을 넘어갈 경우 200에 고정하게끔 코드 수정 필요 2020.8.17
     private IEnumerator GameSpeedController()
     {
-        //while (!isGameOver)
-        //{
-        //    yield return new WaitForFixedUpdate();
-        //    Debug.Log("MoveHirizontal");
-        //    transform.position += new Vector3(0, 0, forwardSpeed * Time.fixedDeltaTime);
-        //}
-
         while (rigid.velocity.z <= fMaxSpeed)
         {
-            //transform.position += new Vector3(0, 0, forwardSpeed * Time.deltaTime);
             rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Impulse);
-            Debug.Log("Velocity of Z : " + rigid.velocity.z);
             yield return null;
         }
     }
@@ -161,7 +136,7 @@ public class Player : MonoBehaviour
     private void AccelerateForward()
     {
         rigid.AddForce(new Vector3(0, 0, AccForward));
-        Debug.Log("Acc : Velocity of Z : " + rigid.velocity.z);
+        //Debug.Log("Acc : Velocity of Z : " + rigid.velocity.z);
     }
 
     //좌우로 이동을 수행해주는 함수

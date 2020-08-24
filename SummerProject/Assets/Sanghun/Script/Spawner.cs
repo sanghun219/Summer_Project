@@ -208,7 +208,7 @@ public class Spawner : MonoBehaviour
             }
             else
             {
-                var spawned = Instantiate(InstOfItems[UnityEngine.Random.Range(0, InstOfItems.Count)],
+                Item spawned = Instantiate(InstOfItems[UnityEngine.Random.Range(0, InstOfItems.Count)],
                     transform.position, transform.rotation);
 
                 spawned.gameObject.SetActive(false);
@@ -225,7 +225,7 @@ public class Spawner : MonoBehaviour
             }
             else
             {
-                var spawned = Instantiate(InstOfObstacles[UnityEngine.Random.Range(0, InstOfObstacles.Count)]
+                Obstacle spawned = Instantiate(InstOfObstacles[UnityEngine.Random.Range(0, InstOfObstacles.Count)]
                     , transform.position, transform.rotation);
 
                 spawned.gameObject.SetActive(false);
