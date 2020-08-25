@@ -3,13 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ITEM_TYPE
-{
-    ITEM1,
-    ITEM2,
-    END,
-}
-
 public class Item : MonoBehaviour, ISpawned
 {
     [SerializeField]
@@ -20,6 +13,12 @@ public class Item : MonoBehaviour, ISpawned
 
     [SerializeField]
     private ITEM_TYPE itemType;
+
+    [SerializeField]
+    public SHOOT_OPT shootOpt;
+
+    [SerializeField]
+    private COLLIDE_OPT colideOpt;
 
     public float speed
     {
@@ -37,11 +36,22 @@ public class Item : MonoBehaviour, ISpawned
     private void FixedUpdate()
     {
         if (gameObject.activeSelf)
-            transform.position += transform.forward * speed;
+        {
+            ObjectManager.GetInstance.ItemType_Update[itemType](this, shootOpt);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (gameObject.activeSelf == false) return;
+        shootOpt &= ~SHOOT_OPT.MAGNET;
+        Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.ITEM);
     }
 
     private void DestroyItem()
     {
+        if (gameObject.activeSelf == false) return;
+        shootOpt &= ~SHOOT_OPT.MAGNET;
         Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.ITEM);
     }
 
@@ -49,18 +59,7 @@ public class Item : MonoBehaviour, ISpawned
     {
         if (other.CompareTag("Player"))
         {
-            //TODO : 타입에 따라 다른 처리
-            switch (itemType)
-            {
-                case ITEM_TYPE.ITEM1:
-                    break;
-
-                case ITEM_TYPE.ITEM2:
-                    break;
-
-                default:
-                    break;
-            }
+            ObjectManager.GetInstance.ItemType_Collide[itemType](this, other, colideOpt);
         }
     }
 }
