@@ -1,7 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+
+public enum PlayerMode
+{
+    NORMAL,
+    PUSH,
+    DOUBLE_POINT,
+    SUPER,
+    MAGNET,
+}
 
 public class Player : MonoBehaviour
 {
@@ -31,15 +41,98 @@ public class Player : MonoBehaviour
 
     public bool isGameOver = false;
 
-    [SerializeField]
-    private float acceleration;
-
-    [SerializeField]
-    private float IncreaseSpeedTimer;
-
     public delegate void GameOverHandler();
 
+    // 다른 클래스들이 플레이어가 죽었을 때 이벤트 발생시키도록 함
+    // 조건 발생시 딱 한 번만 호출하기 때문에 성능up, 코드가 깔끔해짐
     public event GameOverHandler GameOverEvent;
+
+    // 플레이어가 특정 아이템 먹었을 경우 상태가 바뀜
+    private PlayerMode playerMode;
+
+    // 플레이어 자식중에 플레이어 모드 오브젝트를 캐싱하기 위함
+    private Transform playerModeObj;
+
+    // switch - case문 대신 Dictionary의 value로 델리게이트(함수포인터)
+    // 넣어주면 코드가 깔끔해지고 모듈 독립성이 높아진다.
+    private Dictionary<PlayerMode, Action> playerModeToAction;
+
+    private PushObj pushObj;
+
+    private DoublePoint doublePoint;
+
+    private SuperMode superMode;
+
+    private Magnet magnet;
+
+    public PlayerMode GetPlayerMode()
+    {
+        return playerMode;
+    }
+
+    public void SetPlayerMode(PlayerMode mode)
+    {
+        if (playerModeToAction.ContainsKey(mode))
+        {
+            playerMode = mode;
+            playerModeToAction[mode]();
+        }
+        else
+        {
+            Debug.Log("해당 모드가 지정되어 있지 않군요..");
+        }
+    }
+
+    private void InitPlayerMode()
+    {
+        playerModeToAction = new Dictionary<PlayerMode, Action>();
+        pushObj = playerModeObj.transform.Find("PushObjects").GetComponent<PushObj>();
+        superMode = playerModeObj.transform.Find("SuperMode").GetComponent<SuperMode>();
+        doublePoint = playerModeObj.transform.Find("DoublePoint").GetComponent<DoublePoint>();
+        magnet = playerModeObj.transform.Find("Magnet").GetComponent<Magnet>();
+
+        playerModeToAction[PlayerMode.PUSH] = () =>
+        {
+            if (pushObj.gameObject.activeSelf == true) return;
+
+            pushObj.gameObject.SetActive(true);
+            pushObj.StartUpdate();
+        };
+
+        playerModeToAction[PlayerMode.NORMAL] = () =>
+        {
+            int childCount = playerModeObj.childCount;
+            for (int i = 0; i < childCount; i++)
+            {
+                if (playerModeObj.GetChild(i).gameObject.activeSelf == true)
+                {
+                    playerModeObj.GetChild(i).gameObject.SetActive(false);
+                }
+            }
+        };
+
+        playerModeToAction[PlayerMode.SUPER] = () =>
+        {
+            if (superMode.gameObject.activeSelf == true) return;
+            superMode.gameObject.SetActive(true);
+            superMode.StartUpdate();
+        };
+
+        playerModeToAction[PlayerMode.MAGNET] = () =>
+        {
+            if (magnet.gameObject.activeSelf == true) return;
+            Debug.Log("ㅁㄴㅇㅁㄴㅇ;");
+            magnet.gameObject.SetActive(true);
+            magnet.StartUpdate();
+        };
+
+        playerModeToAction[PlayerMode.DOUBLE_POINT] = () =>
+        {
+            if (doublePoint.gameObject.activeSelf == true) return;
+            doublePoint.gameObject.SetActive(true);
+            doublePoint.StartUpdate();
+        };
+    }
 
     // GameOverEvent를 통해 나중에 플레이어가 게임오버 됐을때 다른 클래스들이
     // 콜백체인을 통해 각 기능을 바로 동작시킬 수 있음
@@ -55,26 +148,14 @@ public class Player : MonoBehaviour
         }
     }
 
-    //private IEnumerator IncreaseSpeed()
-    //{
-    //
-    //    float timer = 0.0f;
-    //    while (true)
-    //    {
-    //        yield return new WaitForFixedUpdate();
-    //        timer += Time.fixedDeltaTime;
-
-    //        if (timer >= IncreaseSpeedTimer)
-    //        {
-    //            timer -= IncreaseSpeedTimer;
-    //            if (forwardSpeed >= fMaxSpeed)
-    //            {
-    //                continue;
-    //            }
-    //            forwardSpeed += acceleration;
-    //        }
-    //    }
-    //}
+    public float VelocityZ
+    {
+        get { return rigid.velocity.z; }
+        set
+        {
+            rigid.velocity = new Vector3(0, 0, value);
+        }
+    }
 
     private void Awake()
     {
@@ -91,7 +172,6 @@ public class Player : MonoBehaviour
         {
             AccelerateForward();
         }
-        //Debug.Log(rigid.velocity);
     }
 
     public void PlayerUpdate()
@@ -104,7 +184,9 @@ public class Player : MonoBehaviour
     {
         //플레이어 고정 속도증가 코루틴
         StartCoroutine(this.GameSpeedController());
-        //StartCoroutine(this.IncreaseSpeed());
+        playerMode = PlayerMode.NORMAL;
+        playerModeObj = gameObject.transform.Find("PlayerMode");
+        InitPlayerMode();
     }
 
     // 플레이어 이동
@@ -114,11 +196,11 @@ public class Player : MonoBehaviour
     private void OnCollisionStay(Collision collision)
     {
         //물체와 충돌시 질질끌림현상이 발생하여 콜리전 진입후에 플레이어의 콜리전 컴포넌트와 스크립트를 비활성화
-        //if (collision.gameObject.CompareTag("Obstacle"))
-        //{
-        //    gameObject.GetComponent<CapsuleCollider>().enabled = false;
-        //    gameObject.GetComponent<Player>().enabled = false;
-        //}
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            gameObject.GetComponent<CapsuleCollider>().enabled = false;
+            gameObject.GetComponent<Player>().enabled = false;
+        }
     }
 
     // 게임 플레이 시작 시 일정 시간에 따라 속도 증가 < MaxSpeed
@@ -136,6 +218,7 @@ public class Player : MonoBehaviour
     private void AccelerateForward()
     {
         rigid.AddForce(new Vector3(0, 0, AccForward));
+
         //Debug.Log("Acc : Velocity of Z : " + rigid.velocity.z);
     }
 
@@ -147,10 +230,6 @@ public class Player : MonoBehaviour
 
         //rigidbody 의 movepoint와 transform의 translate 비교중
         this.rigid.MovePosition(this.transform.position + new Vector3(c, 0, 0) * Time.deltaTime);
-        //transform.Translate(this.transform.position + new Vector3(c, 0, 0) * Time.deltaTime, Space.World);
-        //this.rigid.velocity.Set(hCurrentSpeed, 0, 0);
-
-        //Debug.Log("hCurrentSpeed : "+hCurrentSpeed);
     }
 
     // 좌우 이동 시 가속도 적용 함수

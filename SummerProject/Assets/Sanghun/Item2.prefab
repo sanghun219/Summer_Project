@@ -108,6 +108,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 1
   _destroyTime: 10
-  itemType: 1
+  itemType: 7
   shootOpt: 0
-  colideOpt: 0
+  colideOpt: 2

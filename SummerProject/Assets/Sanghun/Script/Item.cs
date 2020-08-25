@@ -15,7 +15,7 @@ public class Item : MonoBehaviour, ISpawned
     private ITEM_TYPE itemType;
 
     [SerializeField]
-    private SHOOT_OPT shootOpt;
+    public SHOOT_OPT shootOpt;
 
     [SerializeField]
     private COLLIDE_OPT colideOpt;
@@ -41,8 +41,17 @@ public class Item : MonoBehaviour, ISpawned
         }
     }
 
+    private void OnDisable()
+    {
+        if (gameObject.activeSelf == false) return;
+        shootOpt &= ~SHOOT_OPT.MAGNET;
+        Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.ITEM);
+    }
+
     private void DestroyItem()
     {
+        if (gameObject.activeSelf == false) return;
+        shootOpt &= ~SHOOT_OPT.MAGNET;
         Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.ITEM);
     }
 

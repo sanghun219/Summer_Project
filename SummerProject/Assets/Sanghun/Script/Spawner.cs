@@ -118,18 +118,18 @@ public class Spawner : MonoBehaviour
         int numOfEmpty = Random.Range(0, numOfObstacle);
         int numOfItem = numOfSpawnedObj - numOfEmpty - numOfObstacle;
         Queue<GameObject> wave = new Queue<GameObject>();
-
+        for (int i = 0; i < numOfItem; i++)
+        {
+            wave.Enqueue(GetSpawnedObj(SPAWN_OBJ.ITEM));
+        }
         for (int i = 0; i < numOfObstacle; i++)
         {
             wave.Enqueue(GetSpawnedObj(SPAWN_OBJ.OBSTACLE));
         }
+
         for (int i = 0; i < numOfEmpty; i++)
         {
             wave.Enqueue(null);
-        }
-        for (int i = 0; i < numOfItem; i++)
-        {
-            wave.Enqueue(GetSpawnedObj(SPAWN_OBJ.ITEM));
         }
 
         GetShuffledSpawnedObj(ref wave);
@@ -157,7 +157,7 @@ public class Spawner : MonoBehaviour
     {
         int maxValue = spawnObjs.Count;
         int tmpValue;
-        GameObject swapValue;
+        GameObject swapValue = null;
 
         for (int i = 0; i < maxValue; i++)
         {

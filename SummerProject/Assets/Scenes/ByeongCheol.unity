@@ -44,7 +44,7 @@ RenderSettings:
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 11
-  m_GIWorkflowMode: 1
+  m_GIWorkflowMode: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -122,6 +122,82 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &19328040
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 19328041}
+  - component: {fileID: 19328043}
+  - component: {fileID: 19328042}
+  - component: {fileID: 19328044}
+  m_Layer: 8
+  m_Name: PushObjects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &19328041
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19328040}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1203734875}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &19328042
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19328040}
+  serializedVersion: 2
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 4
+  m_CollisionDetection: 3
+--- !u!135 &19328043
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19328040}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &19328044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19328040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78d927dc9230d264282db7bba1705077, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxColliderRadius: 500
+  pushTimer: 3
 --- !u!1 &65326623
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,7 +209,7 @@ GameObject:
   - component: {fileID: 65326624}
   - component: {fileID: 65326626}
   - component: {fileID: 65326625}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ParticleEngines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4833,6 +4909,7 @@ GameObject:
   - component: {fileID: 112892266}
   - component: {fileID: 112892265}
   - component: {fileID: 112892267}
+  - component: {fileID: 112892268}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4878,6 +4955,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f67e5324b63d984ea777dc9ed0c05db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GlobalItem_opt: 0
+--- !u!114 &112892268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112892264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e97408d39e84e8147b089cb42638e149, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &170434015 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2218691459781360338, guid: 3c55f6b1bc2b4414a8e825acf231d4ce,
@@ -4895,7 +4985,7 @@ GameObject:
   - component: {fileID: 174995451}
   - component: {fileID: 174995453}
   - component: {fileID: 174995452}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ParticleEngines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9688,6 +9778,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 650657227470427234, guid: 3c55f6b1bc2b4414a8e825acf231d4ce,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 650657227470427235, guid: 3c55f6b1bc2b4414a8e825acf231d4ce,
         type: 3}
       propertyPath: m_Constraints
@@ -9717,6 +9812,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 650657227470427247, guid: 3c55f6b1bc2b4414a8e825acf231d4ce,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 2218691459781360338, guid: 3c55f6b1bc2b4414a8e825acf231d4ce,
         type: 3}
@@ -9773,8 +9873,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8096232158779233337, guid: 3c55f6b1bc2b4414a8e825acf231d4ce,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8096232158779284167, guid: 3c55f6b1bc2b4414a8e825acf231d4ce,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8096232158779284877, guid: 3c55f6b1bc2b4414a8e825acf231d4ce,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8096232158779314723, guid: 3c55f6b1bc2b4414a8e825acf231d4ce,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 650657227470427245, guid: 3c55f6b1bc2b4414a8e825acf231d4ce, type: 3}
+    - {fileID: 650657227470427244, guid: 3c55f6b1bc2b4414a8e825acf231d4ce, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 3c55f6b1bc2b4414a8e825acf231d4ce, type: 3}
 --- !u!1 &731274939
 GameObject:
@@ -9889,6 +10010,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   amount: 10
   duration: 0.5
+--- !u!1 &968451553
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 968451554}
+  - component: {fileID: 968451555}
+  m_Layer: 0
+  m_Name: SuperMode
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &968451554
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968451553}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1203734875}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &968451555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968451553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdc7caa57a5ac1245b291427b35dbe10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SuperModeTimer: 3
 --- !u!1 &1003663839 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 650657227470427247, guid: 3c55f6b1bc2b4414a8e825acf231d4ce,
@@ -9914,8 +10079,6 @@ MonoBehaviour:
   hMaxSpeed: 200
   hCurrentSpeed: 0
   isGameOver: 0
-  acceleration: 10
-  IncreaseSpeedTimer: 5
 --- !u!1 &1004367117
 GameObject:
   m_ObjectHideFlags: 0
@@ -9927,7 +10090,7 @@ GameObject:
   - component: {fileID: 1004367118}
   - component: {fileID: 1004367120}
   - component: {fileID: 1004367119}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ParticleEngines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14616,6 +14779,40 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!1 &1203734874
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1203734875}
+  m_Layer: 9
+  m_Name: PlayerMode
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1203734875
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203734874}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 19328041}
+  - {fileID: 1744872594}
+  - {fileID: 968451554}
+  - {fileID: 1972894700}
+  m_Father: {fileID: 170434015}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1310096817
 GameObject:
   m_ObjectHideFlags: 0
@@ -14627,7 +14824,7 @@ GameObject:
   - component: {fileID: 1310096818}
   - component: {fileID: 1310096820}
   - component: {fileID: 1310096819}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ParticleEngines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19327,7 +19524,7 @@ GameObject:
   - component: {fileID: 1318818254}
   - component: {fileID: 1318818256}
   - component: {fileID: 1318818255}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ParticleEngines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24027,7 +24224,7 @@ GameObject:
   - component: {fileID: 1526080295}
   - component: {fileID: 1526080297}
   - component: {fileID: 1526080296}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ParticleEngines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28727,7 +28924,7 @@ GameObject:
   - component: {fileID: 1571199104}
   - component: {fileID: 1571199106}
   - component: {fileID: 1571199105}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ParticleEngines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33483,6 +33680,16 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1907706371159144413, guid: bd934e960f5b69a4aa61ed1e782bb60e,
+        type: 3}
+      propertyPath: numOfSpawnedObj
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1907706371159144413, guid: bd934e960f5b69a4aa61ed1e782bb60e,
+        type: 3}
+      propertyPath: ratioOfObstacle
+      value: 0.416
+      objectReference: {fileID: 0}
     - target: {fileID: 1907706371159144414, guid: bd934e960f5b69a4aa61ed1e782bb60e,
         type: 3}
       propertyPath: m_Name
@@ -33495,6 +33702,50 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd934e960f5b69a4aa61ed1e782bb60e, type: 3}
+--- !u!1 &1744872593
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1744872594}
+  - component: {fileID: 1744872595}
+  m_Layer: 0
+  m_Name: DoublePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1744872594
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1744872593}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1203734875}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1744872595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1744872593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fe8c2cee240c144f95fef7af5d73120, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DoublePointTimer: 3
 --- !u!1 &1915535145
 GameObject:
   m_ObjectHideFlags: 0
@@ -33504,7 +33755,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1915535146}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ParticleEngines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33533,6 +33784,64 @@ Transform:
   m_Father: {fileID: 170434015}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1972894699
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1972894700}
+  - component: {fileID: 1972894701}
+  - component: {fileID: 1972894702}
+  m_Layer: 0
+  m_Name: Magnet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1972894700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972894699}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1203734875}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1972894701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972894699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 734f511367465d640a6feefec1840f86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MagnetTimer: 3
+--- !u!135 &1972894702
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972894699}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 650
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2007331047
 GameObject:
   m_ObjectHideFlags: 0
@@ -33544,7 +33853,7 @@ GameObject:
   - component: {fileID: 2007331048}
   - component: {fileID: 2007331050}
   - component: {fileID: 2007331049}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ParticleEngines
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -109,7 +109,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 1
   _destroyTime: 6
-  shootOpt: 4
+  shootOpt: 0
   colideOpt: 0
   Obs_type: 0
   isCollide: 0
