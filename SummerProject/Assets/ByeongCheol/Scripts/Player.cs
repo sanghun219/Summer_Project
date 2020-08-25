@@ -2,11 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
     private Animator anim;
     private Rigidbody rigid;
+
+
+    int score = 0;
+    public Text scoreText;
 
     //횡, 수직 이동 입력 변수
     private float v, h;
@@ -39,7 +45,7 @@ public class Player : MonoBehaviour
 
     public delegate void GameOverHandler();
 
-    public event GameOverHandler GameOverEvent;
+    public static event GameOverHandler GameOverEvent;
 
     // GameOverEvent를 통해 나중에 플레이어가 게임오버 됐을때 다른 클래스들이
     // 콜백체인을 통해 각 기능을 바로 동작시킬 수 있음
@@ -47,6 +53,7 @@ public class Player : MonoBehaviour
     {
         if (GameOverEvent != null)
         {
+            Debug.Log("게임오버 함수 호출");
             isGameOver = true;
             GameOverEvent();
         }
@@ -109,12 +116,19 @@ public class Player : MonoBehaviour
     {
         MoveHorizontal(hCurrentSpeed);
 
+        //스코어 증가
+        score += (int)rigid.velocity.z;
+        scoreText.text = score.ToString();
+
         //전진만 하게끔 vertical 입력 값 양수일경우에만 가속
         if (v > 0)
         {
             AccelerateForward();
         }
         //Debug.Log(rigid.velocity);
+
+        anim.SetBool("isRight", hCurrentSpeed > 0);
+        anim.SetBool("isLeft", hCurrentSpeed < 0);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -152,7 +166,7 @@ public class Player : MonoBehaviour
         {
             //transform.position += new Vector3(0, 0, forwardSpeed * Time.deltaTime);
             rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Impulse);
-            Debug.Log("Velocity of Z : " + rigid.velocity.z);
+            //Debug.Log("Velocity of Z : " + rigid.velocity.z);
             yield return null;
         }
     }
@@ -161,7 +175,7 @@ public class Player : MonoBehaviour
     private void AccelerateForward()
     {
         rigid.AddForce(new Vector3(0, 0, AccForward));
-        Debug.Log("Acc : Velocity of Z : " + rigid.velocity.z);
+        //Debug.Log("Acc : Velocity of Z : " + rigid.velocity.z);
     }
 
     //좌우로 이동을 수행해주는 함수
@@ -193,4 +207,26 @@ public class Player : MonoBehaviour
             return (dir == Mathf.Sign(target - n)) ? n : target; // if n has now passed target then return target, otherwise return n
         }
     }
+
+
+    //메인 UI의 시작버튼을 누르면 Player의 스크립트 활성화
+    public void OnGameStart()
+    {
+        gameObject.GetComponent<Player>().enabled = true;
+    }
+
+    // 게임오버화면에서 화면 클릭 시 씬 리로드
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+
+
+    void OnDisable()
+    {
+        Debug.Log("Your Score is : " + score);
+    }
+
+
 }
