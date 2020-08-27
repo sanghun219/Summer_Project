@@ -24,7 +24,7 @@ public class PushObj : MonoBehaviour
 
     private void OnDisable()
     {
-        player.SetPlayerMode(PlayerMode.NORMAL);
+        player.SetPlayerMode(PlayerMode.PUSH, PlayerMode.NORMAL);
         Collider.radius = 1.0f;
     }
 
@@ -46,7 +46,7 @@ public class PushObj : MonoBehaviour
                 Collider.radius += Time.fixedDeltaTime * 1500;
             }
         }
-        player.SetPlayerMode(PlayerMode.NORMAL);
+        player.SetPlayerMode(PlayerMode.PUSH, PlayerMode.NORMAL);
         Collider.radius = 1.0f;
         previousTimer = 0.0f;
     }

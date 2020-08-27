@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+[Flags]
 public enum PlayerMode
 {
-    NORMAL,
-    PUSH,
-    DOUBLE_POINT,
-    SUPER,
-    MAGNET,
+    NORMAL = 0x00000001,
+    PUSH = 0x00000002,
+    DOUBLE_POINT = 0x00000004,
+    SUPER = 0x00000008,
+    MAGNET = 0x00000010,
+    DOWN_SPEED = 0x00000020,
 }
 
 public class Player : MonoBehaviour
@@ -65,17 +67,19 @@ public class Player : MonoBehaviour
 
     private Magnet magnet;
 
+    private DownSpeed downSpeed;
+
     public PlayerMode GetPlayerMode()
     {
         return playerMode;
     }
 
-    public void SetPlayerMode(PlayerMode mode)
+    public void SetPlayerMode(PlayerMode prevMode, PlayerMode nextMode)
     {
-        if (playerModeToAction.ContainsKey(mode))
+        if (playerModeToAction.ContainsKey(nextMode))
         {
-            playerMode = mode;
-            playerModeToAction[mode]();
+            playerMode &= ~prevMode;
+            playerModeToAction[nextMode]();
         }
         else
         {
@@ -90,47 +94,76 @@ public class Player : MonoBehaviour
         superMode = playerModeObj.transform.Find("SuperMode").GetComponent<SuperMode>();
         doublePoint = playerModeObj.transform.Find("DoublePoint").GetComponent<DoublePoint>();
         magnet = playerModeObj.transform.Find("Magnet").GetComponent<Magnet>();
+        downSpeed = playerModeObj.transform.Find("DownSpeed").GetComponent<DownSpeed>();
 
         playerModeToAction[PlayerMode.PUSH] = () =>
         {
-            if (pushObj.gameObject.activeSelf == true) return;
-
+            if (pushObj.gameObject.activeSelf == true && (playerMode & PlayerMode.PUSH) != 0) return;
+            playerMode |= PlayerMode.PUSH;
             pushObj.gameObject.SetActive(true);
             pushObj.StartUpdate();
         };
 
         playerModeToAction[PlayerMode.NORMAL] = () =>
         {
-            int childCount = playerModeObj.childCount;
-            for (int i = 0; i < childCount; i++)
+            if ((playerMode & PlayerMode.DOUBLE_POINT) == 0)
             {
-                if (playerModeObj.GetChild(i).gameObject.activeSelf == true)
-                {
-                    playerModeObj.GetChild(i).gameObject.SetActive(false);
-                }
+                doublePoint.gameObject.SetActive(false);
+            }
+            if ((playerMode & PlayerMode.DOWN_SPEED) == 0)
+            {
+                downSpeed.gameObject.SetActive(false);
+            }
+            if ((playerMode & PlayerMode.MAGNET) == 0)
+            {
+                magnet.gameObject.SetActive(false);
+            }
+            if ((playerMode & PlayerMode.PUSH) == 0)
+            {
+                pushObj.gameObject.SetActive(false);
+            }
+            if ((playerMode & PlayerMode.SUPER) == 0)
+            {
+                superMode.gameObject.SetActive(false);
+                anim.SetBool("superMode", false);
             }
         };
 
         playerModeToAction[PlayerMode.SUPER] = () =>
         {
-            if (superMode.gameObject.activeSelf == true) return;
+            if (superMode.gameObject.activeSelf == true && (playerMode & PlayerMode.SUPER) != 0) return;
+            playerMode |= PlayerMode.SUPER;
+            if ((playerMode & PlayerMode.DOWN_SPEED) != 0)
+                playerMode &= ~PlayerMode.DOWN_SPEED;
+            anim.SetBool("superMode", true);
             superMode.gameObject.SetActive(true);
             superMode.StartUpdate();
         };
 
         playerModeToAction[PlayerMode.MAGNET] = () =>
         {
-            if (magnet.gameObject.activeSelf == true) return;
-            Debug.Log("ㅁㄴㅇㅁㄴㅇ;");
+            if (magnet.gameObject.activeSelf && (playerMode & PlayerMode.MAGNET) != 0) return;
+            playerMode |= PlayerMode.MAGNET;
             magnet.gameObject.SetActive(true);
             magnet.StartUpdate();
         };
 
         playerModeToAction[PlayerMode.DOUBLE_POINT] = () =>
         {
-            if (doublePoint.gameObject.activeSelf == true) return;
+            if (doublePoint.gameObject.activeSelf == true && (playerMode & PlayerMode.DOUBLE_POINT) != 0) return;
+            playerMode |= PlayerMode.DOUBLE_POINT;
             doublePoint.gameObject.SetActive(true);
             doublePoint.StartUpdate();
+        };
+
+        playerModeToAction[PlayerMode.DOWN_SPEED] = () =>
+        {
+            if (downSpeed.gameObject.activeSelf == true && (playerMode & PlayerMode.DOWN_SPEED) != 0
+            || (playerMode & PlayerMode.SUPER) != 0) return;
+
+            playerMode |= PlayerMode.DOWN_SPEED;
+            downSpeed.gameObject.SetActive(true);
+            downSpeed.StartUpdate();
         };
     }
 
@@ -142,7 +175,7 @@ public class Player : MonoBehaviour
         {
             isGameOver = true;
             anim.enabled = false;
-
+            gameObject.GetComponent<Collider>().enabled = false;
             Debug.Log("Game Over");
             GameOverEvent();
         }
@@ -157,7 +190,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Awake()
+    public void AwakePlayer()
     {
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
@@ -180,7 +213,7 @@ public class Player : MonoBehaviour
         v = Input.GetAxisRaw("Vertical");
     }
 
-    private void Start()
+    public void StartPlayer()
     {
         //플레이어 고정 속도증가 코루틴
         StartCoroutine(this.GameSpeedController());
@@ -207,17 +240,19 @@ public class Player : MonoBehaviour
     //200을 넘어갈 경우 200에 고정하게끔 코드 수정 필요 2020.8.17
     private IEnumerator GameSpeedController()
     {
-        while (rigid.velocity.z <= fMaxSpeed)
+        while (true)
         {
-            rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Impulse);
             yield return null;
+            if (rigid.velocity.z <= fMaxSpeed && (playerMode & PlayerMode.DOWN_SPEED) == 0)
+                rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Acceleration);
         }
     }
 
     //플레이어 가속 함수
     private void AccelerateForward()
     {
-        rigid.AddForce(new Vector3(0, 0, AccForward));
+        if ((playerMode & PlayerMode.DOWN_SPEED) != 0)
+            rigid.AddForce(new Vector3(0, 0, AccForward));
 
         //Debug.Log("Acc : Velocity of Z : " + rigid.velocity.z);
     }
@@ -227,9 +262,33 @@ public class Player : MonoBehaviour
     {
         //현재 속도를 키 입력이 눌릴때만 증가하고 누르지 않을경우 천천히 0으로 돌아오게끔 한다.
         hCurrentSpeed = IncrementSide(hCurrentSpeed, h * hMaxSpeed, hAcceleration);
-
-        //rigidbody 의 movepoint와 transform의 translate 비교중
         this.rigid.MovePosition(this.transform.position + new Vector3(c, 0, 0) * Time.deltaTime);
+        Debug.Log("h: " + h + " hspeed : " + hCurrentSpeed);
+        if (hCurrentSpeed == 0)
+        {
+            anim.SetBool("isLeft", false);
+            anim.SetBool("isRight", false);
+            return;
+        }
+
+        if (Input.GetKey(KeyCode.LeftArrow) && h < 0)
+        {
+            anim.SetBool("isLeft", true);
+            anim.SetBool("isRight", false);
+        }
+        else if (Input.GetKey(KeyCode.RightArrow) && h > 0)
+        {
+            anim.SetBool("isRight", true);
+            anim.SetBool("isLeft", false);
+        }
+        else if ((Input.GetKeyUp(KeyCode.LeftArrow)) && h >= 0)
+        {
+            anim.SetBool("isLeft", false);
+        }
+        else if (Input.GetKeyUp(KeyCode.RightArrow) && h <= 0)
+        {
+            anim.SetBool("isRight", false);
+        }
     }
 
     // 좌우 이동 시 가속도 적용 함수

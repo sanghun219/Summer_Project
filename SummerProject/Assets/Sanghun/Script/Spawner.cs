@@ -92,6 +92,11 @@ public class Spawner : MonoBehaviour
         // 스폰되는 지점보다는 한 번에 스폰되는 오브젝트 개수가 많아야 함
     }
 
+    public void ClearSpawner()
+    {
+        // spawn된 놈들 전부 제거하고 회수
+    }
+
     public void UpdateSpawnerPosition(Vector3 playerPos)
     {
         deltaSpawnTime += Time.deltaTime;

@@ -677,7 +677,7 @@ GameObject:
   - component: {fileID: 2980497408135170880}
   m_Layer: 0
   m_Name: Item_Cow
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -730,7 +730,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 5
-  _destroyTime: 10
+  _destroyTime: 5
   itemType: 0
   shootOpt: 0
   colideOpt: 2

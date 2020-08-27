@@ -8,10 +8,16 @@ public class InGameLoop : MonoBehaviour
 {
     private Player player;
 
+    private void Awake()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        player.AwakePlayer();
+    }
+
     // Start is called before the first frame update
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        player.StartPlayer();
         StartCoroutine(IFixedUpdate());
         StartCoroutine(IUpdate());
     }
@@ -34,7 +40,7 @@ public class InGameLoop : MonoBehaviour
             player.PlayerFixedUpdate();
             Spawner.GetInstance.UpdateSpawnerPosition(player.transform.position);
         }
-
+        Spawner.GetInstance.gameObject.SetActive(false);
         while (true)
         {
             yield return new WaitForFixedUpdate();

@@ -33,6 +33,10 @@ public class Item : MonoBehaviour, ISpawned
         Invoke("DestroyItem", destroyTime);
     }
 
+    private void ClearItem()
+    {
+    }
+
     private void FixedUpdate()
     {
         if (gameObject.activeSelf)
