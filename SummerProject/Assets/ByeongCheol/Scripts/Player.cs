@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum PlayerMode
 {
@@ -17,6 +19,11 @@ public class Player : MonoBehaviour
 {
     private Animator anim;
     private Rigidbody rigid;
+
+
+    int score = 0;
+    public Text scoreText;
+
 
     //횡, 수직 이동 입력 변수
     private float v, h;
@@ -45,7 +52,7 @@ public class Player : MonoBehaviour
 
     // 다른 클래스들이 플레이어가 죽었을 때 이벤트 발생시키도록 함
     // 조건 발생시 딱 한 번만 호출하기 때문에 성능up, 코드가 깔끔해짐
-    public event GameOverHandler GameOverEvent;
+    public static event GameOverHandler GameOverEvent;
 
     // 플레이어가 특정 아이템 먹었을 경우 상태가 바뀜
     private PlayerMode playerMode;
@@ -167,11 +174,19 @@ public class Player : MonoBehaviour
     {
         MoveHorizontal(hCurrentSpeed);
 
+        //스코어 증가
+        //score += (int)rigid.velocity.z;
+        //Debug.Log(score);
+        //scoreText.text = score.ToString();
+
         //전진만 하게끔 vertical 입력 값 양수일경우에만 가속
         if (v > 0)
         {
             AccelerateForward();
         }
+
+        anim.SetBool("isRight", hCurrentSpeed > 0);
+        anim.SetBool("isLeft", hCurrentSpeed < 0);
     }
 
     public void PlayerUpdate()
@@ -200,6 +215,8 @@ public class Player : MonoBehaviour
         {
             gameObject.GetComponent<CapsuleCollider>().enabled = false;
             gameObject.GetComponent<Player>().enabled = false;
+
+            GameOver();
         }
     }
 
@@ -247,4 +264,19 @@ public class Player : MonoBehaviour
             return (dir == Mathf.Sign(target - n)) ? n : target; // if n has now passed target then return target, otherwise return n
         }
     }
+
+    //메인 UI의 시작버튼을 누르면 Player의 스크립트 활성화
+    public void OnGameStart()
+    {
+        gameObject.GetComponent<Player>().enabled = true;
+    }
+
+    //게임오버화면에서 화면 클릭 시 씬 리로드
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+
+
 }

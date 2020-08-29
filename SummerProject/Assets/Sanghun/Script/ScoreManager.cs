@@ -56,9 +56,12 @@ public class ScoreManager : MonoBehaviour
     {
         while (!player.isGameOver)
         {
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0);
             // TODO : 그럴듯한 스코어 계산법이 생각나면 사용
             score += (int)player.VelocityZ / 10 + 3;
+
+            player.scoreText.text = score.ToString();
+
             Debug.Log(score);
         }
     }

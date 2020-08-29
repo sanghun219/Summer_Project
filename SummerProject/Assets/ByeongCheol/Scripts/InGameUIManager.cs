@@ -6,18 +6,20 @@ public class InGameUIManager : MonoBehaviour
 {
     public GameObject InGameUI;
 
-    private Player player;
+
+    //Player 클래스의 게임오버이벤트를 스태틱으로 생성하여 해당 클래스의 함수로 바로 접근
+    //private Player player;
 
     private void OnEnable()
     {
         Debug.Log("인에이블");
-        player.GameOverEvent += this.GameOverEvent;
+        Player.GameOverEvent += this.GameOverEvent;
     }
 
     private void OnDisable()
     {
         Debug.Log("디스에이블");
-        player.GameOverEvent -= this.GameOverEvent;
+        Player.GameOverEvent -= this.GameOverEvent;
     }
 
     private void GameOverEvent()
