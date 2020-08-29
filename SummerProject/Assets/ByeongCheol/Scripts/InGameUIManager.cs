@@ -11,13 +11,13 @@ public class InGameUIManager : MonoBehaviour
     private void OnEnable()
     {
         Debug.Log("인에이블");
-        player.GameOverEvent += this.GameOverEvent;
+        Player.GameOverEvent += this.GameOverEvent;
     }
 
     private void OnDisable()
     {
         Debug.Log("디스에이블");
-        player.GameOverEvent -= this.GameOverEvent;
+        Player.GameOverEvent -= this.GameOverEvent;
     }
 
     private void GameOverEvent()

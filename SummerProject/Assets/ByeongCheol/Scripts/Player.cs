@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 [Flags]
 public enum PlayerMode
@@ -47,7 +49,8 @@ public class Player : MonoBehaviour
 
     // 다른 클래스들이 플레이어가 죽었을 때 이벤트 발생시키도록 함
     // 조건 발생시 딱 한 번만 호출하기 때문에 성능up, 코드가 깔끔해짐
-    public event GameOverHandler GameOverEvent;
+    // 스태틱 이벤트로 수정 - 병철
+    public static event GameOverHandler GameOverEvent;
 
     // 플레이어가 특정 아이템 먹었을 경우 상태가 바뀜
     private PlayerMode playerMode;
@@ -76,10 +79,9 @@ public class Player : MonoBehaviour
 
     public void ReStart()
     {
-        gameObject.GetComponent<Rigidbody>().gameObject.SetActive(false);
-
+        //gameObject.GetComponent<Rigidbody>().gameObject.SetActive(false);
         transform.position = new Vector3(0, 0, 0);
-        transform.rotation = Quaternion.identity;
+        //transform.rotation = Quaternion.identity;
         playerMode = PlayerMode.NORMAL;
         isGameOver = false;
         anim.enabled = true;
@@ -286,6 +288,7 @@ public class Player : MonoBehaviour
         }
         //현재 속도를 키 입력이 눌릴때만 증가하고 누르지 않을경우 천천히 0으로 돌아오게끔 한다.
         hCurrentSpeed = IncrementSide(hCurrentSpeed, h * hMaxSpeed, hAcceleration);
+        Debug.Log("asdfasdfasdfasdfasdfasdf");
         this.rigid.MovePosition(this.transform.position + new Vector3(c, 0, 0) * Time.deltaTime);
 
         if (hCurrentSpeed == 0 && h == 0 && !Input.anyKeyDown)
@@ -330,4 +333,22 @@ public class Player : MonoBehaviour
             return (dir == Mathf.Sign(target - n)) ? n : target; // if n has now passed target then return target, otherwise return n
         }
     }
+
+    public void OnGameStart()
+    {
+        gameObject.GetComponent<Player>().enabled = true;
+    }
+
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    void OnDisable()
+    {
+        Debug.Log("Your score is : ");
+    }
+
+
+
 }

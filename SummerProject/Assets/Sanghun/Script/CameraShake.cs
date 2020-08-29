@@ -21,9 +21,9 @@ public class CameraShake : MonoBehaviour
     private void Start()
     {
         originPos = transform.localPosition;
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        //player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         cm = gameObject.GetComponent<Follow>();
-        player.GameOverEvent += Shaking;
+        Player.GameOverEvent += Shaking;
     }
 
     private void Update()

@@ -14,7 +14,7 @@ public class InGameLoop : MonoBehaviour
         player.AwakePlayer();
     }
 
-    private void ReStart()
+    public void ReStart()
     {
         StopCoroutine(IFixedUpdate());
         StopCoroutine(IUpdate());
@@ -24,15 +24,17 @@ public class InGameLoop : MonoBehaviour
         player.ReStart();
         StartCoroutine(IFixedUpdate());
         StartCoroutine(IUpdate());
+
     }
 
     private void Update()
     {
         // TODO : 나중에 UI쪽에서 RESTART하게 해야함!
-        if (Input.GetKey(KeyCode.Space) && player.isGameOver)
-        {
-            ReStart();
-        }
+        //
+        //if (Input.GetKey(KeyCode.Mouse0) && player.isGameOver)
+        //{
+        //    ReStart();
+        //}
     }
 
     // Start is called before the first frame update
@@ -74,4 +76,5 @@ public class InGameLoop : MonoBehaviour
             player.transform.position += transform.forward * 30 * Time.deltaTime;
         }
     }
+
 }
