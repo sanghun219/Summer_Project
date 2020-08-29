@@ -25,11 +25,27 @@ public class Obstacle : MonoBehaviour, ISpawned
 
     public bool isCollide = false;
 
+    private bool isRestart = false;
     // Collide로 bool 값을 바로 끄면 물리적 효과가 나타나지 않음
 
     private void FixedUpdate()
     {
-        ObjectManager.GetInstance.ObsType_Update[Obs_type](this, shootOpt);
+        if (isRestart)
+        {
+            gameObject.SetActive(false);
+        }
+        if (gameObject.activeSelf)
+            ObjectManager.GetInstance.ObsType_Update[Obs_type](this, shootOpt);
+    }
+
+    private void Awake()
+    {
+        Spawner.GetInstance.RestartEvent += Restart;
+    }
+
+    private void Restart()
+    {
+        isRestart = true;
     }
 
     // Start와 Awake 차이는 Awake가 순서가 빠르며, Awake는 active가 꺼진 상태에도 작동되지만
@@ -39,6 +55,13 @@ public class Obstacle : MonoBehaviour, ISpawned
     private void OnEnable()
     {
         Invoke("DestroyObs", destroyTime);
+    }
+
+    private void OnDisable()
+    {
+        if (gameObject.activeSelf == false) return;
+        Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.OBSTACLE);
+        isRestart = true;
     }
 
     private void DestroyObs()

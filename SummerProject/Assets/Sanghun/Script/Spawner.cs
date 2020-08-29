@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Dynamic;
@@ -39,6 +40,8 @@ public class Spawner : MonoBehaviour
 
     public float lengOfSpawner = 300.0f;
 
+    public int NumOfMaxInitObject;
+
     [Range(0, 1)]
     public float ratioOfObstacle;
 
@@ -55,6 +58,16 @@ public class Spawner : MonoBehaviour
 
     // Spawn 되는 간격에 필요한 변수 (왜 static이 안되는지 몰겠음)
     private float deltaSpawnTime = 0.0f;
+
+    public event Action RestartEvent;
+
+    public void Restart()
+    {
+        if (RestartEvent != null)
+        {
+            RestartEvent();
+        }
+    }
 
     // SINGLETON PATTERN
     private static Spawner Instance = null;
@@ -92,7 +105,7 @@ public class Spawner : MonoBehaviour
         // 스폰되는 지점보다는 한 번에 스폰되는 오브젝트 개수가 많아야 함
     }
 
-    public void ClearSpawner()
+    public void ReStartSpawner()
     {
         // spawn된 놈들 전부 제거하고 회수
     }
@@ -120,7 +133,7 @@ public class Spawner : MonoBehaviour
     {
         // 한 wave에 생길수 있는 장애물 비율/빈 공간 비율/ 아이템 비율 (장애물 비율은 50%이상)
         int numOfObstacle = (int)((numOfSpawnedObj + 1) * ratioOfObstacle);
-        int numOfEmpty = Random.Range(0, numOfObstacle);
+        int numOfEmpty = UnityEngine.Random.Range(0, numOfObstacle);
         int numOfItem = numOfSpawnedObj - numOfEmpty - numOfObstacle;
         Queue<GameObject> wave = new Queue<GameObject>();
         for (int i = 0; i < numOfItem; i++)
@@ -177,10 +190,10 @@ public class Spawner : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            spawningPool[i] = new Queue<GameObject>(numOfSpawnedObj);
+            spawningPool[i] = new Queue<GameObject>(NumOfMaxInitObject);
         }
 
-        for (int i = 0; i < numOfSpawnedObj * 2; i++)
+        for (int i = 0; i < NumOfMaxInitObject * 2; i++)
         {
             if (i % 2 == 0)
             {

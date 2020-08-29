@@ -34,7 +34,6 @@ public class CameraShake : MonoBehaviour
 
     private void Shaking()
     {
-        cm.target = null;
         isShake = true;
         StartCoroutine(Shake());
     }
@@ -49,5 +48,6 @@ public class CameraShake : MonoBehaviour
             yield return null;
         }
         transform.localPosition = originPos;
+        isShake = false;
     }
 }

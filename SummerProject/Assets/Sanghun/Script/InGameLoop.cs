@@ -14,12 +14,33 @@ public class InGameLoop : MonoBehaviour
         player.AwakePlayer();
     }
 
+    private void ReStart()
+    {
+        StopCoroutine(IFixedUpdate());
+        StopCoroutine(IUpdate());
+
+        Spawner.GetInstance.gameObject.SetActive(true);
+        Spawner.GetInstance.Restart();
+        player.ReStart();
+        StartCoroutine(IFixedUpdate());
+        StartCoroutine(IUpdate());
+    }
+
+    private void Update()
+    {
+        // TODO : 나중에 UI쪽에서 RESTART하게 해야함!
+        if (Input.GetKey(KeyCode.Space) && player.isGameOver)
+        {
+            ReStart();
+        }
+    }
+
     // Start is called before the first frame update
     private void Start()
     {
-        player.StartPlayer();
         StartCoroutine(IFixedUpdate());
         StartCoroutine(IUpdate());
+        player.StartPlayer();
     }
 
     private IEnumerator IUpdate()
@@ -43,6 +64,10 @@ public class InGameLoop : MonoBehaviour
         Spawner.GetInstance.gameObject.SetActive(false);
         while (true)
         {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                break;
+            }
             yield return new WaitForFixedUpdate();
             // player를 극적으로 날려보낼수 있음
             player.transform.Rotate(new Vector3(1, 1, 1) * 120 * Time.deltaTime);

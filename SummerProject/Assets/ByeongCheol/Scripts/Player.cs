@@ -69,6 +69,29 @@ public class Player : MonoBehaviour
 
     private DownSpeed downSpeed;
 
+    // Restart용 변수
+    private float re_forwardSpeed;
+
+    private Coroutine SpeedControllerCoroutine;
+
+    public void ReStart()
+    {
+        gameObject.GetComponent<Rigidbody>().gameObject.SetActive(false);
+
+        transform.position = new Vector3(0, 0, 0);
+        transform.rotation = Quaternion.identity;
+        playerMode = PlayerMode.NORMAL;
+        isGameOver = false;
+        anim.enabled = true;
+        forwardSpeed = re_forwardSpeed;
+        hCurrentSpeed = 0;
+        VelocityZ = 0;
+        gameObject.GetComponent<Collider>().enabled = true;
+        gameObject.GetComponent<Rigidbody>().gameObject.SetActive(true);
+        gameObject.GetComponent<Player>().enabled = true;
+        SpeedControllerCoroutine = StartCoroutine(GameSpeedController());
+    }
+
     public PlayerMode GetPlayerMode()
     {
         return playerMode;
@@ -177,6 +200,7 @@ public class Player : MonoBehaviour
             anim.enabled = false;
             gameObject.GetComponent<Collider>().enabled = false;
             Debug.Log("Game Over");
+            StopCoroutine(SpeedControllerCoroutine);
             GameOverEvent();
         }
     }
@@ -194,6 +218,8 @@ public class Player : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
+        playerMode = PlayerMode.NORMAL;
+        re_forwardSpeed = forwardSpeed;
     }
 
     public void PlayerFixedUpdate()
@@ -216,24 +242,11 @@ public class Player : MonoBehaviour
     public void StartPlayer()
     {
         //플레이어 고정 속도증가 코루틴
-        StartCoroutine(this.GameSpeedController());
+
+        SpeedControllerCoroutine = StartCoroutine(GameSpeedController());
         playerMode = PlayerMode.NORMAL;
         playerModeObj = gameObject.transform.Find("PlayerMode");
         InitPlayerMode();
-    }
-
-    // 플레이어 이동
-    // 전진 이동은 rigidbody에 가속도를 더함
-    // 좌 우 이동은 rigidbody의 moveposition함수 사용
-
-    private void OnCollisionStay(Collision collision)
-    {
-        //물체와 충돌시 질질끌림현상이 발생하여 콜리전 진입후에 플레이어의 콜리전 컴포넌트와 스크립트를 비활성화
-        if (collision.gameObject.CompareTag("Obstacle"))
-        {
-            gameObject.GetComponent<CapsuleCollider>().enabled = false;
-            gameObject.GetComponent<Player>().enabled = false;
-        }
     }
 
     // 게임 플레이 시작 시 일정 시간에 따라 속도 증가 < MaxSpeed
@@ -243,6 +256,7 @@ public class Player : MonoBehaviour
         while (true)
         {
             yield return null;
+
             if (rigid.velocity.z <= fMaxSpeed && (playerMode & PlayerMode.DOWN_SPEED) == 0)
                 rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Acceleration);
         }
@@ -260,32 +274,42 @@ public class Player : MonoBehaviour
     //좌우로 이동을 수행해주는 함수
     private void MoveHorizontal(float c)
     {
+        if (playerMode == PlayerMode.SUPER)
+        {
+            if (anim.GetBool("isLeft") || anim.GetBool("isRight"))
+            {
+                anim.StopPlayback();
+                anim.SetBool("isLeft", false);
+                anim.SetBool("isRight", false);
+            }
+            return;
+        }
         //현재 속도를 키 입력이 눌릴때만 증가하고 누르지 않을경우 천천히 0으로 돌아오게끔 한다.
         hCurrentSpeed = IncrementSide(hCurrentSpeed, h * hMaxSpeed, hAcceleration);
         this.rigid.MovePosition(this.transform.position + new Vector3(c, 0, 0) * Time.deltaTime);
-        Debug.Log("h: " + h + " hspeed : " + hCurrentSpeed);
-        if (hCurrentSpeed == 0)
+
+        if (hCurrentSpeed == 0 && h == 0 && !Input.anyKeyDown)
         {
             anim.SetBool("isLeft", false);
             anim.SetBool("isRight", false);
             return;
         }
 
-        if (Input.GetKey(KeyCode.LeftArrow) && h < 0)
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || h < 0)
         {
             anim.SetBool("isLeft", true);
             anim.SetBool("isRight", false);
         }
-        else if (Input.GetKey(KeyCode.RightArrow) && h > 0)
+        else if (Input.GetKeyDown(KeyCode.RightArrow) || h > 0)
         {
             anim.SetBool("isRight", true);
             anim.SetBool("isLeft", false);
         }
-        else if ((Input.GetKeyUp(KeyCode.LeftArrow)) && h >= 0)
+        else if ((Input.GetKeyUp(KeyCode.LeftArrow)))
         {
             anim.SetBool("isLeft", false);
         }
-        else if (Input.GetKeyUp(KeyCode.RightArrow) && h <= 0)
+        else if (Input.GetKeyUp(KeyCode.RightArrow))
         {
             anim.SetBool("isRight", false);
         }

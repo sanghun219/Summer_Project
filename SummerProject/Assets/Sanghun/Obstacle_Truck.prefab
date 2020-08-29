@@ -15,12 +15,12 @@ GameObject:
   - component: {fileID: 6793708482956229612}
   - component: {fileID: -3051890230609649533}
   m_Layer: 0
-  m_Name: Collision_2
+  m_Name: Obstacle_Truck
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &486914
 Transform:
   m_ObjectHideFlags: 0
@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d14f9f2efcdaa4745842af4b233743ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 5
+  _speed: 7
   _destroyTime: 10
   shootOpt: 4
   colideOpt: 0

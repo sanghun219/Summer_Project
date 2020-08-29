@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class Follow : MonoBehaviour
 {
-    public Transform target;
+    public Player target;
     public Vector3 offset;
+
+    private void Awake()
+    {
+        target = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+    }
 
     private void LateUpdate()
     {
-        if (this.target != null)
+        if (target.isGameOver == false)
         {
-            transform.position = target.position + offset;
+            transform.position = target.transform.position + offset;
         }
         else
         {

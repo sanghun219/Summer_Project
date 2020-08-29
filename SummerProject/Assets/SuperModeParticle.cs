@@ -6,6 +6,10 @@ public class SuperModeParticle : MonoBehaviour
 {
     private Player player;
 
+    private ParticleSystem[] followFireEngine;
+
+    private float startSize;
+
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
