@@ -44,7 +44,7 @@ public class Magnet : MonoBehaviour
     {
         float previousTimer = 0.0f;
 
-        while (previousTimer <= MagnetTimer)
+        while (previousTimer <= MagnetTimer && (player.GetPlayerMode() & PlayerMode.SUPER) == 0)
         {
             // TODO : 파티클이나 사운드 빠방하게 넣을수 있음!
             yield return new WaitForFixedUpdate();

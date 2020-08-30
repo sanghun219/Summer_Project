@@ -6,8 +6,10 @@ using System.Runtime.CompilerServices;
 
 public enum OBSTACLE_TYPE
 {
-    OBS1,
-    OBS2,
+    TRUCK,
+    FLIGHT,
+    ROCKET,
+    CAR,
     END,
 }
 
@@ -111,10 +113,14 @@ public class ObjectManager : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
 
         // TODO : 장애물/아이템 추가시 Key/value 형식으로 집어넣으면 됨
-        ObsType_Update[OBSTACLE_TYPE.OBS1] = Obs1_Update;
-        ObsType_Update[OBSTACLE_TYPE.OBS2] = Obs2_Update;
-        ObsType_Collide[OBSTACLE_TYPE.OBS1] = Obs1_Collision;
-        ObsType_Collide[OBSTACLE_TYPE.OBS2] = Obs2_Collision;
+        ObsType_Update[OBSTACLE_TYPE.TRUCK] = Truck_Update;
+        ObsType_Update[OBSTACLE_TYPE.FLIGHT] = Flight_Update;
+        ObsType_Update[OBSTACLE_TYPE.ROCKET] = Rocket_Update;
+        ObsType_Update[OBSTACLE_TYPE.CAR] = Car_Update;
+        ObsType_Collide[OBSTACLE_TYPE.CAR] = Car_Collision;
+        ObsType_Collide[OBSTACLE_TYPE.ROCKET] = Rocket_Collision;
+        ObsType_Collide[OBSTACLE_TYPE.TRUCK] = Truck_Collision;
+        ObsType_Collide[OBSTACLE_TYPE.FLIGHT] = Flight_Collision;
 
         ItemType_Update[ITEM_TYPE.DOWNSPEED] = downSpeedItem_Update;
         ItemType_Update[ITEM_TYPE.PUSHALLOBJ] = PushAllObjItem_Update;
@@ -152,7 +158,7 @@ public class ObjectManager : MonoBehaviour
             item.transform.LookAt(player.transform);
             // 단 한번만 LookAt 하도록 LookAt 된 이후에 옵션을 제거해 준다
             // 안해주면 계속 따라감 유도 미사일처럼
-            shootOpt &= ~SHOOT_OPT.GUIDE;
+            item.shootOpt &= ~SHOOT_OPT.GUIDE;
         }
 
         if ((shootOpt & SHOOT_OPT.LC_ROTATE) != 0)
@@ -282,7 +288,6 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
-            // 아이템 연출 효과
             if (col_opt == COLLIDE_OPT.VANISH)
             {
                 item.gameObject.SetActive(false);
@@ -357,46 +362,46 @@ public class ObjectManager : MonoBehaviour
 
     private void CommonObstacleUpdate(Obstacle spawned, SHOOT_OPT shootOpt)
     {
-        if ((shootOpt & SHOOT_OPT.GL_ROTATE) == 0)
-            spawned.transform.position += -1 * Vector3.forward * spawned.speed;
-        else
-            spawned.transform.position += spawned.transform.forward * spawned.speed;
-
         if ((shootOpt & SHOOT_OPT.GL_ROTATE) != 0)
         {
             spawned.transform.Rotate(new Vector3(0, UnityEngine.Random.Range(-1.0f, 1.0f), 0) * 30 * Time.deltaTime);
         }
-
-        if ((shootOpt & SHOOT_OPT.GUIDE) != 0)
-        {
-            spawned.transform.LookAt(player.transform);
-            // 단 한번만 LookAt 하도록 LookAt 된 이후에 옵션을 제거해 준다
-            // 안해주면 계속 따라감 유도 미사일처럼
-            shootOpt &= ~SHOOT_OPT.GUIDE;
-        }
-
         if ((shootOpt & SHOOT_OPT.LC_ROTATE) != 0)
         {
             spawned.transform.Rotate(Vector3.up * 120 * Time.deltaTime);
         }
+
+        if ((shootOpt & SHOOT_OPT.GL_ROTATE) == 0)
+            spawned.transform.position += -1 * Vector3.forward * spawned.speed;
+        else
+            spawned.transform.position += spawned.transform.forward * spawned.speed;
     }
 
-    private void Obs1_Update(Obstacle spawned, SHOOT_OPT shootOpt)
+    private void Truck_Update(Obstacle spawned, SHOOT_OPT shootOpt)
     {
         CommonObstacleUpdate(spawned, shootOpt);
     }
 
-    private void Obs2_Update(Obstacle spawned, SHOOT_OPT shootOpt)
+    private void Flight_Update(Obstacle spawned, SHOOT_OPT shootOpt)
     {
         CommonObstacleUpdate(spawned, shootOpt);
     }
 
-    private void Obs1_Collision(Obstacle obs, Collision col, COLLIDE_OPT col_opt)
+    private void Rocket_Update(Obstacle spawned, SHOOT_OPT shootOpt)
+    {
+        CommonObstacleUpdate(spawned, shootOpt);
+    }
+
+    private void Car_Update(Obstacle spawned, SHOOT_OPT shootOpt)
+    {
+        CommonObstacleUpdate(spawned, shootOpt);
+    }
+
+    private void Truck_Collision(Obstacle obs, Collision col, COLLIDE_OPT col_opt)
     {
         // 다른 기능을 추가할 수 있음
         if (player.isGameOver == false)
         {
-            obs.isCollide = true;
             player.GameOver();
 
             if (col_opt == COLLIDE_OPT.EXPLODE)
@@ -410,12 +415,54 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    private void Obs2_Collision(Obstacle obs, Collision col, COLLIDE_OPT col_opt)
+    private void Flight_Collision(Obstacle obs, Collision col, COLLIDE_OPT col_opt)
     {
         if (player.isGameOver == false)
         {
-            obs.isCollide = true;
             player.GameOver();
+
+            if (col_opt == COLLIDE_OPT.EXPLODE)
+            {
+            }
+
+            if (col_opt == COLLIDE_OPT.VANISH)
+            {
+                obs.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private void Car_Collision(Obstacle obs, Collision col, COLLIDE_OPT col_opt)
+    {
+        if (player.isGameOver == false)
+        {
+            player.GameOver();
+
+            if (col_opt == COLLIDE_OPT.EXPLODE)
+            {
+            }
+
+            if (col_opt == COLLIDE_OPT.VANISH)
+            {
+                obs.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private void Rocket_Collision(Obstacle obs, Collision col, COLLIDE_OPT col_opt)
+    {
+        if (player.isGameOver == false)
+        {
+            player.GameOver();
+
+            if (col_opt == COLLIDE_OPT.EXPLODE)
+            {
+            }
+
+            if (col_opt == COLLIDE_OPT.VANISH)
+            {
+                obs.gameObject.SetActive(false);
+            }
         }
     }
 }

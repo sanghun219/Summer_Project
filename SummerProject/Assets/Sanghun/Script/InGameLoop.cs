@@ -19,9 +19,9 @@ public class InGameLoop : MonoBehaviour
         StopCoroutine(IFixedUpdate());
         StopCoroutine(IUpdate());
 
-        Spawner.GetInstance.gameObject.SetActive(true);
-        Spawner.GetInstance.Restart();
         player.ReStart();
+        Spawner.GetInstance.Restart();
+        Spawner.GetInstance.WaitRestart = false;
         StartCoroutine(IFixedUpdate());
         StartCoroutine(IUpdate());
     }
@@ -61,7 +61,7 @@ public class InGameLoop : MonoBehaviour
             player.PlayerFixedUpdate();
             Spawner.GetInstance.UpdateSpawnerPosition(player.transform.position);
         }
-        Spawner.GetInstance.gameObject.SetActive(false);
+        Spawner.GetInstance.WaitRestart = true;
         while (true)
         {
             if (Input.GetKey(KeyCode.Space))

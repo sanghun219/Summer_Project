@@ -27,6 +27,7 @@ public class Item : MonoBehaviour, ISpawned
     }
 
     public float destroyTime { get { return _destroyTime; } set { _destroyTime = value; } }
+
     private bool isRestart = false;
 
     private void Awake()
@@ -42,11 +43,12 @@ public class Item : MonoBehaviour, ISpawned
     private void OnEnable()
     {
         Invoke("DestroyItem", destroyTime);
+        isRestart = false;
     }
 
     private void FixedUpdate()
     {
-        if (isRestart) { gameObject.SetActive(false); }
+        if (isRestart) { DestroyItem(); return; }
         if (gameObject.activeSelf)
         {
             ObjectManager.GetInstance.ItemType_Update[itemType](this, shootOpt);
@@ -55,16 +57,17 @@ public class Item : MonoBehaviour, ISpawned
 
     private void OnDisable()
     {
-        if (gameObject.activeSelf == false) return;
-        shootOpt &= ~SHOOT_OPT.MAGNET;
-        Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.ITEM);
-        isRestart = false;
+        DestroyItem();
     }
 
     private void DestroyItem()
     {
-        if (gameObject.activeSelf == false) return;
+        if (isRestart == false) return;
+        CancelInvoke("DestroyItem");
+        isRestart = false;
         shootOpt &= ~SHOOT_OPT.MAGNET;
+        if (Spawner.GetInstance == null) { Debug.Log("게임 종료시 Spawner가 먼저 힙에서 사라짐 문제없음"); return; }
+
         Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.ITEM);
     }
 

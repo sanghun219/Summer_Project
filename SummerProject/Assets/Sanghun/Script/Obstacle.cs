@@ -11,8 +11,7 @@ public class Obstacle : MonoBehaviour, ISpawned
     [SerializeField]
     private float _destroyTime;
 
-    [SerializeField]
-    private SHOOT_OPT shootOpt;
+    public SHOOT_OPT shootOpt;
 
     [SerializeField]
     private COLLIDE_OPT colideOpt;
@@ -23,16 +22,17 @@ public class Obstacle : MonoBehaviour, ISpawned
 
     public OBSTACLE_TYPE Obs_type;
 
-    public bool isCollide = false;
-
     private bool isRestart = false;
-    // Collide로 bool 값을 바로 끄면 물리적 효과가 나타나지 않음
+
+    // 게임 재시작시
+    private bool isNotReturningObjPool = false;
 
     private void FixedUpdate()
     {
         if (isRestart)
         {
-            gameObject.SetActive(false);
+            DestroyObs();
+            return;
         }
         if (gameObject.activeSelf)
             ObjectManager.GetInstance.ObsType_Update[Obs_type](this, shootOpt);
@@ -55,21 +55,36 @@ public class Obstacle : MonoBehaviour, ISpawned
     private void OnEnable()
     {
         Invoke("DestroyObs", destroyTime);
+        isRestart = false;
     }
 
     private void OnDisable()
     {
-        if (gameObject.activeSelf == false) return;
-        Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.OBSTACLE);
-        isRestart = true;
+        DestroyObs();
     }
 
     private void DestroyObs()
     {
-        if (gameObject.activeSelf)
+        CancelInvoke("DestroyObs");
+        isRestart = false;
+        if (Spawner.GetInstance == null) { Debug.Log("게임 종료시 Spawner가 먼저 힙에서 사라짐 문제없음"); return; }
+        Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.OBSTACLE);
+    }
+
+    public void DestroyObs(float later)
+    {
+        StartCoroutine(IDestroyObs(later));
+    }
+
+    private IEnumerator IDestroyObs(float later)
+    {
+        float timer = 0.0f;
+        while (timer <= later)
         {
-            Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.OBSTACLE);
+            yield return null;
+            timer += Time.deltaTime;
         }
+        DestroyObs();
     }
 
     private void OnCollisionEnter(Collision collision)

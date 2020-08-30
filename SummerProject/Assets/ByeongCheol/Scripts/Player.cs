@@ -155,6 +155,7 @@ public class Player : MonoBehaviour
         playerModeToAction[PlayerMode.SUPER] = () =>
         {
             if (superMode.gameObject.activeSelf == true && (playerMode & PlayerMode.SUPER) != 0) return;
+            playerMode &= ~PlayerMode.MAGNET;
             playerMode |= PlayerMode.SUPER;
             if ((playerMode & PlayerMode.DOWN_SPEED) != 0)
                 playerMode &= ~PlayerMode.DOWN_SPEED;
@@ -165,7 +166,8 @@ public class Player : MonoBehaviour
 
         playerModeToAction[PlayerMode.MAGNET] = () =>
         {
-            if (magnet.gameObject.activeSelf && (playerMode & PlayerMode.MAGNET) != 0) return;
+            if (magnet.gameObject.activeSelf && (playerMode & PlayerMode.MAGNET) != 0
+            && (playerMode & PlayerMode.SUPER) == 0) return;
             playerMode |= PlayerMode.MAGNET;
             magnet.gameObject.SetActive(true);
             magnet.StartUpdate();
