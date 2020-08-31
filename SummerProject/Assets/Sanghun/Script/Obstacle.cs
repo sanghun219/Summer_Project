@@ -65,7 +65,8 @@ public class Obstacle : MonoBehaviour, ISpawned
 
     private void DestroyObs()
     {
-        CancelInvoke("DestroyObs");
+        if (IsInvoking("DestroyObs"))
+            CancelInvoke("DestroyObs");
         isRestart = false;
         if (Spawner.GetInstance == null) { Debug.Log("게임 종료시 Spawner가 먼저 힙에서 사라짐 문제없음"); return; }
         Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.OBSTACLE);

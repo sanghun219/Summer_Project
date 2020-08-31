@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
     public float hMaxSpeed = 0;
 
     //횡 이동 플레이어의 현재 속도
-    public float hCurrentSpeed;
+    public float hCurrentSpeed { get; set; }
 
     public bool isGameOver = false;
 
@@ -85,6 +85,7 @@ public class Player : MonoBehaviour
         anim.enabled = true;
         forwardSpeed = re_forwardSpeed;
         hCurrentSpeed = 0;
+        h = 0;
         VelocityZ = 0;
         gameObject.GetComponent<Collider>().enabled = true;
         gameObject.GetComponent<Rigidbody>().gameObject.SetActive(true);
@@ -95,6 +96,18 @@ public class Player : MonoBehaviour
     public PlayerMode GetPlayerMode()
     {
         return playerMode;
+    }
+
+    public bool isIdleState()
+    {
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Idle")) return true;
+        return false;
+    }
+
+    public bool isSuperState()
+    {
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("SuperMode")) return true;
+        return false;
     }
 
     public void SetPlayerMode(PlayerMode prevMode, PlayerMode nextMode)
@@ -260,7 +273,7 @@ public class Player : MonoBehaviour
             yield return null;
 
             if (rigid.velocity.z <= fMaxSpeed && (playerMode & PlayerMode.DOWN_SPEED) == 0)
-                rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Acceleration);
+                rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Force);
         }
     }
 
@@ -276,6 +289,9 @@ public class Player : MonoBehaviour
     //좌우로 이동을 수행해주는 함수
     private void MoveHorizontal(float c)
     {
+        //현재 속도를 키 입력이 눌릴때만 증가하고 누르지 않을경우 천천히 0으로 돌아오게끔 한다.
+        hCurrentSpeed = IncrementSide(hCurrentSpeed, h * hMaxSpeed, hAcceleration);
+        this.rigid.MovePosition(this.transform.position + new Vector3(c, 0, 0) * Time.deltaTime);
         if (playerMode == PlayerMode.SUPER)
         {
             if (anim.GetBool("isLeft") || anim.GetBool("isRight"))
@@ -286,34 +302,33 @@ public class Player : MonoBehaviour
             }
             return;
         }
-        //현재 속도를 키 입력이 눌릴때만 증가하고 누르지 않을경우 천천히 0으로 돌아오게끔 한다.
-        hCurrentSpeed = IncrementSide(hCurrentSpeed, h * hMaxSpeed, hAcceleration);
-        this.rigid.MovePosition(this.transform.position + new Vector3(c, 0, 0) * Time.deltaTime);
 
-        if (hCurrentSpeed == 0 && h == 0 && !Input.anyKeyDown)
+        if (!Input.anyKey || h == 0)
         {
             anim.SetBool("isLeft", false);
             anim.SetBool("isRight", false);
-            return;
         }
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || h < 0)
+        else if (Input.GetKey(KeyCode.LeftArrow) || h < 0)
         {
+            Debug.Log("left!");
             anim.SetBool("isLeft", true);
             anim.SetBool("isRight", false);
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) || h > 0)
+        else if (Input.GetKey(KeyCode.RightArrow) || h > 0)
         {
+            Debug.Log("right!");
             anim.SetBool("isRight", true);
             anim.SetBool("isLeft", false);
         }
-        else if ((Input.GetKeyUp(KeyCode.LeftArrow)))
+        if ((Input.GetKeyUp(KeyCode.LeftArrow)) || h > 0)
         {
             anim.SetBool("isLeft", false);
+            h = 0;
         }
-        else if (Input.GetKeyUp(KeyCode.RightArrow))
+        if (Input.GetKeyUp(KeyCode.RightArrow) || h < 0)
         {
             anim.SetBool("isRight", false);
+            h = 0;
         }
     }
 

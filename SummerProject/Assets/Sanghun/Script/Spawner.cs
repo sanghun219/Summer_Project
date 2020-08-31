@@ -61,7 +61,7 @@ public class Spawner : MonoBehaviour
 
     public event Action RestartEvent;
 
-    public bool WaitRestart = false;
+    public bool WaitRestart { get; set; }
 
     public void Restart()
     {
@@ -103,25 +103,20 @@ public class Spawner : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         InitSpawningPool();
         EndOfSpawnPoint = new Vector3[2];
-
-        // 스폰되는 지점보다는 한 번에 스폰되는 오브젝트 개수가 많아야 함
-    }
-
-    public void ReStartSpawner()
-    {
-        // spawn된 놈들 전부 제거하고 회수
+        WaitRestart = false;
     }
 
     public void UpdateSpawnerPosition(Vector3 playerPos)
     {
         if (WaitRestart) return;
+
         deltaSpawnTime += Time.deltaTime;
         if (deltaSpawnTime >= elaspedSpawn)
         {
             deltaSpawnTime = 0.0f;
             SpawnObjects(playerPos);
         }
-        Vector3 center = new Vector3(playerPos.x, 0, playerPos.z + distSpawnerToPlayer);
+        Vector3 center = new Vector3(playerPos.x, playerPos.y, playerPos.z + distSpawnerToPlayer);
         transform.position = new Vector3(center.x, center.y, center.z);
 
         // Spawner 대각선의 양 끝점을 지정
@@ -179,11 +174,10 @@ public class Spawner : MonoBehaviour
             if (obj == null) continue;
             if (!obj.activeSelf)
             {
-                obj.transform.position = new Vector3(randX, obj.transform.position.y, randZ);
+                obj.transform.position = new Vector3(randX, obj.transform.position.y + playerPos.y, randZ);
                 obj.SetActive(true);
             }
         }
-        wave.Clear();
     }
 
     private void GetShuffledSpawnedObj(ref List<GameObject> spawnObjs)

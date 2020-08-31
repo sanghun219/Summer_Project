@@ -28,7 +28,7 @@ public class InGameLoop : MonoBehaviour
 
     private void Update()
     {
-        // TODO : 나중에 UI쪽에서 RESTART하게 해야함!
+        // TODO : 나중에 UI쪽에서 버튼으로 RESTART하게 해야함!
         if (Input.GetKey(KeyCode.Space) && player.isGameOver)
         {
             ReStart();
@@ -64,6 +64,7 @@ public class InGameLoop : MonoBehaviour
         Spawner.GetInstance.WaitRestart = true;
         while (true)
         {
+            //TODO : 다시 시작하는 버튼 누를시 조건을 넣어줘야함!
             if (Input.GetKey(KeyCode.Space))
             {
                 break;

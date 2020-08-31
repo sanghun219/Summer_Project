@@ -5,7 +5,7 @@ using UnityEngine;
 public class PushObj : MonoBehaviour
 {
     private Rigidbody rigidy;
-    private SphereCollider collider;
+    private SphereCollider spCollider;
     private Player player;
     private Coroutine coroutine;
 
@@ -21,7 +21,7 @@ public class PushObj : MonoBehaviour
     private void Awake()
     {
         rigidy = gameObject.GetComponent<Rigidbody>();
-        collider = gameObject.GetComponent<SphereCollider>();
+        spCollider = gameObject.GetComponent<SphereCollider>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
 
         particle = Instantiate<ParticleSystem>(particle);
@@ -30,7 +30,7 @@ public class PushObj : MonoBehaviour
     private void OnDisable()
     {
         player.SetPlayerMode(PlayerMode.PUSH, PlayerMode.NORMAL);
-        collider.radius = 1.0f;
+        spCollider.radius = 1.0f;
     }
 
     public void StartUpdate()
@@ -47,15 +47,14 @@ public class PushObj : MonoBehaviour
             yield return new WaitForFixedUpdate();
 
             previousTimer += Time.fixedDeltaTime;
-            if (collider.radius <= MaxColliderRadius)
+            if (spCollider.radius <= MaxColliderRadius)
             {
-                //TODO : 나중에 파티클 집어넣어서 효과도 빠방하게 할 수 있음
-                collider.radius += Time.fixedDeltaTime * 1500;
+                spCollider.radius += Time.fixedDeltaTime * 1500;
             }
         }
 
         player.SetPlayerMode(PlayerMode.PUSH, PlayerMode.NORMAL);
-        collider.radius = 1.0f;
+        spCollider.radius = 1.0f;
         previousTimer = 0.0f;
     }
 
@@ -63,7 +62,8 @@ public class PushObj : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            collision.gameObject.GetComponent<Obstacle>().DestroyObs(1.0f);
+            if (collision.gameObject.activeSelf == false)
+                collision.gameObject.GetComponent<Obstacle>().DestroyObs(1.0f);
         }
     }
 }

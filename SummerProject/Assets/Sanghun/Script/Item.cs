@@ -14,7 +14,6 @@ public class Item : MonoBehaviour, ISpawned
     [SerializeField]
     private ITEM_TYPE itemType;
 
-    [SerializeField]
     public SHOOT_OPT shootOpt;
 
     [SerializeField]
@@ -63,7 +62,8 @@ public class Item : MonoBehaviour, ISpawned
     private void DestroyItem()
     {
         if (isRestart == false) return;
-        CancelInvoke("DestroyItem");
+        if (IsInvoking("DestroyItem"))
+            CancelInvoke("DestroyItem");
         isRestart = false;
         shootOpt &= ~SHOOT_OPT.MAGNET;
         if (Spawner.GetInstance == null) { Debug.Log("게임 종료시 Spawner가 먼저 힙에서 사라짐 문제없음"); return; }

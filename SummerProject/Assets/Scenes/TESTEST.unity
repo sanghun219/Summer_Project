@@ -10116,7 +10116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  offset: {x: 0, y: 50, z: -80}
+  offset: {x: 0, y: 60, z: -120}
 --- !u!114 &731274944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10200,7 +10200,6 @@ MonoBehaviour:
   AccForward: 200
   hAcceleration: 400
   hMaxSpeed: 200
-  hCurrentSpeed: 0
   isGameOver: 0
 --- !u!1 &1004367117
 GameObject:
@@ -33921,7 +33920,7 @@ PrefabInstance:
     - target: {fileID: 1907706371159144413, guid: bd934e960f5b69a4aa61ed1e782bb60e,
         type: 3}
       propertyPath: NumOfMaxInitObject
-      value: 5000
+      value: 10000
       objectReference: {fileID: 0}
     - target: {fileID: 1907706371159144413, guid: bd934e960f5b69a4aa61ed1e782bb60e,
         type: 3}
@@ -33931,12 +33930,12 @@ PrefabInstance:
     - target: {fileID: 1907706371159144413, guid: bd934e960f5b69a4aa61ed1e782bb60e,
         type: 3}
       propertyPath: distSpawnerToPlayer
-      value: 1000
+      value: 2000
       objectReference: {fileID: 0}
     - target: {fileID: 1907706371159144413, guid: bd934e960f5b69a4aa61ed1e782bb60e,
         type: 3}
       propertyPath: elaspedSpawn
-      value: 1.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1907706371159144413, guid: bd934e960f5b69a4aa61ed1e782bb60e,
         type: 3}
