@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InGameLoop : MonoBehaviour
 {
@@ -72,9 +73,17 @@ public class InGameLoop : MonoBehaviour
             }
             yield return new WaitForFixedUpdate();
             // player를 극적으로 날려보낼수 있음
+            if (player)
+            {
             player.transform.Rotate(new Vector3(1, 1, 1) * 120 * Time.deltaTime);
             player.transform.position += transform.forward * 30 * Time.deltaTime;
+
+            }
         }
     }
 
+    public void Retry()
+    {
+        SceneManager.LoadScene(0);
+    }
 }
