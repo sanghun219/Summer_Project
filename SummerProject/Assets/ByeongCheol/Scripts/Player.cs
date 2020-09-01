@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using UnityEditor;
 using UnityEngine;
 
@@ -89,6 +90,8 @@ public class Player : MonoBehaviour
         VelocityZ = 0;
         gameObject.GetComponent<Collider>().enabled = true;
         gameObject.GetComponent<Rigidbody>().gameObject.SetActive(true);
+        rigid.velocity = new Vector3(0, 0, 0);
+        rigid.angularVelocity = new Vector3(0, 0, 0);
         gameObject.GetComponent<Player>().enabled = true;
         SpeedControllerCoroutine = StartCoroutine(GameSpeedController());
     }
@@ -250,8 +253,8 @@ public class Player : MonoBehaviour
 
     public void PlayerUpdate()
     {
-        h = Input.GetAxisRaw("Horizontal");
-        v = Input.GetAxisRaw("Vertical");
+        // h = Input.GetAxisRaw("Horizontal");
+        // v = Input.GetAxisRaw("Vertical");
     }
 
     public void StartPlayer()
@@ -303,30 +306,68 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (!Input.anyKey || h == 0)
+        //if (Application.platform == RuntimePlatform.WindowsEditor)
+        //{
+        //    if (!Input.anyKey || h == 0)
+        //    {
+        //        anim.SetBool("isLeft", false);
+        //        anim.SetBool("isRight", false);
+        //    }
+        //    else if (Input.GetKey(KeyCode.LeftArrow) || h < 0)
+        //    {
+        //        anim.SetBool("isLeft", true);
+        //        anim.SetBool("isRight", false);
+        //    }
+        //    else if (Input.GetKey(KeyCode.RightArrow) || h > 0)
+        //    {
+        //        anim.SetBool("isRight", true);
+        //        anim.SetBool("isLeft", false);
+        //    }
+        //    if ((Input.GetKeyUp(KeyCode.LeftArrow)) || h > 0)
+        //    {
+        //        anim.SetBool("isLeft", false);
+        //        h = 0;
+        //    }
+        //    if (Input.GetKeyUp(KeyCode.RightArrow) || h < 0)
+        //    {
+        //        anim.SetBool("isRight", false);
+        //        h = 0;
+        //    }
+        //}
+
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            Vector3 playerPos = Camera.main.WorldToScreenPoint(transform.position);
+            Vector2 touchPos = new Vector2(touch.position.x, touch.position.y);
+
+            if (touch.phase == TouchPhase.Began)
+            {
+                if (touchPos.x < playerPos.x)
+                {
+                    h = -1;
+                    anim.SetBool("isLeft", true);
+                    anim.SetBool("isRight", false);
+                }
+                else if (touchPos.x > playerPos.x)
+                {
+                    h = 1;
+                    anim.SetBool("isRight", true);
+                    anim.SetBool("isLeft", false);
+                }
+                else
+                {
+                    h = 0;
+                }
+            }
+            else if (touch.phase == TouchPhase.Stationary
+                || touch.phase == TouchPhase.Moved)
+            {
+            }
+        }
+        else
         {
             anim.SetBool("isLeft", false);
-            anim.SetBool("isRight", false);
-        }
-        else if (Input.GetKey(KeyCode.LeftArrow) || h < 0)
-        {
-            Debug.Log("left!");
-            anim.SetBool("isLeft", true);
-            anim.SetBool("isRight", false);
-        }
-        else if (Input.GetKey(KeyCode.RightArrow) || h > 0)
-        {
-            Debug.Log("right!");
-            anim.SetBool("isRight", true);
-            anim.SetBool("isLeft", false);
-        }
-        if ((Input.GetKeyUp(KeyCode.LeftArrow)) || h > 0)
-        {
-            anim.SetBool("isLeft", false);
-            h = 0;
-        }
-        if (Input.GetKeyUp(KeyCode.RightArrow) || h < 0)
-        {
             anim.SetBool("isRight", false);
             h = 0;
         }

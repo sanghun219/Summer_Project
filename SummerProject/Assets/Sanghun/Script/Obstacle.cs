@@ -92,7 +92,8 @@ public class Obstacle : MonoBehaviour, ISpawned
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            ObjectManager.GetInstance.ObsType_Collide[Obs_type](this, collision, colideOpt);
+            if (collision.gameObject.GetComponent<Player>().isGameOver == false)
+                ObjectManager.GetInstance.ObsType_Collide[Obs_type](this, collision, colideOpt);
         }
     }
 }

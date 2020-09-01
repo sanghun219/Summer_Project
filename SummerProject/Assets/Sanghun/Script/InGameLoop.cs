@@ -14,8 +14,9 @@ public class InGameLoop : MonoBehaviour
         player.AwakePlayer();
     }
 
-    private void ReStart()
+    public void ReStart()
     {
+        if (player.isGameOver == false) return;
         StopCoroutine(IFixedUpdate());
         StopCoroutine(IUpdate());
 
@@ -62,7 +63,7 @@ public class InGameLoop : MonoBehaviour
             Spawner.GetInstance.UpdateSpawnerPosition(player.transform.position);
         }
         Spawner.GetInstance.WaitRestart = true;
-        while (true)
+        while (player.isGameOver)
         {
             //TODO : 다시 시작하는 버튼 누를시 조건을 넣어줘야함!
             if (Input.GetKey(KeyCode.Space))
