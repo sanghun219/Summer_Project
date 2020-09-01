@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 ﻿{"cameraMode":{"drawMode":0,"name":"Shaded","section":"Shading Mode"},"sceneLighting":true,"audioPlay":false,"sceneViewState":{"showFog":true,"showMaterialUpdate":false,"showSkybox":true,"showFlares":true,"showImageEffects":true,"showParticleSystems":true},"in2DMode":false,"pivot":{"x":225.47377014160157,"y":154.23004150390626,"z":37.532562255859378},"rotation":{"x":0.025206120684742929,"y":0.013920365832746029,"z":-0.00038961207610554993,"w":0.9996388554573059},"size":154.0899200439453,"orthographic":false}
+=======
+﻿{"cameraMode":{"drawMode":0,"name":"Shaded","section":"Shading Mode"},"sceneLighting":true,"audioPlay":false,"sceneViewState":{"showFog":true,"showMaterialUpdate":false,"showSkybox":true,"showFlares":true,"showImageEffects":true,"showParticleSystems":true},"in2DMode":false,"pivot":{"x":-8.292122840881348,"y":3.497879981994629,"z":-2.7787063121795656},"rotation":{"x":-0.04842846840620041,"y":0.853541374206543,"z":-0.08065640926361084,"w":-0.5126193761825562},"size":12.372620582580567,"orthographic":false}
+>>>>>>> sanghun

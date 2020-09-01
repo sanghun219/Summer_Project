@@ -61,6 +61,8 @@ public class Spawner : MonoBehaviour
 
     public event Action RestartEvent;
 
+    public bool WaitRestart { get; set; }
+
     public void Restart()
     {
         if (RestartEvent != null)
@@ -81,7 +83,7 @@ public class Spawner : MonoBehaviour
                 Instance = FindObjectOfType(typeof(Spawner)) as Spawner;
                 if (Instance == null)
                 {
-                    Debug.Log("no singleton obj");
+                    return null;
                 }
             }
             return Instance;
@@ -101,24 +103,20 @@ public class Spawner : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         InitSpawningPool();
         EndOfSpawnPoint = new Vector3[2];
-
-        // 스폰되는 지점보다는 한 번에 스폰되는 오브젝트 개수가 많아야 함
-    }
-
-    public void ReStartSpawner()
-    {
-        // spawn된 놈들 전부 제거하고 회수
+        WaitRestart = false;
     }
 
     public void UpdateSpawnerPosition(Vector3 playerPos)
     {
+        if (WaitRestart) return;
+
         deltaSpawnTime += Time.deltaTime;
         if (deltaSpawnTime >= elaspedSpawn)
         {
             deltaSpawnTime = 0.0f;
-            SpawnObjects();
+            SpawnObjects(playerPos);
         }
-        Vector3 center = new Vector3(playerPos.x, 0, playerPos.z + distSpawnerToPlayer);
+        Vector3 center = new Vector3(playerPos.x, playerPos.y, playerPos.z + distSpawnerToPlayer);
         transform.position = new Vector3(center.x, center.y, center.z);
 
         // Spawner 대각선의 양 끝점을 지정
@@ -129,25 +127,27 @@ public class Spawner : MonoBehaviour
     }
 
     // 매 주기마다 스폰이 됨
-    private void SpawnObjects()
+    private void SpawnObjects(Vector3 playerPos)
     {
         // 한 wave에 생길수 있는 장애물 비율/빈 공간 비율/ 아이템 비율 (장애물 비율은 50%이상)
         int numOfObstacle = (int)((numOfSpawnedObj + 1) * ratioOfObstacle);
         int numOfEmpty = UnityEngine.Random.Range(0, numOfObstacle);
         int numOfItem = numOfSpawnedObj - numOfEmpty - numOfObstacle;
-        Queue<GameObject> wave = new Queue<GameObject>();
-        for (int i = 0; i < numOfItem; i++)
+        List<GameObject> wave = new List<GameObject>();
+
+        // TODO : 개수 지정 구간1 ( 여기서 비율 조정 가능)
+        for (int i = 0; i < numOfItem + 3; i++)
         {
-            wave.Enqueue(GetSpawnedObj(SPAWN_OBJ.ITEM));
+            wave.Add(GetSpawnedObj(SPAWN_OBJ.ITEM));
         }
         for (int i = 0; i < numOfObstacle; i++)
         {
-            wave.Enqueue(GetSpawnedObj(SPAWN_OBJ.OBSTACLE));
+            wave.Add(GetSpawnedObj(SPAWN_OBJ.OBSTACLE));
         }
 
         for (int i = 0; i < numOfEmpty; i++)
         {
-            wave.Enqueue(null);
+            wave.Add(null);
         }
 
         GetShuffledSpawnedObj(ref wave);
@@ -157,21 +157,30 @@ public class Spawner : MonoBehaviour
         {
             float px = ((i * EndOfSpawnPoint[1].x) + (wave.Count - i) * EndOfSpawnPoint[0].x) / (wave.Count);
             float pz = ((i * EndOfSpawnPoint[1].z) + (wave.Count - i) * EndOfSpawnPoint[0].z) / (wave.Count);
-            float randZ = UnityEngine.Random.Range(pz + 250, pz + 100);
-            float randX = UnityEngine.Random.Range(px - 100, px + 100);
-            var obj = wave.Dequeue();
+            float randZ;
+            float randX;
+            if (i == 0) // 플레이어 앞쪽으로 아이템이든 장애물이든 하나는 오게하자
+            {
+                randX = playerPos.x;
+                randZ = pz;
+            }
+            else
+            {
+                randZ = UnityEngine.Random.Range(pz + 250, pz + 100);
+                randX = UnityEngine.Random.Range(px - 250, px + 250);
+            }
+            var obj = wave[i];
             // 빈공간
             if (obj == null) continue;
             if (!obj.activeSelf)
             {
-                obj.transform.position = new Vector3(randX, 0, randZ);
+                obj.transform.position = new Vector3(randX, obj.transform.position.y + playerPos.y, randZ);
                 obj.SetActive(true);
             }
         }
-        //wave.Clear();
     }
 
-    private void GetShuffledSpawnedObj(ref Queue<GameObject> spawnObjs)
+    private void GetShuffledSpawnedObj(ref List<GameObject> spawnObjs)
     {
         int maxValue = spawnObjs.Count;
         int tmpValue;
@@ -180,9 +189,9 @@ public class Spawner : MonoBehaviour
         for (int i = 0; i < maxValue; i++)
         {
             tmpValue = UnityEngine.Random.Range(0, maxValue);
-            swapValue = spawnObjs.ToArray()[i];
-            spawnObjs.ToArray()[i] = spawnObjs.ToArray()[tmpValue];
-            spawnObjs.ToArray()[tmpValue] = swapValue;
+            swapValue = spawnObjs[i];
+            spawnObjs[i] = spawnObjs[tmpValue];
+            spawnObjs[tmpValue] = swapValue;
         }
     }
 
@@ -198,16 +207,33 @@ public class Spawner : MonoBehaviour
             if (i % 2 == 0)
             {
                 // 장애물 비율 적당히 조절해서 instantiate
-                GameObject spawned = Instantiate(InstOfObstacles[UnityEngine.Random.Range(0, InstOfObstacles.Count)].gameObject
-                    , transform.position, transform.rotation);
+                GameObject tempGO = InstOfObstacles[UnityEngine.Random.Range(0, InstOfObstacles.Count)].gameObject;
+                GameObject spawned = Instantiate(tempGO
+                    , tempGO.transform.position + transform.position, transform.rotation);
 
                 spawned.SetActive(false);
                 spawningPool[(int)SPAWN_OBJ.OBSTACLE].Enqueue(spawned);
             }
             else
             {
-                GameObject spawned = Instantiate(InstOfItems[UnityEngine.Random.Range(0, InstOfItems.Count)].gameObject
-                    , transform.position, transform.rotation);
+                // 100 코인 500 코인 1000 코인 확률 합쳐서 80% 이상
+                // 나머지 20%
+                GameObject spawned = null;
+
+                //TODO : 비율 조정 구간2 (아이템 사이 확률 80% 코인, 20% 아이템)
+                if (UnityEngine.Random.Range(0, 1.0f) <= 0.8)
+                {
+                    GameObject tempGO = InstOfItems[UnityEngine.Random.Range(0, 3)].gameObject;
+                    spawned = Instantiate(tempGO
+                    , tempGO.transform.position + transform.position, transform.rotation);
+                }
+                else
+                {
+                    GameObject tempGO = InstOfItems[UnityEngine.Random.Range(3, InstOfItems.Count)].gameObject;
+                    spawned = Instantiate(tempGO
+                    , tempGO.transform.position + transform.position, transform.rotation);
+                }
+
                 spawned.SetActive(false);
                 spawningPool[(int)SPAWN_OBJ.ITEM].Enqueue(spawned);
             }

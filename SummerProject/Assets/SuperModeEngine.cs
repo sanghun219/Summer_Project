@@ -18,12 +18,12 @@ public class SuperModeEngine : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (player.GetPlayerMode() == PlayerMode.SUPER && OptimizeKey == false)
+        if ((player.GetPlayerMode() & PlayerMode.SUPER) != 0 && OptimizeKey == false)
         {
             main.startSize = originSize * 15;
             OptimizeKey = true;
         }
-        else if ((player.GetPlayerMode() & PlayerMode.SUPER) != 0)
+        else if ((player.GetPlayerMode() & PlayerMode.SUPER) == 0)
         {
             main.startSize = originSize;
             OptimizeKey = false;
