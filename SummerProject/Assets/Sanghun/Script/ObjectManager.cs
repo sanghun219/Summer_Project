@@ -136,6 +136,10 @@ public class ObjectManager : MonoBehaviour
 
     private void CommonItemUpdate(Item item, SHOOT_OPT shootOpt)
     {
+        if (player.isGameOver)
+        {
+            shootOpt = SHOOT_OPT.NONE;
+        }
         float itemSpeed = item.speed;
         shootOpt |= GlobalItem_opt;
         if ((shootOpt & SHOOT_OPT.GL_ROTATE) != 0)
@@ -153,7 +157,7 @@ public class ObjectManager : MonoBehaviour
 
         if ((shootOpt & SHOOT_OPT.LC_ROTATE) != 0)
         {
-            item.transform.Rotate(new Vector3(0, 1, 0) * 30 * Time.deltaTime);
+            item.transform.Rotate(new Vector3(0, 1, 0) * 120 * Time.deltaTime);
         }
 
         if ((shootOpt & SHOOT_OPT.MAGNET) != 0)
@@ -270,7 +274,7 @@ public class ObjectManager : MonoBehaviour
             if (col_opt == COLLIDE_OPT.EXPLODE)
             {
             }
-            player.SetPlayerMode(PlayerMode.DOUBLE_POINT);
+            player.SetPlayerMode(PlayerMode.NORMAL, PlayerMode.DOUBLE_POINT);
         }
     }
 
@@ -286,7 +290,7 @@ public class ObjectManager : MonoBehaviour
             if (col_opt == COLLIDE_OPT.EXPLODE)
             {
             }
-            player.SetPlayerMode(PlayerMode.SUPER);
+            player.SetPlayerMode(PlayerMode.NORMAL, PlayerMode.SUPER);
         }
     }
 
@@ -303,7 +307,7 @@ public class ObjectManager : MonoBehaviour
             {
             }
 
-            player.SetPlayerMode(PlayerMode.MAGNET);
+            player.SetPlayerMode(PlayerMode.NORMAL, PlayerMode.MAGNET);
         }
     }
 
@@ -329,8 +333,8 @@ public class ObjectManager : MonoBehaviour
             if (col_opt == COLLIDE_OPT.EXPLODE)
             {
             }
-            // speed를 기존 foward speed로 리셋시킴.. 추가효과를 주려면 주어라
-            player.VelocityZ = player.forwardSpeed;
+
+            player.SetPlayerMode(PlayerMode.NORMAL, PlayerMode.DOWN_SPEED);
         }
     }
 
@@ -347,13 +351,16 @@ public class ObjectManager : MonoBehaviour
             {
             }
 
-            player.SetPlayerMode(PlayerMode.PUSH);
+            player.SetPlayerMode(PlayerMode.NORMAL, PlayerMode.PUSH);
         }
     }
 
     private void CommonObstacleUpdate(Obstacle spawned, SHOOT_OPT shootOpt)
     {
-        spawned.transform.position += spawned.transform.forward * spawned.speed;
+        if ((shootOpt & SHOOT_OPT.GL_ROTATE) == 0)
+            spawned.transform.position += -1 * Vector3.forward * spawned.speed;
+        else
+            spawned.transform.position += spawned.transform.forward * spawned.speed;
 
         if ((shootOpt & SHOOT_OPT.GL_ROTATE) != 0)
         {
@@ -370,7 +377,7 @@ public class ObjectManager : MonoBehaviour
 
         if ((shootOpt & SHOOT_OPT.LC_ROTATE) != 0)
         {
-            spawned.transform.Rotate(Vector3.up * 30 * Time.deltaTime);
+            spawned.transform.Rotate(Vector3.up * 120 * Time.deltaTime);
         }
     }
 

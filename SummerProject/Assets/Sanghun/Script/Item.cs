@@ -27,6 +27,17 @@ public class Item : MonoBehaviour, ISpawned
     }
 
     public float destroyTime { get { return _destroyTime; } set { _destroyTime = value; } }
+    private bool isRestart = false;
+
+    private void Awake()
+    {
+        Spawner.GetInstance.RestartEvent += Restart;
+    }
+
+    private void Restart()
+    {
+        isRestart = true;
+    }
 
     private void OnEnable()
     {
@@ -35,6 +46,7 @@ public class Item : MonoBehaviour, ISpawned
 
     private void FixedUpdate()
     {
+        if (isRestart) { gameObject.SetActive(false); }
         if (gameObject.activeSelf)
         {
             ObjectManager.GetInstance.ItemType_Update[itemType](this, shootOpt);
@@ -46,6 +58,7 @@ public class Item : MonoBehaviour, ISpawned
         if (gameObject.activeSelf == false) return;
         shootOpt &= ~SHOOT_OPT.MAGNET;
         Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.ITEM);
+        isRestart = false;
     }
 
     private void DestroyItem()

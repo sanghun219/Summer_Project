@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.Impl;
 
 public class ScoreManager : MonoBehaviour
@@ -10,6 +11,8 @@ public class ScoreManager : MonoBehaviour
     private int score;
 
     private Player player;
+
+    public Text scoreUI;
 
     public static ScoreManager GetInstance
     {
@@ -40,8 +43,8 @@ public class ScoreManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-
         StartCoroutine(NormalCalculateScore());
+        StartCoroutine(ScoreUIUpdate());
     }
 
     // UI가 Score를 받아서 사용
@@ -56,13 +59,20 @@ public class ScoreManager : MonoBehaviour
     {
         while (!player.isGameOver)
         {
-            yield return new WaitForSeconds(0);
+            yield return new WaitForSeconds(1.0f);
             // TODO : 그럴듯한 스코어 계산법이 생각나면 사용
             score += (int)player.VelocityZ / 10 + 3;
 
-            player.scoreText.text = score.ToString();
+        }
+    }
 
-            Debug.Log(score);
+    // UI상 스코어 업데이트
+    public IEnumerator ScoreUIUpdate()
+    {
+        while (!player.isGameOver)
+        {
+            yield return new WaitForSeconds(0);
+            scoreUI.text = GetScore().ToString();
         }
     }
 

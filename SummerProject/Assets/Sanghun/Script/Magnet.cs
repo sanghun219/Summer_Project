@@ -8,23 +8,31 @@ public class Magnet : MonoBehaviour
     private Coroutine coroutine;
 
     [SerializeField]
-    private float MagnetTimer = 3.0f;
+    private float MagnetTimer;
+
+    [SerializeField]
+    private float MagnetRadius;
 
     private Player player;
 
     private bool isTriggerOn = false;
 
-    private float previousTimer = 0.0f;
-
-    private SphereCollider collide;
-
-    private bool test = true;
+    private Collider[] collide = null;
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        collide = gameObject.GetComponent<SphereCollider>();
-        collide.enabled = false;
+        //player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        Player.GameOverEvent += StopUpdate;
+    }
+
+    public void StopUpdate()
+    {
+        StopCoroutine(coroutine);
+        foreach (var col in collide)
+        {
+            if (col.CompareTag("Item"))
+                col.gameObject.GetComponent<Item>().shootOpt &= ~SHOOT_OPT.MAGNET;
+        }
     }
 
     public void StartUpdate()
@@ -34,32 +42,27 @@ public class Magnet : MonoBehaviour
 
     private IEnumerator UpdateMagnet()
     {
-        if (test == false) yield return null;
-        previousTimer = 0.0f;
-        ObjectManager.GetInstance.GlobalItem_opt |= SHOOT_OPT.MAGNET;
+        float previousTimer = 0.0f;
 
-        collide.enabled = true;
-        while (previousTimer <= MagnetTimer && test == true)
+        while (previousTimer <= MagnetTimer)
         {
             // TODO : 파티클이나 사운드 빠방하게 넣을수 있음!
             yield return new WaitForFixedUpdate();
             previousTimer += Time.fixedDeltaTime;
+            collide = Physics.OverlapSphere(player.transform.position, MagnetRadius);
+            foreach (var col in collide)
+            {
+                if (col.CompareTag("Item"))
+                    col.gameObject.GetComponent<Item>().shootOpt |= SHOOT_OPT.MAGNET;
+            }
         }
-        ObjectManager.GetInstance.GlobalItem_opt &= ~SHOOT_OPT.MAGNET;
-        Debug.Log(previousTimer + "asd");
-        collide.enabled = false;
-        player.SetPlayerMode(PlayerMode.NORMAL);
-        float testprevious = 3.0f;
-        test = false;
-        while (testprevious <= 0.0f) { testprevious -= Time.deltaTime; }
-        test = true;
-    }
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.CompareTag("Item") && collide.gameObject.activeSelf)
-    //    {
-    //        other.gameObject.GetComponent<Item>().shootOpt |= SHOOT_OPT.MAGNET;
-    //    }
-    //}
+        foreach (var col in collide)
+        {
+            if (col.CompareTag("Item"))
+                col.gameObject.GetComponent<Item>().shootOpt &= ~SHOOT_OPT.MAGNET;
+        }
+
+        player.SetPlayerMode(PlayerMode.MAGNET, PlayerMode.NORMAL);
+    }
 }

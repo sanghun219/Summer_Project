@@ -31,6 +31,6 @@ public class DoublePoint : MonoBehaviour
             previousTimer += Time.fixedDeltaTime;
         }
 
-        player.SetPlayerMode(PlayerMode.NORMAL);
+        player.SetPlayerMode(PlayerMode.DOUBLE_POINT, PlayerMode.NORMAL);
     }
 }

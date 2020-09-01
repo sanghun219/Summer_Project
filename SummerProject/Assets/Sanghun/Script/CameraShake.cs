@@ -21,7 +21,7 @@ public class CameraShake : MonoBehaviour
     private void Start()
     {
         originPos = transform.localPosition;
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        //player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         cm = gameObject.GetComponent<Follow>();
         Player.GameOverEvent += Shaking;
     }
@@ -34,7 +34,6 @@ public class CameraShake : MonoBehaviour
 
     private void Shaking()
     {
-        cm.target = null;
         isShake = true;
         StartCoroutine(Shake());
     }
@@ -49,5 +48,6 @@ public class CameraShake : MonoBehaviour
             yield return null;
         }
         transform.localPosition = originPos;
+        isShake = false;
     }
 }
