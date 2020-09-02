@@ -79,5 +79,9 @@ public class ScoreManager : MonoBehaviour
     public void InitializeScore()
     {
         score = 0;
+        scoreUI.text = score.ToString();
+        StartCoroutine(NormalCalculateScore());
+        StartCoroutine(ScoreUIUpdate());
     }
+
 }

@@ -40371,7 +40371,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 112892265}
         m_MethodName: ReStart
         m_Mode: 1
         m_Arguments:
@@ -40382,7 +40382,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 112892264}
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
@@ -41116,7 +41116,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fb311c322ab8b413998c627887658bf8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4c0212e33d565463ebc21bca6bbb3175, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

@@ -25,6 +25,8 @@ public class InGameLoop : MonoBehaviour
         Spawner.GetInstance.WaitRestart = false;
         StartCoroutine(IFixedUpdate());
         StartCoroutine(IUpdate());
+
+        ScoreManager.GetInstance.InitializeScore();
     }
 
     private void Update()
