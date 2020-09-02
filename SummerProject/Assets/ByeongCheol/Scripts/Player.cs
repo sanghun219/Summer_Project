@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 [Flags]
 public enum PlayerMode
@@ -41,7 +40,7 @@ public class Player : MonoBehaviour
     public float hMaxSpeed = 0;
 
     //횡 이동 플레이어의 현재 속도
-    public float hCurrentSpeed;
+    public float hCurrentSpeed { get; set; }
 
     public bool isGameOver = false;
 
@@ -49,8 +48,7 @@ public class Player : MonoBehaviour
 
     // 다른 클래스들이 플레이어가 죽었을 때 이벤트 발생시키도록 함
     // 조건 발생시 딱 한 번만 호출하기 때문에 성능up, 코드가 깔끔해짐
-    // 스태틱 이벤트로 수정 - 병철
-    public static event GameOverHandler GameOverEvent;
+    public event GameOverHandler GameOverEvent;
 
     // 플레이어가 특정 아이템 먹었을 경우 상태가 바뀜
     private PlayerMode playerMode;
@@ -79,17 +77,21 @@ public class Player : MonoBehaviour
 
     public void ReStart()
     {
-        //gameObject.GetComponent<Rigidbody>().gameObject.SetActive(false);
+        gameObject.GetComponent<Rigidbody>().gameObject.SetActive(false);
+
         transform.position = new Vector3(0, 0, 0);
-        //transform.rotation = Quaternion.identity;
+        transform.rotation = Quaternion.identity;
         playerMode = PlayerMode.NORMAL;
         isGameOver = false;
         anim.enabled = true;
         forwardSpeed = re_forwardSpeed;
         hCurrentSpeed = 0;
+        h = 0;
         VelocityZ = 0;
         gameObject.GetComponent<Collider>().enabled = true;
         gameObject.GetComponent<Rigidbody>().gameObject.SetActive(true);
+        rigid.velocity = new Vector3(0, 0, 0);
+        rigid.angularVelocity = new Vector3(0, 0, 0);
         gameObject.GetComponent<Player>().enabled = true;
         SpeedControllerCoroutine = StartCoroutine(GameSpeedController());
     }
@@ -97,6 +99,18 @@ public class Player : MonoBehaviour
     public PlayerMode GetPlayerMode()
     {
         return playerMode;
+    }
+
+    public bool isIdleState()
+    {
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Idle")) return true;
+        return false;
+    }
+
+    public bool isSuperState()
+    {
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("SuperMode")) return true;
+        return false;
     }
 
     public void SetPlayerMode(PlayerMode prevMode, PlayerMode nextMode)
@@ -157,6 +171,7 @@ public class Player : MonoBehaviour
         playerModeToAction[PlayerMode.SUPER] = () =>
         {
             if (superMode.gameObject.activeSelf == true && (playerMode & PlayerMode.SUPER) != 0) return;
+            playerMode &= ~PlayerMode.MAGNET;
             playerMode |= PlayerMode.SUPER;
             if ((playerMode & PlayerMode.DOWN_SPEED) != 0)
                 playerMode &= ~PlayerMode.DOWN_SPEED;
@@ -167,7 +182,8 @@ public class Player : MonoBehaviour
 
         playerModeToAction[PlayerMode.MAGNET] = () =>
         {
-            if (magnet.gameObject.activeSelf && (playerMode & PlayerMode.MAGNET) != 0) return;
+            if (magnet.gameObject.activeSelf && (playerMode & PlayerMode.MAGNET) != 0
+            && (playerMode & PlayerMode.SUPER) == 0) return;
             playerMode |= PlayerMode.MAGNET;
             magnet.gameObject.SetActive(true);
             magnet.StartUpdate();
@@ -237,8 +253,8 @@ public class Player : MonoBehaviour
 
     public void PlayerUpdate()
     {
-        h = Input.GetAxisRaw("Horizontal");
-        v = Input.GetAxisRaw("Vertical");
+        // h = Input.GetAxisRaw("Horizontal");
+        // v = Input.GetAxisRaw("Vertical");
     }
 
     public void StartPlayer()
@@ -260,7 +276,7 @@ public class Player : MonoBehaviour
             yield return null;
 
             if (rigid.velocity.z <= fMaxSpeed && (playerMode & PlayerMode.DOWN_SPEED) == 0)
-                rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Acceleration);
+                rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Force);
         }
     }
 
@@ -276,6 +292,9 @@ public class Player : MonoBehaviour
     //좌우로 이동을 수행해주는 함수
     private void MoveHorizontal(float c)
     {
+        //현재 속도를 키 입력이 눌릴때만 증가하고 누르지 않을경우 천천히 0으로 돌아오게끔 한다.
+        hCurrentSpeed = IncrementSide(hCurrentSpeed, h * hMaxSpeed, hAcceleration);
+        this.rigid.MovePosition(this.transform.position + new Vector3(c, 0, 0) * Time.deltaTime);
         if (playerMode == PlayerMode.SUPER)
         {
             if (anim.GetBool("isLeft") || anim.GetBool("isRight"))
@@ -286,35 +305,71 @@ public class Player : MonoBehaviour
             }
             return;
         }
-        //현재 속도를 키 입력이 눌릴때만 증가하고 누르지 않을경우 천천히 0으로 돌아오게끔 한다.
-        hCurrentSpeed = IncrementSide(hCurrentSpeed, h * hMaxSpeed, hAcceleration);
-        Debug.Log("asdfasdfasdfasdfasdfasdf");
-        this.rigid.MovePosition(this.transform.position + new Vector3(c, 0, 0) * Time.deltaTime);
 
-        if (hCurrentSpeed == 0 && h == 0 && !Input.anyKeyDown)
-        {
-            anim.SetBool("isLeft", false);
-            anim.SetBool("isRight", false);
-            return;
-        }
+        //if (Application.platform == RuntimePlatform.WindowsEditor)
+        //{
+        //    if (!Input.anyKey || h == 0)
+        //    {
+        //        anim.SetBool("isLeft", false);
+        //        anim.SetBool("isRight", false);
+        //    }
+        //    else if (Input.GetKey(KeyCode.LeftArrow) || h < 0)
+        //    {
+        //        anim.SetBool("isLeft", true);
+        //        anim.SetBool("isRight", false);
+        //    }
+        //    else if (Input.GetKey(KeyCode.RightArrow) || h > 0)
+        //    {
+        //        anim.SetBool("isRight", true);
+        //        anim.SetBool("isLeft", false);
+        //    }
+        //    if ((Input.GetKeyUp(KeyCode.LeftArrow)) || h > 0)
+        //    {
+        //        anim.SetBool("isLeft", false);
+        //        h = 0;
+        //    }
+        //    if (Input.GetKeyUp(KeyCode.RightArrow) || h < 0)
+        //    {
+        //        anim.SetBool("isRight", false);
+        //        h = 0;
+        //    }
+        //}
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || h < 0)
+        if (Input.touchCount > 0)
         {
-            anim.SetBool("isLeft", true);
-            anim.SetBool("isRight", false);
+            Touch touch = Input.GetTouch(0);
+            Vector3 playerPos = Camera.main.WorldToScreenPoint(transform.position);
+            Vector2 touchPos = new Vector2(touch.position.x, touch.position.y);
+
+            if (touch.phase == TouchPhase.Began)
+            {
+                if (touchPos.x < playerPos.x)
+                {
+                    h = -1;
+                    anim.SetBool("isLeft", true);
+                    anim.SetBool("isRight", false);
+                }
+                else if (touchPos.x > playerPos.x)
+                {
+                    h = 1;
+                    anim.SetBool("isRight", true);
+                    anim.SetBool("isLeft", false);
+                }
+                else
+                {
+                    h = 0;
+                }
+            }
+            else if (touch.phase == TouchPhase.Stationary
+                || touch.phase == TouchPhase.Moved)
+            {
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) || h > 0)
+        else
         {
-            anim.SetBool("isRight", true);
             anim.SetBool("isLeft", false);
-        }
-        else if ((Input.GetKeyUp(KeyCode.LeftArrow)))
-        {
-            anim.SetBool("isLeft", false);
-        }
-        else if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
             anim.SetBool("isRight", false);
+            h = 0;
         }
     }
 
@@ -333,22 +388,4 @@ public class Player : MonoBehaviour
             return (dir == Mathf.Sign(target - n)) ? n : target; // if n has now passed target then return target, otherwise return n
         }
     }
-
-    public void OnGameStart()
-    {
-        gameObject.GetComponent<Player>().enabled = true;
-    }
-
-    public void ReloadScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    void OnDisable()
-    {
-        Debug.Log("Your score is : ");
-    }
-
-
-
 }

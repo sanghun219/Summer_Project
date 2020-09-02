@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class InGameLoop : MonoBehaviour
 {
@@ -17,25 +16,24 @@ public class InGameLoop : MonoBehaviour
 
     public void ReStart()
     {
+        if (player.isGameOver == false) return;
         StopCoroutine(IFixedUpdate());
         StopCoroutine(IUpdate());
 
-        Spawner.GetInstance.gameObject.SetActive(true);
-        Spawner.GetInstance.Restart();
         player.ReStart();
+        Spawner.GetInstance.Restart();
+        Spawner.GetInstance.WaitRestart = false;
         StartCoroutine(IFixedUpdate());
         StartCoroutine(IUpdate());
-
     }
 
     private void Update()
     {
-        // TODO : 나중에 UI쪽에서 RESTART하게 해야함!
-        //
-        //if (Input.GetKey(KeyCode.Mouse0) && player.isGameOver)
-        //{
-        //    ReStart();
-        //}
+        // TODO : 나중에 UI쪽에서 버튼으로 RESTART하게 해야함!
+        if (Input.GetKey(KeyCode.Space) && player.isGameOver)
+        {
+            ReStart();
+        }
     }
 
     // Start is called before the first frame update
@@ -64,26 +62,18 @@ public class InGameLoop : MonoBehaviour
             player.PlayerFixedUpdate();
             Spawner.GetInstance.UpdateSpawnerPosition(player.transform.position);
         }
-        Spawner.GetInstance.gameObject.SetActive(false);
-        while (true)
+        Spawner.GetInstance.WaitRestart = true;
+        while (player.isGameOver)
         {
+            //TODO : 다시 시작하는 버튼 누를시 조건을 넣어줘야함!
             if (Input.GetKey(KeyCode.Space))
             {
                 break;
             }
             yield return new WaitForFixedUpdate();
             // player를 극적으로 날려보낼수 있음
-            if (player)
-            {
             player.transform.Rotate(new Vector3(1, 1, 1) * 120 * Time.deltaTime);
             player.transform.position += transform.forward * 30 * Time.deltaTime;
-
-            }
         }
-    }
-
-    public void Retry()
-    {
-        SceneManager.LoadScene(0);
     }
 }

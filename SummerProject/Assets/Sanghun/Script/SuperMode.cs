@@ -6,21 +6,17 @@ public class SuperMode : MonoBehaviour
 {
     private Coroutine coroutine;
 
-    [SerializeField]
-    private float SuperModeTimer = 3.0f;
+    public float SuperModeTimer = 3.0f;
 
     private Player player;
 
     [SerializeField]
     private ParticleSystem particle;
 
-    private ParticleSystem tempParticle = null;
-
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        if (tempParticle == null)
-            tempParticle = Instantiate<ParticleSystem>(particle);
+        particle = Instantiate<ParticleSystem>(particle);
     }
 
     public void StartUpdate()
@@ -33,7 +29,7 @@ public class SuperMode : MonoBehaviour
         float previousTimer = 0.0f;
         float originSpeed = player.VelocityZ;
         player.GetComponent<CapsuleCollider>().isTrigger = true;
-        tempParticle.Play();
+        particle.Play();
         player.VelocityZ = 1200;
         while (previousTimer <= SuperModeTimer)
         {
@@ -41,7 +37,7 @@ public class SuperMode : MonoBehaviour
             previousTimer += Time.fixedDeltaTime;
         }
 
-        tempParticle.Stop();
+        particle.Stop();
         player.VelocityZ = originSpeed;
         player.GetComponent<CapsuleCollider>().isTrigger = false;
         player.SetPlayerMode(PlayerMode.SUPER, PlayerMode.NORMAL);

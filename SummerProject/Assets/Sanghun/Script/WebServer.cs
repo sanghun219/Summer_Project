@@ -2,25 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+
 public class WebServer : MonoBehaviour
 {
     private bool UseWebServer = false;
+
     public void SetUserWebServer(bool useServer)
     {
         UseWebServer = useServer;
     }
+
     private ScoreData[] scoreDatas;
-    
+
     private void Start()
     {
-       if(UseWebServer)
-        StartCoroutine(IGetRank());
+        if (UseWebServer)
+            StartCoroutine(IGetRank());
     }
-   
+
     public void Login(string userID, string userPass)
     {
         StartCoroutine(ILogin(userID, userPass));
     }
+
+    // TODO : 랭킹 보여줄 때 필요한 TOP 10 자료
     public ScoreData[] GetRank()
     {
         if (scoreDatas == null)
@@ -30,38 +35,19 @@ public class WebServer : MonoBehaviour
         }
         return scoreDatas;
     }
+
+    // TODO : 죽었을시에 랭킹을 올려줌 (추후에 필요없다 싶으면 탑10 안에 드는 정보만 테이블로 유지하자!)
     public void InsertScoreInRank(string userID, int userScore)
     {
         StartCoroutine(InsertScore(userID, userScore));
     }
 
-    IEnumerator ILogin(string userID, string userPass)
+    private IEnumerator ILogin(string userID, string userPass)
     {
         WWWForm form = new WWWForm();
         form.AddField("loginUser", userID);
         form.AddField("loginPass", userPass);
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/logininfo/GetLoginInfo.php",form))
-        {
-            yield return www.SendWebRequest();
-
-            if(www.isNetworkError || www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                Debug.Log(www.downloadHandler.text);
-                byte[] results = www.downloadHandler.data;
-            }
-
-        }
-    }
-
-    IEnumerator IGetRank()
-    {
-        WWWForm form = new WWWForm();
-        form.AddField("dataType", "LoadRank");
-        using(UnityWebRequest www = UnityWebRequest.Post("http://localhost/rankinginfo/GetRankingInfo.php",form))
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/logininfo/GetLoginInfo.php", form))
         {
             yield return www.SendWebRequest();
 
@@ -70,19 +56,37 @@ public class WebServer : MonoBehaviour
                 Debug.Log(www.error);
             }
             else
-            {     
-                string jsonArray = www.downloadHandler.text;
-                if(jsonArray != "error")
-                {
-                    scoreDatas = JsonHelper.FromJson<ScoreData>("{\"items\":" + jsonArray + "}");
-                   
-                }
-                       
+            {
+                Debug.Log(www.downloadHandler.text);
+                byte[] results = www.downloadHandler.data;
             }
         }
-    } 
+    }
 
-    IEnumerator InsertScore(string playerID, int playerScore)
+    private IEnumerator IGetRank()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("dataType", "LoadRank");
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/rankinginfo/GetRankingInfo.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                string jsonArray = www.downloadHandler.text;
+                if (jsonArray != "error")
+                {
+                    scoreDatas = JsonHelper.FromJson<ScoreData>("{\"items\":" + jsonArray + "}");
+                }
+            }
+        }
+    }
+
+    private IEnumerator InsertScore(string playerID, int playerScore)
     {
         WWWForm form = new WWWForm();
         form.AddField("UserID", playerID);
