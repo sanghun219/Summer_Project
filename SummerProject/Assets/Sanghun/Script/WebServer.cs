@@ -1,11 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using UnityEngine.Networking;
 
 public class WebServer : MonoBehaviour
 {
     private bool UseWebServer = false;
+
+    public bool isInsertedYourData = false;
+
+    public event Action InsertedEventHandler;
+
+    private void InsertedEvent()
+    {
+        if (InsertedEventHandler != null)
+        {
+            InsertedEventHandler();
+        }
+    }
 
     public void SetUserWebServer(bool useServer)
     {
@@ -16,8 +29,8 @@ public class WebServer : MonoBehaviour
 
     private void Start()
     {
-        if (UseWebServer)
-            StartCoroutine(IGetRank());
+        //if (UseWebServer)
+        StartCoroutine(IGetRank());
     }
 
     public void Login(string userID, string userPass)
@@ -26,13 +39,13 @@ public class WebServer : MonoBehaviour
     }
 
     // TODO : 랭킹 보여줄 때 필요한 TOP 10 자료
+    public void InitGetRank()
+    {
+        StartCoroutine(IGetRank());
+    }
+
     public ScoreData[] GetRank()
     {
-        if (scoreDatas == null)
-        {
-            Debug.Log("Score Data가 아직 갱신되지 않음");
-            StartCoroutine(IGetRank());
-        }
         return scoreDatas;
     }
 
@@ -65,6 +78,7 @@ public class WebServer : MonoBehaviour
 
     private IEnumerator IGetRank()
     {
+        isInsertedYourData = false;
         WWWForm form = new WWWForm();
         form.AddField("dataType", "LoadRank");
         using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/rankinginfo/GetRankingInfo.php", form))
@@ -81,6 +95,7 @@ public class WebServer : MonoBehaviour
                 if (jsonArray != "error")
                 {
                     scoreDatas = JsonHelper.FromJson<ScoreData>("{\"items\":" + jsonArray + "}");
+                    InsertedEvent();
                 }
             }
         }

@@ -10,9 +10,13 @@ public class ScoreManager : MonoBehaviour
 
     private int score;
 
+    private int resultScore;
+
     private Player player;
 
     public Text scoreUI;
+
+    public bool isGameOver;
 
     public static ScoreManager GetInstance
     {
@@ -57,22 +61,24 @@ public class ScoreManager : MonoBehaviour
 
     public IEnumerator NormalCalculateScore()
     {
-        while (!player.isGameOver)
+        while (player.isGameOver == false)
         {
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.5f);
             // TODO : 그럴듯한 스코어 계산법이 생각나면 사용
-            score += (int)player.VelocityZ / 10 + 3;
 
+            score += (int)player.VelocityZ / 10 + 3;
+            resultScore = score;
         }
     }
 
     // UI상 스코어 업데이트
     public IEnumerator ScoreUIUpdate()
     {
-        while (!player.isGameOver)
+        while (player.isGameOver == false)
         {
             yield return new WaitForSeconds(0);
-            scoreUI.text = GetScore().ToString();
+            if (InGameLoop.isGameStart == true)
+                scoreUI.text = GetScore().ToString();
         }
     }
 
@@ -83,5 +89,4 @@ public class ScoreManager : MonoBehaviour
         StartCoroutine(NormalCalculateScore());
         StartCoroutine(ScoreUIUpdate());
     }
-
 }

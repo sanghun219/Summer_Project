@@ -253,8 +253,8 @@ public class Player : MonoBehaviour
 
     public void PlayerUpdate()
     {
-        // h = Input.GetAxisRaw("Horizontal");
-        // v = Input.GetAxisRaw("Vertical");
+        h = Input.GetAxisRaw("Horizontal");
+        v = Input.GetAxisRaw("Vertical");
     }
 
     public void StartPlayer()
@@ -274,7 +274,7 @@ public class Player : MonoBehaviour
         while (true)
         {
             yield return null;
-
+            if (InGameLoop.isGameStart == false) continue;
             if (rigid.velocity.z <= fMaxSpeed && (playerMode & PlayerMode.DOWN_SPEED) == 0)
                 rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Force);
         }
@@ -306,34 +306,34 @@ public class Player : MonoBehaviour
             return;
         }
 
-        //if (Application.platform == RuntimePlatform.WindowsEditor)
-        //{
-        //    if (!Input.anyKey || h == 0)
-        //    {
-        //        anim.SetBool("isLeft", false);
-        //        anim.SetBool("isRight", false);
-        //    }
-        //    else if (Input.GetKey(KeyCode.LeftArrow) || h < 0)
-        //    {
-        //        anim.SetBool("isLeft", true);
-        //        anim.SetBool("isRight", false);
-        //    }
-        //    else if (Input.GetKey(KeyCode.RightArrow) || h > 0)
-        //    {
-        //        anim.SetBool("isRight", true);
-        //        anim.SetBool("isLeft", false);
-        //    }
-        //    if ((Input.GetKeyUp(KeyCode.LeftArrow)) || h > 0)
-        //    {
-        //        anim.SetBool("isLeft", false);
-        //        h = 0;
-        //    }
-        //    if (Input.GetKeyUp(KeyCode.RightArrow) || h < 0)
-        //    {
-        //        anim.SetBool("isRight", false);
-        //        h = 0;
-        //    }
-        //}
+        if (Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            if (!Input.anyKey || h == 0)
+            {
+                anim.SetBool("isLeft", false);
+                anim.SetBool("isRight", false);
+            }
+            else if (Input.GetKey(KeyCode.LeftArrow) || h < 0)
+            {
+                anim.SetBool("isLeft", true);
+                anim.SetBool("isRight", false);
+            }
+            else if (Input.GetKey(KeyCode.RightArrow) || h > 0)
+            {
+                anim.SetBool("isRight", true);
+                anim.SetBool("isLeft", false);
+            }
+            if ((Input.GetKeyUp(KeyCode.LeftArrow)) || h > 0)
+            {
+                anim.SetBool("isLeft", false);
+                h = 0;
+            }
+            if (Input.GetKeyUp(KeyCode.RightArrow) || h < 0)
+            {
+                anim.SetBool("isRight", false);
+                h = 0;
+            }
+        }
 
         if (Input.touchCount > 0)
         {
