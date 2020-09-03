@@ -11,8 +11,6 @@ public class RankingUIManager : MonoBehaviour
 
     public Sprite[] RankgImages;
 
-    public Text MyScore;
-
     [SerializeField]
     private WebServer webserver;
 
@@ -29,12 +27,12 @@ public class RankingUIManager : MonoBehaviour
                 Destroy(contents.GetChild(i).gameObject);
             }
         }
-        // webserver.InsertScoreInRank(Loading.GetInstance.GetPlayerID(), ScoreManager.GetInstance.GetScore());
-        webserver.InsertScoreInRank("sanghun123", ScoreManager.GetInstance.GetScore());
+
+        webserver.InsertScoreInRank(PlayerManager.GetInstance.GetPlayerID(), ScoreManager.GetInstance.GetScore());
         webserver.InitGetRank();
     }
 
-    private void Start()
+    private void Awake()
     {
         webserver.InsertedEventHandler += ViewRankContent;
     }
@@ -42,7 +40,6 @@ public class RankingUIManager : MonoBehaviour
     private void ViewRankContent()
     {
         int rankNum = 1;
-        MyScore.text += ScoreManager.GetInstance.GetScore();
         foreach (var rank in webserver.GetRank())
         {
             this.CreateRankContent(rank.ID, rank.Date, rank.Score, rankNum);

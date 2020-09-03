@@ -1,46 +1,95 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Loading : MonoBehaviour
 {
-    // Start is called before the first frame update
-    private string playerID;
+    [SerializeField]
+    private Slider loadingBar;
 
-    public string GetPlayerID()
-    { return playerID; }
+    [SerializeField]
+    private InputField inputField;
 
-    private void SetPlayerID(string id)
-    { this.playerID = id; }
+    [SerializeField]
+    private Text touchToStart;
 
-    private static Loading Instance = null;
+    [SerializeField]
+    private Fade fade;
 
-    public static Loading GetInstance
+    public static int nextScenenum;
+
+    private bool isMoveNextScene = false;
+
+    public void SetMoveNextScene(bool bo)
     {
-        get
-        {
-            if (!Instance)
-            {
-                Instance = FindObjectOfType(typeof(Loading)) as Loading;
-                if (Instance == null)
-                {
-                    return null;
-                }
-            }
-            return Instance;
-        }
+        PlayerManager.GetInstance.SetPlayerID(inputField.text);
+        fade.FadeIn(1.0f, () => { isMoveNextScene = bo; });
     }
 
     private void Start()
     {
-        if (Instance == null)
+        PlayerManager.GetInstance.PlayerManagerAwake();
+        Debug.Log(PlayerManager.GetInstance.isFirstLogin);
+        if (PlayerManager.GetInstance.isFirstLogin == false)
         {
-            Instance = this;
+            inputField.gameObject.SetActive(false);
         }
-        else if (Instance != null)
+
+        StartCoroutine(LoadAsyncScene());
+    }
+
+    private IEnumerator LoadAsyncScene()
+    {
+        yield return null;
+        AsyncOperation op = SceneManager.LoadSceneAsync(1);
+        op.allowSceneActivation = false;
+
+        while (!op.isDone)
         {
-            Destroy(gameObject);
+            yield return null;
+            if (loadingBar.value < 0.9f)
+            {
+                loadingBar.value = Mathf.MoveTowards(loadingBar.value, 0.9f, Time.deltaTime);
+            }
+            else if (loadingBar.value >= 0.9f)
+            {
+                loadingBar.value = Mathf.MoveTowards(loadingBar.value, 1f, Time.deltaTime);
+            }
+            if (loadingBar.value >= 1.0f)
+            {
+                if (PlayerManager.GetInstance.isFirstLogin)
+                {
+                    if (inputField.text.Length > 0)
+                    {
+                        touchToStart.GetComponent<Button>().gameObject.SetActive(true);
+                        touchToStart.GetComponent<Button>().enabled = true;
+                    }
+                }
+                else
+                {
+                    touchToStart.GetComponent<Button>().gameObject.SetActive(true);
+                    touchToStart.GetComponent<Button>().enabled = true;
+                }
+            }
+
+            if (PlayerManager.GetInstance.isFirstLogin)
+            {
+                if (isMoveNextScene && loadingBar.value >= 1.0f && inputField.text.Length > 0)
+                {
+                    op.allowSceneActivation = true;
+                    yield break;
+                }
+            }
+            else
+            {
+                if (isMoveNextScene && loadingBar.value >= 1.0f)
+                {
+                    op.allowSceneActivation = true;
+                    yield break;
+                }
+            }
         }
-        DontDestroyOnLoad(gameObject);
     }
 }

@@ -8,6 +8,9 @@ public class InGameLoop : MonoBehaviour
 {
     private Player player;
 
+    [SerializeField]
+    private Fade fade;
+
     // 단 한번만 게임 시작할 때 true가 됨
     public static bool isGameStart = false;
 
@@ -18,6 +21,7 @@ public class InGameLoop : MonoBehaviour
 
     private void Awake()
     {
+        fade.FadeOut(0.5f);
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         player.AwakePlayer();
     }
