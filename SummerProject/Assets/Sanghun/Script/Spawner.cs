@@ -43,6 +43,8 @@ public class Spawner : MonoBehaviour
 
     public int NumOfMaxInitObject;
 
+    private List<GameObject> wave = new List<GameObject>();
+
     [Range(0, 1)]
     public float ratioOfObstacle;
 
@@ -61,8 +63,6 @@ public class Spawner : MonoBehaviour
     private float deltaSpawnTime = 0.0f;
 
     public event Action RestartEvent;
-
-    public bool isInitSpawner = false;
 
     public bool WaitRestart { get; set; }
 
@@ -104,14 +104,9 @@ public class Spawner : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
-        SceneManager.sceneLoaded += StartInitPooling;
+        InitSpawningPool();
         EndOfSpawnPoint = new Vector3[2];
         WaitRestart = false;
-    }
-
-    public void StartInitPooling(Scene scene, LoadSceneMode mode)
-    {
-        StartCoroutine(InitSpawningPool());
     }
 
     public void UpdateSpawnerPosition(Vector3 playerPos)
@@ -141,7 +136,6 @@ public class Spawner : MonoBehaviour
         int numOfObstacle = (int)((numOfSpawnedObj + 1) * ratioOfObstacle);
         int numOfEmpty = UnityEngine.Random.Range(0, numOfObstacle);
         int numOfItem = numOfSpawnedObj - numOfEmpty - numOfObstacle;
-        List<GameObject> wave = new List<GameObject>();
 
         // TODO : 개수 지정 구간1 ( 여기서 비율 조정 가능)
         for (int i = 0; i < numOfItem + 3; i++)
@@ -186,6 +180,7 @@ public class Spawner : MonoBehaviour
                 obj.SetActive(true);
             }
         }
+        wave.Clear();
     }
 
     private void GetShuffledSpawnedObj(ref List<GameObject> spawnObjs)
@@ -203,7 +198,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    public IEnumerator InitSpawningPool()
+    public void InitSpawningPool()
     {
         for (int i = 0; i < 2; i++)
         {
@@ -212,7 +207,6 @@ public class Spawner : MonoBehaviour
 
         for (int i = 0; i < NumOfMaxInitObject * 2; i++)
         {
-            yield return new WaitForEndOfFrame();
             if (i % 2 == 0)
             {
                 // 장애물 비율 적당히 조절해서 instantiate
@@ -247,7 +241,6 @@ public class Spawner : MonoBehaviour
                 spawningPool[(int)SPAWN_OBJ.ITEM].Enqueue(spawned);
             }
         }
-        isInitSpawner = true;
     }
 
     private GameObject GetSpawnedObj(SPAWN_OBJ spawnedObj)

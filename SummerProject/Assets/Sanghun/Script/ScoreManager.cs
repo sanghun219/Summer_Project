@@ -63,10 +63,12 @@ public class ScoreManager : MonoBehaviour
     {
         while (player.isGameOver == false)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.2f);
             // TODO : 그럴듯한 스코어 계산법이 생각나면 사용
-
-            score += (int)player.VelocityZ / 10 + 3;
+            if ((player.GetPlayerMode() & PlayerMode.SUPER) == 0)
+                score += (int)player.VelocityZ / 2 + 3;
+            else
+                score += (int)player.VelocityZ / 10;
             resultScore = score;
         }
     }

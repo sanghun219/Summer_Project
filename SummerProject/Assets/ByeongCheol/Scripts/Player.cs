@@ -245,16 +245,13 @@ public class Player : MonoBehaviour
         MoveHorizontal(hCurrentSpeed);
 
         //전진만 하게끔 vertical 입력 값 양수일경우에만 가속
-        if (v > 0)
-        {
-            AccelerateForward();
-        }
+        AccelerateForward();
     }
 
     public void PlayerUpdate()
     {
-        h = Input.GetAxisRaw("Horizontal");
-        v = Input.GetAxisRaw("Vertical");
+        //h = Input.GetAxisRaw("Horizontal");
+        //v = Input.GetAxisRaw("Vertical");
     }
 
     public void StartPlayer()
@@ -275,15 +272,17 @@ public class Player : MonoBehaviour
         {
             yield return null;
             if (InGameLoop.isGameStart == false) continue;
-            if (rigid.velocity.z <= fMaxSpeed && (playerMode & PlayerMode.DOWN_SPEED) == 0)
+            if (rigid.velocity.z <= fMaxSpeed && (playerMode & PlayerMode.DOWN_SPEED) == 0 || (playerMode & PlayerMode.SUPER) != 0)
+            {
                 rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Force);
+            }
         }
     }
 
     //플레이어 가속 함수
     private void AccelerateForward()
     {
-        if ((playerMode & PlayerMode.DOWN_SPEED) != 0)
+        if ((playerMode & PlayerMode.DOWN_SPEED) != 0 || (playerMode & PlayerMode.SUPER) != 0)
             rigid.AddForce(new Vector3(0, 0, AccForward));
 
         //Debug.Log("Acc : Velocity of Z : " + rigid.velocity.z);
@@ -295,7 +294,7 @@ public class Player : MonoBehaviour
         //현재 속도를 키 입력이 눌릴때만 증가하고 누르지 않을경우 천천히 0으로 돌아오게끔 한다.
         hCurrentSpeed = IncrementSide(hCurrentSpeed, h * hMaxSpeed, hAcceleration);
         this.rigid.MovePosition(this.transform.position + new Vector3(c, 0, 0) * Time.deltaTime);
-        if (playerMode == PlayerMode.SUPER)
+        if ((playerMode & PlayerMode.SUPER) != 0)
         {
             if (anim.GetBool("isLeft") || anim.GetBool("isRight"))
             {
@@ -303,37 +302,36 @@ public class Player : MonoBehaviour
                 anim.SetBool("isLeft", false);
                 anim.SetBool("isRight", false);
             }
-            return;
         }
 
-        if (Application.platform == RuntimePlatform.WindowsEditor)
-        {
-            if (!Input.anyKey || h == 0)
-            {
-                anim.SetBool("isLeft", false);
-                anim.SetBool("isRight", false);
-            }
-            else if (Input.GetKey(KeyCode.LeftArrow) || h < 0)
-            {
-                anim.SetBool("isLeft", true);
-                anim.SetBool("isRight", false);
-            }
-            else if (Input.GetKey(KeyCode.RightArrow) || h > 0)
-            {
-                anim.SetBool("isRight", true);
-                anim.SetBool("isLeft", false);
-            }
-            if ((Input.GetKeyUp(KeyCode.LeftArrow)) || h > 0)
-            {
-                anim.SetBool("isLeft", false);
-                h = 0;
-            }
-            if (Input.GetKeyUp(KeyCode.RightArrow) || h < 0)
-            {
-                anim.SetBool("isRight", false);
-                h = 0;
-            }
-        }
+        //if (Application.platform == RuntimePlatform.WindowsEditor)
+        //{
+        //    if (!Input.anyKey || h == 0)
+        //    {
+        //        anim.SetBool("isLeft", false);
+        //        anim.SetBool("isRight", false);
+        //    }
+        //    else if (Input.GetKey(KeyCode.LeftArrow) || h < 0)
+        //    {
+        //        anim.SetBool("isLeft", true);
+        //        anim.SetBool("isRight", false);
+        //    }
+        //    else if (Input.GetKey(KeyCode.RightArrow) || h > 0)
+        //    {
+        //        anim.SetBool("isRight", true);
+        //        anim.SetBool("isLeft", false);
+        //    }
+        //    if ((Input.GetKeyUp(KeyCode.LeftArrow)) || h > 0)
+        //    {
+        //        anim.SetBool("isLeft", false);
+        //        h = 0;
+        //    }
+        //    if (Input.GetKeyUp(KeyCode.RightArrow) || h < 0)
+        //    {
+        //        anim.SetBool("isRight", false);
+        //        h = 0;
+        //    }
+        //}
 
         if (Input.touchCount > 0)
         {
@@ -341,7 +339,7 @@ public class Player : MonoBehaviour
             Vector3 playerPos = Camera.main.WorldToScreenPoint(transform.position);
             Vector2 touchPos = new Vector2(touch.position.x, touch.position.y);
 
-            if (touch.phase == TouchPhase.Began)
+            if (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Moved)
             {
                 if (touchPos.x < playerPos.x)
                 {
@@ -360,9 +358,11 @@ public class Player : MonoBehaviour
                     h = 0;
                 }
             }
-            else if (touch.phase == TouchPhase.Stationary
-                || touch.phase == TouchPhase.Moved)
+            else if (touch.phase == TouchPhase.Canceled || touch.phase == TouchPhase.Ended)
             {
+                anim.SetBool("isLeft", false);
+                anim.SetBool("isRight", false);
+                h = 0;
             }
         }
         else

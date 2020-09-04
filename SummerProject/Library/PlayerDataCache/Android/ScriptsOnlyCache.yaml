@@ -1052,7 +1052,7 @@ ScriptsOnlyBuild:
     className: DepthOfFieldDeprecated
   - hash:
       serializedVersion: 2
-      Hash: dd75c7aef32a5919c9bfd34555e3fc97
+      Hash: 1d3bd3fda7d887bf0577fdc9544e1bbe
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Spawner

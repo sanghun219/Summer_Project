@@ -30,7 +30,7 @@ public class SuperMode : MonoBehaviour
         float originSpeed = player.VelocityZ;
         player.GetComponent<CapsuleCollider>().isTrigger = true;
         particle.Play();
-        player.VelocityZ = 1200;
+        player.VelocityZ = 1500;
         while (previousTimer <= SuperModeTimer)
         {
             yield return new WaitForFixedUpdate();

@@ -85,7 +85,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19895006, guid: fc71468b7ead89a498a1b4cd8021b66a, type: 3}
       propertyPath: simulationSpeed
-      value: 40
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 19895006, guid: fc71468b7ead89a498a1b4cd8021b66a, type: 3}
       propertyPath: ColorModule.gradient.maxGradient.atime3
@@ -102,6 +102,14 @@ PrefabInstance:
     - target: {fileID: 19895006, guid: fc71468b7ead89a498a1b4cd8021b66a, type: 3}
       propertyPath: lengthInSec
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 19895006, guid: fc71468b7ead89a498a1b4cd8021b66a, type: 3}
+      propertyPath: InitialModule.maxNumParticles
+      value: 100000
+      objectReference: {fileID: 0}
+    - target: {fileID: 19895006, guid: fc71468b7ead89a498a1b4cd8021b66a, type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc71468b7ead89a498a1b4cd8021b66a, type: 3}

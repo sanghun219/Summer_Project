@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InGameLoop : MonoBehaviour
 {
@@ -21,7 +22,8 @@ public class InGameLoop : MonoBehaviour
 
     private void Awake()
     {
-        fade.FadeOut(0.5f);
+        fade.FadeOut(1.0f);
+
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         player.AwakePlayer();
     }
