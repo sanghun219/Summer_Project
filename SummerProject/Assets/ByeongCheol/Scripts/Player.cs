@@ -284,8 +284,6 @@ public class Player : MonoBehaviour
     {
         if ((playerMode & PlayerMode.DOWN_SPEED) != 0 || (playerMode & PlayerMode.SUPER) != 0)
             rigid.AddForce(new Vector3(0, 0, AccForward));
-
-        //Debug.Log("Acc : Velocity of Z : " + rigid.velocity.z);
     }
 
     //좌우로 이동을 수행해주는 함수
@@ -336,18 +334,15 @@ public class Player : MonoBehaviour
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
-            Vector3 playerPos = Camera.main.WorldToScreenPoint(transform.position);
-            Vector2 touchPos = new Vector2(touch.position.x, touch.position.y);
-
             if (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Moved)
             {
-                if (touchPos.x < playerPos.x)
+                if (touch.position.x < Screen.width / 2)
                 {
                     h = -1;
                     anim.SetBool("isLeft", true);
                     anim.SetBool("isRight", false);
                 }
-                else if (touchPos.x > playerPos.x)
+                else if (touch.position.x > Screen.width / 2)
                 {
                     h = 1;
                     anim.SetBool("isRight", true);
