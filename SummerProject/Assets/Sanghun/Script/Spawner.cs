@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 public enum SPAWN_OBJ
 {
@@ -61,6 +62,8 @@ public class Spawner : MonoBehaviour
 
     public event Action RestartEvent;
 
+    public bool isInitSpawner = false;
+
     public bool WaitRestart { get; set; }
 
     public void Restart()
@@ -90,7 +93,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void Awake()
     {
         if (Instance == null)
         {
@@ -101,9 +104,14 @@ public class Spawner : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
-        InitSpawningPool();
+        SceneManager.sceneLoaded += StartInitPooling;
         EndOfSpawnPoint = new Vector3[2];
         WaitRestart = false;
+    }
+
+    public void StartInitPooling(Scene scene, LoadSceneMode mode)
+    {
+        StartCoroutine(InitSpawningPool());
     }
 
     public void UpdateSpawnerPosition(Vector3 playerPos)
@@ -195,7 +203,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    private void InitSpawningPool()
+    public IEnumerator InitSpawningPool()
     {
         for (int i = 0; i < 2; i++)
         {
@@ -204,6 +212,7 @@ public class Spawner : MonoBehaviour
 
         for (int i = 0; i < NumOfMaxInitObject * 2; i++)
         {
+            yield return new WaitForEndOfFrame();
             if (i % 2 == 0)
             {
                 // 장애물 비율 적당히 조절해서 instantiate
@@ -238,6 +247,7 @@ public class Spawner : MonoBehaviour
                 spawningPool[(int)SPAWN_OBJ.ITEM].Enqueue(spawned);
             }
         }
+        isInitSpawner = true;
     }
 
     private GameObject GetSpawnedObj(SPAWN_OBJ spawnedObj)

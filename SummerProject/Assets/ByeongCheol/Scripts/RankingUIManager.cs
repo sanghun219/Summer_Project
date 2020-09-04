@@ -27,14 +27,26 @@ public class RankingUIManager : MonoBehaviour
                 Destroy(contents.GetChild(i).gameObject);
             }
         }
-
-        webserver.InsertScoreInRank(PlayerManager.GetInstance.GetPlayerID(), ScoreManager.GetInstance.GetScore());
         webserver.InitGetRank();
     }
 
     private void Awake()
     {
         webserver.InsertedEventHandler += ViewRankContent;
+        Player.GameOverEvent += InsertData;
+    }
+
+    private void InsertData()
+    {
+        if (contents.gameObject.transform.childCount > 0)
+        {
+            for (int i = 0; i < contents.gameObject.transform.childCount; i++)
+            {
+                Destroy(contents.GetChild(i).gameObject);
+            }
+        }
+        webserver.InitGetRank();
+        webserver.InsertScoreInRank(PlayerManager.GetInstance.GetPlayerID(), ScoreManager.GetInstance.GetScore());
     }
 
     private void ViewRankContent()

@@ -24,14 +24,15 @@ public class Loading : MonoBehaviour
 
     public void SetMoveNextScene(bool bo)
     {
-        PlayerManager.GetInstance.SetPlayerID(inputField.text);
-        fade.FadeIn(1.0f, () => { isMoveNextScene = bo; });
+        if (PlayerManager.GetInstance.isFirstLogin)
+            PlayerManager.GetInstance.SetPlayerID(inputField.text);
+        fade.FadeIn(0.5f, () => { isMoveNextScene = bo; });
     }
 
     private void Start()
     {
         PlayerManager.GetInstance.PlayerManagerAwake();
-        Debug.Log(PlayerManager.GetInstance.isFirstLogin);
+
         if (PlayerManager.GetInstance.isFirstLogin == false)
         {
             inputField.gameObject.SetActive(false);
@@ -43,17 +44,18 @@ public class Loading : MonoBehaviour
     private IEnumerator LoadAsyncScene()
     {
         yield return null;
-        AsyncOperation op = SceneManager.LoadSceneAsync(1);
+        AsyncOperation op = SceneManager.LoadSceneAsync("Scenes/TESTEST");
         op.allowSceneActivation = false;
 
         while (!op.isDone)
         {
             yield return null;
+
             if (loadingBar.value < 0.9f)
             {
                 loadingBar.value = Mathf.MoveTowards(loadingBar.value, 0.9f, Time.deltaTime);
             }
-            else if (loadingBar.value >= 0.9f)
+            else if (op.progress >= 0.9f)
             {
                 loadingBar.value = Mathf.MoveTowards(loadingBar.value, 1f, Time.deltaTime);
             }

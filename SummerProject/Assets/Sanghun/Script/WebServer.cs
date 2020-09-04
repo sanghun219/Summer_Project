@@ -81,7 +81,7 @@ public class WebServer : MonoBehaviour
         isInsertedYourData = false;
         WWWForm form = new WWWForm();
         form.AddField("dataType", "LoadRank");
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/rankinginfo/GetRankingInfo.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post("http://sanghun219.dothome.co.kr/GetRankingInfo.php", form))
         {
             yield return www.SendWebRequest();
 
@@ -106,8 +106,8 @@ public class WebServer : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("UserID", playerID);
         form.AddField("UserScore", playerScore);
-        form.AddField("dataType", "InsertScore");
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/rankinginfo/GetRankingInfo.php", form))
+        form.AddField("dataType", "InsertScore"); //http://sanghun219.dothome.co.kr/
+        using (UnityWebRequest www = UnityWebRequest.Post("http://sanghun219.dothome.co.kr/GetRankingInfo.php", form))
         {
             yield return www.SendWebRequest();
 

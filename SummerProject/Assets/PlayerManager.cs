@@ -41,7 +41,7 @@ public class PlayerManager : MonoBehaviour
     public void PlayerManagerAwake()
     {
         playerid = PlayerPrefs.GetString("Login");
-        if (playerid == null)
+        if (playerid == null || playerid.Length <= 0)
         {
             isFirstLogin = true;
         }
