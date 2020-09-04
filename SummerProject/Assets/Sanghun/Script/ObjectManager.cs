@@ -68,6 +68,9 @@ public enum COLLIDE_OPT
 
 public class ObjectManager : MonoBehaviour
 {
+    [SerializeField]
+    private string pointUpSound_Commom;
+
     private static ObjectManager Instance = null;
 
     public Dictionary<OBSTACLE_TYPE, Action<Obstacle, SHOOT_OPT>> ObsType_Update = new Dictionary<OBSTACLE_TYPE, Action<Obstacle, SHOOT_OPT>>();
@@ -206,6 +209,8 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
+            SoundManager.instance.PlaySE(pointUpSound_Commom);
+
             if (col_opt == COLLIDE_OPT.VANISH)
             {
                 item.gameObject.SetActive(false);
@@ -225,6 +230,8 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
+            SoundManager.instance.PlaySE(pointUpSound_Commom);
+
             if (col_opt == COLLIDE_OPT.VANISH)
             {
                 item.gameObject.SetActive(false);
@@ -245,6 +252,8 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
+            SoundManager.instance.PlaySE(pointUpSound_Commom);
+
             if (col_opt == COLLIDE_OPT.VANISH)
             {
                 item.gameObject.SetActive(false);
