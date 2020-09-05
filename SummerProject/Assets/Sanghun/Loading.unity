@@ -148,14 +148,14 @@ RectTransform:
   m_GameObject: {fileID: 87377558}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2249, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2101938142}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -521, y: 0.000040531}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1413.4849, y: 230.42523}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &87377560
@@ -1428,7 +1428,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 1343216894}
   m_HandleRect: {fileID: 0}
