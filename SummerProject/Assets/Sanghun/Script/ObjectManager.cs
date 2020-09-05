@@ -145,10 +145,10 @@ public class ObjectManager : MonoBehaviour
 
     private void CommonItemUpdate(Item item, SHOOT_OPT shootOpt)
     {
-        if (player.isGameOver)
-        {
-            shootOpt = SHOOT_OPT.NONE;
-        }
+        //if (player.isGameOver)
+        //{
+        //    shootOpt = SHOOT_OPT.NONE;
+        //}
         float itemSpeed = item.speed;
         shootOpt |= GlobalItem_opt;
         if ((shootOpt & SHOOT_OPT.GL_ROTATE) != 0)
@@ -166,6 +166,7 @@ public class ObjectManager : MonoBehaviour
 
         if ((shootOpt & SHOOT_OPT.LC_ROTATE) != 0)
         {
+            Debug.Log(UnityEngine.Random.Range(1.0f, 2.0f));
             item.transform.Rotate(new Vector3(0, 1, 0) * 120 * Time.deltaTime);
         }
 

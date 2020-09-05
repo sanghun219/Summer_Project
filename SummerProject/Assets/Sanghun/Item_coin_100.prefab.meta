@@ -1,17 +1,6 @@
 fileFormatVersion: 2
-guid: ba97329b8102ef545b0a43366151f3d2
-labels:
-- asteroid
-- planets
-- glitch
-- spacesparks
-- spacejourney
-- spaceadventure
-- planet
-- space
-- stars
-- astronaut
-timeCreated: 1443809127
+guid: ce9a0e22df07ace418c063faa0d878a4
+timeCreated: 1485828314
 licenseType: Store
 NativeFormatImporter:
   userData: 

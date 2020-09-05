@@ -32,6 +32,8 @@ public class Item : MonoBehaviour, ISpawned
     private void Awake()
     {
         Spawner.GetInstance.RestartEvent += Restart;
+        transform.rotation = Quaternion.Euler(new Vector3(UnityEngine.Random.Range(-180, 180), UnityEngine.Random.Range(-180, 180)
+            , UnityEngine.Random.Range(-180, 180)));
     }
 
     private void Restart()
