@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 using UnityEngine.SceneManagement;
 
 public class Loading : MonoBehaviour
@@ -17,6 +18,9 @@ public class Loading : MonoBehaviour
 
     [SerializeField]
     private Fade fade;
+
+    [SerializeField]
+    private Text loadText;
 
     public static int nextScenenum;
 
@@ -50,6 +54,7 @@ public class Loading : MonoBehaviour
         while (!op.isDone)
         {
             yield return null;
+            loadText.text = Math.Truncate(loadingBar.value * 100).ToString() + "%";
 
             if (loadingBar.value < 0.9f)
             {

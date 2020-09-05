@@ -219,7 +219,7 @@ public class ObjectManager : MonoBehaviour
             if (col_opt == COLLIDE_OPT.EXPLODE)
             {
             }
-            if (player.GetPlayerMode() == PlayerMode.DOUBLE_POINT)
+            if ((player.GetPlayerMode() & PlayerMode.DOUBLE_POINT) != 0)
                 ScoreManager.GetInstance.AddScore(200);
             else
                 ScoreManager.GetInstance.AddScore(100);
@@ -241,7 +241,7 @@ public class ObjectManager : MonoBehaviour
             {
             }
 
-            if (player.GetPlayerMode() == PlayerMode.DOUBLE_POINT)
+            if ((player.GetPlayerMode() & PlayerMode.DOUBLE_POINT) != 0)
                 ScoreManager.GetInstance.AddScore(1000);
             else
                 ScoreManager.GetInstance.AddScore(500);
@@ -263,7 +263,7 @@ public class ObjectManager : MonoBehaviour
             {
             }
 
-            if (player.GetPlayerMode() == PlayerMode.DOUBLE_POINT)
+            if ((player.GetPlayerMode() & PlayerMode.DOUBLE_POINT) != 0)
                 ScoreManager.GetInstance.AddScore(2000);
             else
                 ScoreManager.GetInstance.AddScore(1000);

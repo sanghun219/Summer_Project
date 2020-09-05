@@ -22,7 +22,7 @@ public class InGameLoop : MonoBehaviour
 
     private void Awake()
     {
-        fade.FadeOut(1.0f);
+        fade.FadeOut(2.0f);
 
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         player.AwakePlayer();
