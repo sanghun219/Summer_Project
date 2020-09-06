@@ -55,7 +55,6 @@ public class RankingUIManager : MonoBehaviour
         foreach (var rank in webserver.GetRank())
         {
             this.CreateRankContent(rank.ID, rank.Date, rank.Score, rankNum);
-            Debug.Log(rank.ID);
             rankNum++;
         }
     }
@@ -70,13 +69,15 @@ public class RankingUIManager : MonoBehaviour
             Text rankDateData = tempPrefab.transform.Find("DateData").GetComponent<Text>();
             Text rankID = tempPrefab.transform.Find("NameData").GetComponent<Text>();
             Text rankScore = tempPrefab.transform.Find("ScoreData").GetComponent<Text>();
-            Text rankTextData = tempPrefab.transform.Find("RankTextData").GetComponent<Text>();
+            // Text rankTextData = tempPrefab.transform.Find("RankTextData").GetComponent<Text>();
 
             rankDateData.text = date;
             rankID.text = id.ToString();
             rankScore.text = score.ToString();
-            rankTextData.text = rank.ToString();
+            // rankTextData.text = rank.ToString();
             rankImage.sprite = RankgImages[rank - 1];
+            rankImage.rectTransform.anchoredPosition = new Vector2(rankImage.rectTransform.anchoredPosition.x + 150,
+                rankImage.rectTransform.anchoredPosition.y);
             tempPrefab.transform.SetParent(contents);
         }
         else

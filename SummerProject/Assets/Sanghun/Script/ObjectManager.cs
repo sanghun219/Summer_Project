@@ -166,7 +166,6 @@ public class ObjectManager : MonoBehaviour
 
         if ((shootOpt & SHOOT_OPT.LC_ROTATE) != 0)
         {
-            Debug.Log(UnityEngine.Random.Range(1.0f, 2.0f));
             item.transform.Rotate(new Vector3(0, 1, 0) * 120 * Time.deltaTime);
         }
 

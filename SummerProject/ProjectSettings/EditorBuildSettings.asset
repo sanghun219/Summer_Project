@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Sanghun/Loading.unity
+    path: Assets/Scenes/Loading.unity
     guid: 66f5a53aa8ad38c4289f5b8889e4618d
   - enabled: 1
     path: Assets/Scenes/TESTEST.unity

@@ -11,6 +11,7 @@ public class PlayerManager : MonoBehaviour
     public void SetPlayerID(string id)
     {
         playerid = id;
+        Debug.Log(playerid);
         PlayerPrefs.SetString("Login", playerid);
     }
 
