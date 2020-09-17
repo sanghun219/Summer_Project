@@ -30,4 +30,9 @@ public class ToggleManager : MonoBehaviour
         }
 
     }
+
+    public void OnClick()
+    {
+        Debug.Log("Clicked");
+    }
 }
