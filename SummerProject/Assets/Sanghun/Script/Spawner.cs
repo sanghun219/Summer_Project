@@ -98,10 +98,12 @@ public class Spawner : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            Debug.Log("instanciate");
         }
         else if (Instance != null)
         {
             Destroy(gameObject);
+            Debug.Log("destroy");
         }
         DontDestroyOnLoad(gameObject);
         InitSpawningPool();
@@ -180,6 +182,7 @@ public class Spawner : MonoBehaviour
                 obj.SetActive(true);
             }
         }
+        Debug.Log("clear");
         wave.Clear();
     }
 
@@ -285,6 +288,7 @@ public class Spawner : MonoBehaviour
     // SpawnedObj가 Destroy될 때 다시 회수함( 실제로는 사본이 넘겨지는 것)
     public void ReturnObj(GameObject obj, SPAWN_OBJ spawnObj)
     {
+        Debug.Log("회수");
         if (spawnObj == SPAWN_OBJ.ITEM)
         {
             obj.gameObject.SetActive(false);

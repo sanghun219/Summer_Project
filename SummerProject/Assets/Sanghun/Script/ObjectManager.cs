@@ -378,6 +378,7 @@ public class ObjectManager : MonoBehaviour
         if ((shootOpt & SHOOT_OPT.LC_ROTATE) != 0)
         {
             spawned.transform.Rotate(Vector3.up * 120 * Time.deltaTime);
+
         }
 
         if ((shootOpt & SHOOT_OPT.GL_ROTATE) == 0)
