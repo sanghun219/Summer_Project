@@ -16,9 +16,8 @@ public class SoundManager : MonoBehaviour
 
     static public SoundManager instance;
 
-    //[SerializeField]
     //public Button soundBtn;
-    //private bool bToggleSM = true;
+    private bool bToggleSM = true;
 
 
     //싱글턴화
@@ -54,36 +53,36 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySE(string _name)
     {
-        //if (!bToggleSM)
-        //{
-        //    Debug.Log("사운드가 꺼져있습니다");
-        //    return;
-        //}
-        //else if (bToggleSM)
-        //{
-
-        //}
-
-        for (int i = 0; i < effectSounds.Length; i++)
+        if (!bToggleSM)
         {
-            if (_name == effectSounds[i].name)
+            Debug.Log("사운드가 꺼져있습니다");
+            return;
+        }
+        else if (bToggleSM)
+        {
+
+            for (int i = 0; i < effectSounds.Length; i++)
             {
-                for (int j = 0; j < audioSourceEffects.Length; j++)
+                if (_name == effectSounds[i].name)
                 {
-                    playSoundName[j] = effectSounds[i].name;
-                    audioSourceEffects[j].clip = effectSounds[i].clip;
-                    audioSourceEffects[j].Play();
-                    //if (!audioSourceEffects[j].isPlaying)
-                    //{
-                    //    return;
-                    //}
-                    //Debug.Log("모든 가용 AudioSource가 사용중입니다.");
-                    Debug.Log("사운드 실행");
-                    return;
+                    for (int j = 0; j < audioSourceEffects.Length; j++)
+                    {
+                        playSoundName[j] = effectSounds[i].name;
+                        audioSourceEffects[j].clip = effectSounds[i].clip;
+                        audioSourceEffects[j].Play();
+                        //if (!audioSourceEffects[j].isPlaying)
+                        //{
+                        //    return;
+                        //}
+                        //Debug.Log("모든 가용 AudioSource가 사용중입니다.");
+                        Debug.Log("사운드 실행");
+                        return;
+                    }
                 }
             }
+            Debug.Log(_name + "사운드가 SoundManager에 등록되지 않았습니다.");
         }
-        Debug.Log(_name + "사운드가 SoundManager에 등록되지 않았습니다.");
+
     }
 
     public void StopAllSE()
@@ -107,38 +106,12 @@ public class SoundManager : MonoBehaviour
         Debug.Log("재생 중인" + _name + "사운드가 없습니다.");
     }
 
-    //public void ToggleSoundManager()
-    //{
+    public void ToggleSound()
+    {
 
-
-    //    ColorBlock colorBlock = new ColorBlock();
-    //    colorBlock.normalColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-    //    colorBlock.highlightedColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-    //    colorBlock.pressedColor = new Color(0.9294118f, 0.5411765f, 0.5411765f, 1.0f);
-    //    colorBlock.selectedColor = new Color(0.6698113f, 0.6698113f, 0.6698113f, 1.0f);
-    //    colorBlock.colorMultiplier = 1;
-    //    colorBlock.fadeDuration = 0.1f;
-
-
-    //    ColorBlock colorBlock2 = new ColorBlock();
-    //    colorBlock2.normalColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-    //    colorBlock2.highlightedColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-    //    colorBlock2.pressedColor = new Color(0.9294118f, 0.5411765f, 0.5411765f, 1.0f);
-    //    colorBlock2.selectedColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-    //    colorBlock2.colorMultiplier = 1;
-    //    colorBlock2.fadeDuration = 0.1f;
-    //    if (bToggleSM)
-    //    {
-    //        bToggleSM = false;
-    //        soundBtn.GetComponent<Button>().colors = colorBlock;
-    //    }
-    //    else if (!bToggleSM)
-    //    {
-    //        bToggleSM = true;
-    //        soundBtn.GetComponent<Button>().colors = colorBlock2;
-    //    }
-    //}
-
+        bToggleSM = !bToggleSM;
+        Debug.Log("bToggleSM : "+bToggleSM);
+    }
 
 }
 
