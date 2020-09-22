@@ -339,6 +339,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointUpSound_Commom: PointUP_Common
+  itemSound_PushObject: Item_PushObjects
+  itemSound_DoublePoint: Item_DoublePoint
+  itemSound_SuperMode: Item_SuperMode
+  itemSound_Magnet: Item_Magnet
+  itemSound_DownSpeed: Item_DownSpeed
   GlobalItem_opt: 0
 --- !u!114 &112892268
 MonoBehaviour:
@@ -2170,11 +2175,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSourceEffects:
   - {fileID: 476465899}
+  - {fileID: 476465899}
+  - {fileID: 476465898}
+  - {fileID: 476465897}
+  - {fileID: 476465896}
+  - {fileID: 476465895}
   audioSourceBgm: {fileID: 0}
-  playSoundName: []
+  playSoundName:
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   effectSounds:
   - name: PointUP_Common
     clip: {fileID: 8300000, guid: 4126554f9411846ddbc228284f364609, type: 3}
+  - name: Item_PushObjects
+    clip: {fileID: 8300000, guid: 7c089ef207ee0ef418e3f34d4a6e1758, type: 3}
+  - name: Item_DoublePoint
+    clip: {fileID: 8300000, guid: a24f0927eec97bc4ebae5b320d0f5265, type: 3}
+  - name: Item_SuperMode
+    clip: {fileID: 8300000, guid: 4515a079836e72e4e95d0b16cadf31ac, type: 3}
+  - name: Item_Magnet
+    clip: {fileID: 8300000, guid: 3731d7ecfc58c7e4398963cc637f2900, type: 3}
+  - name: Item_DownSpeed
+    clip: {fileID: 8300000, guid: 7ee567d32df44fd499dfcdf3ec0c2123, type: 3}
   bgmSounds: []
 --- !u!4 &476465902
 Transform:
@@ -2887,12 +2913,17 @@ PrefabInstance:
     - target: {fileID: 3726504235337142845, guid: bd934e960f5b69a4aa61ed1e782bb60e,
         type: 3}
       propertyPath: ratioOfObstacle
-      value: 0.5
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 3726504235337142845, guid: bd934e960f5b69a4aa61ed1e782bb60e,
         type: 3}
       propertyPath: numOfSpawnedObj
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3726504235337142845, guid: bd934e960f5b69a4aa61ed1e782bb60e,
+        type: 3}
+      propertyPath: distSpawnerToPlayer
+      value: 1500
       objectReference: {fileID: 0}
     - target: {fileID: 7891284402674008080, guid: bd934e960f5b69a4aa61ed1e782bb60e,
         type: 3}

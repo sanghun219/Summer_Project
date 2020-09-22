@@ -70,6 +70,17 @@ public class ObjectManager : MonoBehaviour
 {
     [SerializeField]
     private string pointUpSound_Commom;
+    [SerializeField]
+    private string itemSound_PushObject;
+    [SerializeField]
+    private string itemSound_DoublePoint;
+    [SerializeField]
+    private string itemSound_SuperMode;
+    [SerializeField]
+    private string itemSound_Magnet;
+    [SerializeField]
+    private string itemSound_DownSpeed;
+
 
     private static ObjectManager Instance = null;
 
@@ -281,6 +292,7 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
+            SoundManager.instance.PlaySE(itemSound_DoublePoint);
             // 아이템 연출 효과
             if (col_opt == COLLIDE_OPT.VANISH)
             {
@@ -297,7 +309,8 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
-            if (col_opt == COLLIDE_OPT.VANISH)
+            SoundManager.instance.PlaySE(itemSound_SuperMode);
+
             {
                 item.gameObject.SetActive(false);
             }
@@ -312,6 +325,10 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
+            SoundManager.instance.PlaySE(itemSound_Magnet);
+
+            if (col_opt == COLLIDE_OPT.VANISH)
+
             // 아이템 연출 효과
             if (col_opt == COLLIDE_OPT.VANISH)
             {
@@ -339,6 +356,8 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
+            SoundManager.instance.PlaySE(itemSound_DownSpeed);
+
             // 아이템 연출 효과
             if (col_opt == COLLIDE_OPT.VANISH)
             {
@@ -356,6 +375,8 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
+            SoundManager.instance.PlaySE(itemSound_PushObject);
+
             // 아이템 연출 효과
             if (col_opt == COLLIDE_OPT.VANISH)
             {
