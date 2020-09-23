@@ -25,10 +25,11 @@ public class DoublePoint : MonoBehaviour
     private IEnumerator UpdateDoublePoint()
     {
         float previousTimer = 0.0f;
-        while (previousTimer <= DoublePointTimer)
+        while (previousTimer <= DoublePointTimer && player.isGameOver == false)
         {
             yield return new WaitForFixedUpdate();
             previousTimer += Time.fixedDeltaTime;
+            Debug.Log("DoublePoint : " + previousTimer);
         }
 
         player.SetPlayerMode(PlayerMode.DOUBLE_POINT, PlayerMode.NORMAL);

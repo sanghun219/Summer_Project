@@ -44,7 +44,7 @@ public class Magnet : MonoBehaviour
     {
         float previousTimer = 0.0f;
 
-        while (previousTimer <= MagnetTimer && (player.GetPlayerMode() & PlayerMode.SUPER) == 0)
+        while (previousTimer <= MagnetTimer && (player.GetPlayerMode() & PlayerMode.SUPER) == 0 && player.isGameOver == false)
         {
             // TODO : 파티클이나 사운드 빠방하게 넣을수 있음!
             yield return new WaitForFixedUpdate();
@@ -55,6 +55,7 @@ public class Magnet : MonoBehaviour
                 if (col.CompareTag("Item"))
                     col.gameObject.GetComponent<Item>().shootOpt |= SHOOT_OPT.MAGNET;
             }
+            Debug.Log("Magnet : " + previousTimer);
         }
 
         foreach (var col in collide)

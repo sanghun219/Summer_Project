@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 2316838}
   - component: {fileID: -42465056794133789}
   - component: {fileID: -3459151958830495160}
-  m_Layer: 0
+  - component: {fileID: -2776046572278808366}
+  m_Layer: 10
   m_Name: Item_coin_1000
   m_TagString: Item
   m_Icon: {fileID: 0}
@@ -94,7 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dca4786644addb409fd247e010d2db0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 7
+  _speed: 5
   _destroyTime: 10
   itemType: 4
   shootOpt: 4
@@ -107,11 +108,27 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 137524}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 4.6432724
   m_Center: {x: 0.26520252, y: -0.4896996, z: 0.631057}
+--- !u!54 &-2776046572278808366
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 137524}
+  serializedVersion: 2
+  m_Mass: 0.1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 36
+  m_CollisionDetection: 1
 --- !u!1 &172490
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,7 +140,7 @@ GameObject:
   - component: {fileID: 447946}
   - component: {fileID: 3323318}
   - component: {fileID: 2397714}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SM_Env_Scale_Moon_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -6,6 +6,7 @@ using UnityEngine.SocialPlatforms.Impl;
 
 public class ScoreManager : MonoBehaviour
 {
+    // Score 관련 다 띄워보자
     private static ScoreManager Instance;
 
     private int score;
@@ -15,6 +16,10 @@ public class ScoreManager : MonoBehaviour
     private Player player;
 
     public Text scoreUI;
+
+    public Text speedUI;
+
+    public Text curItemUI;
 
     public bool isGameOver;
 
@@ -49,6 +54,8 @@ public class ScoreManager : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         StartCoroutine(NormalCalculateScore());
         StartCoroutine(ScoreUIUpdate());
+        StartCoroutine(UpdateSpeedUI());
+        StartCoroutine(UpdateCurItem());
     }
 
     // UI가 Score를 받아서 사용
@@ -57,6 +64,53 @@ public class ScoreManager : MonoBehaviour
     public void AddScore(int score)
     {
         this.score += score;
+    }
+
+    public IEnumerator UpdateCurItem()
+    {
+        while (player.isGameOver == false)
+        {
+            yield return null;
+            switch (player.GetPlayerMode())
+            {
+                case PlayerMode.DOUBLE_POINT:
+                    curItemUI.text = "Double Point !";
+                    break;
+
+                case PlayerMode.DOWN_SPEED:
+                    curItemUI.text = "Down Speed !";
+                    break;
+
+                case PlayerMode.MAGNET:
+                    curItemUI.text = "Magnet !";
+                    break;
+
+                case PlayerMode.PUSH:
+                    curItemUI.text = "Push Obstacle !";
+                    break;
+
+                case PlayerMode.SUPER:
+                    curItemUI.text = "Spuer Mode !";
+                    break;
+
+                default:
+                    curItemUI.text = "";
+                    break;
+            }
+        }
+    }
+
+    public IEnumerator UpdateSpeedUI()
+    {
+        while (player.isGameOver == false)
+        {
+            yield return null;
+            if (InGameLoop.isGameStart == true)
+            {
+                int speed = (int)player.VelocityZ;
+                speedUI.text = speed.ToString();
+            }
+        }
     }
 
     public IEnumerator NormalCalculateScore()
@@ -87,8 +141,11 @@ public class ScoreManager : MonoBehaviour
     public void InitializeScore()
     {
         score = 0;
+        speedUI.text = "";
         scoreUI.text = score.ToString();
         StartCoroutine(NormalCalculateScore());
         StartCoroutine(ScoreUIUpdate());
+        StartCoroutine(UpdateSpeedUI());
+        StartCoroutine(UpdateCurItem());
     }
 }
