@@ -69,7 +69,11 @@ public enum COLLIDE_OPT
 public class ObjectManager : MonoBehaviour
 {
     [SerializeField]
-    private string pointUpSound_Commom;
+    private string pointUpSound_100;
+    [SerializeField]
+    private string pointUpSound_500;
+    [SerializeField]
+    private string pointUpSound_1000;
     [SerializeField]
     private string itemSound_PushObject;
     [SerializeField]
@@ -80,7 +84,8 @@ public class ObjectManager : MonoBehaviour
     private string itemSound_Magnet;
     [SerializeField]
     private string itemSound_DownSpeed;
-
+    [SerializeField]
+    private string obstacle_PlayerGameOver;
 
     private static ObjectManager Instance = null;
 
@@ -220,7 +225,7 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
-            SoundManager.instance.PlaySE(pointUpSound_Commom);
+            SoundManager.instance.PlaySE(pointUpSound_100);
 
             if (col_opt == COLLIDE_OPT.VANISH)
             {
@@ -241,7 +246,7 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
-            SoundManager.instance.PlaySE(pointUpSound_Commom);
+            SoundManager.instance.PlaySE(pointUpSound_500);
 
             if (col_opt == COLLIDE_OPT.VANISH)
             {
@@ -263,7 +268,7 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
-            SoundManager.instance.PlaySE(pointUpSound_Commom);
+            SoundManager.instance.PlaySE(pointUpSound_1000);
 
             if (col_opt == COLLIDE_OPT.VANISH)
             {
@@ -433,6 +438,9 @@ public class ObjectManager : MonoBehaviour
         // 다른 기능을 추가할 수 있음
         if (player.isGameOver == false)
         {
+
+            SoundManager.instance.PlaySE(obstacle_PlayerGameOver);
+
             player.GameOver();
 
             if (col_opt == COLLIDE_OPT.EXPLODE)
@@ -450,6 +458,8 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
+            SoundManager.instance.PlaySE(obstacle_PlayerGameOver);
+
             player.GameOver();
 
             if (col_opt == COLLIDE_OPT.EXPLODE)
@@ -467,6 +477,8 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
+            SoundManager.instance.PlaySE(obstacle_PlayerGameOver);
+
             player.GameOver();
 
             if (col_opt == COLLIDE_OPT.EXPLODE)
@@ -484,6 +496,8 @@ public class ObjectManager : MonoBehaviour
     {
         if (player.isGameOver == false)
         {
+            SoundManager.instance.PlaySE(obstacle_PlayerGameOver);
+
             player.GameOver();
 
             if (col_opt == COLLIDE_OPT.EXPLODE)
