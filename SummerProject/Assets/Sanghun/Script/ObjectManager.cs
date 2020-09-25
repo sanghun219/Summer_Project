@@ -93,9 +93,9 @@ public class ObjectManager : MonoBehaviour
 
     public Dictionary<ITEM_TYPE, Action<Item, SHOOT_OPT>> ItemType_Update = new Dictionary<ITEM_TYPE, Action<Item, SHOOT_OPT>>();
 
-    public Dictionary<OBSTACLE_TYPE, Action<Obstacle, Collision, COLLIDE_OPT>> ObsType_Collide = new Dictionary<OBSTACLE_TYPE, Action<Obstacle, Collision, COLLIDE_OPT>>();
+    public Dictionary<OBSTACLE_TYPE, Action<Obstacle, COLLIDE_OPT>> ObsType_Collide = new Dictionary<OBSTACLE_TYPE, Action<Obstacle, COLLIDE_OPT>>();
 
-    public Dictionary<ITEM_TYPE, Action<Item, Collider, COLLIDE_OPT>> ItemType_Collide = new Dictionary<ITEM_TYPE, Action<Item, Collider, COLLIDE_OPT>>();
+    public Dictionary<ITEM_TYPE, Action<Item, COLLIDE_OPT>> ItemType_Collide = new Dictionary<ITEM_TYPE, Action<Item, COLLIDE_OPT>>();
 
     private Player player;
 
@@ -188,7 +188,7 @@ public class ObjectManager : MonoBehaviour
         if ((shootOpt & SHOOT_OPT.MAGNET) != 0)
         {
             item.transform.LookAt(player.transform);
-            item.transform.position += item.transform.forward * itemSpeed * 3;
+            item.transform.position += item.transform.forward * itemSpeed * 6;
         }
         if ((shootOpt & SHOOT_OPT.MAGNET) == 0)
             item.transform.position += -1 * Vector3.forward * itemSpeed;
@@ -221,7 +221,7 @@ public class ObjectManager : MonoBehaviour
         CommonItemUpdate(item, shootOpt);
     }
 
-    private void PointUPItem_100_Collision(Item item, Collider col, COLLIDE_OPT col_opt)
+    private void PointUPItem_100_Collision(Item item, COLLIDE_OPT col_opt)
     {
         if (player.isGameOver == false)
         {
@@ -242,7 +242,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    private void PointUPItem_500_Collision(Item item, Collider col, COLLIDE_OPT col_opt)
+    private void PointUPItem_500_Collision(Item item, COLLIDE_OPT col_opt)
     {
         if (player.isGameOver == false)
         {
@@ -264,7 +264,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    private void PointUPItem_1000_Collision(Item item, Collider col, COLLIDE_OPT col_opt)
+    private void PointUPItem_1000_Collision(Item item, COLLIDE_OPT col_opt)
     {
         if (player.isGameOver == false)
         {
@@ -293,7 +293,7 @@ public class ObjectManager : MonoBehaviour
         CommonItemUpdate(item, shootOpt);
     }
 
-    private void DoublePointItem_Collision(Item item, Collider col, COLLIDE_OPT col_opt)
+    private void DoublePointItem_Collision(Item item, COLLIDE_OPT col_opt)
     {
         if (player.isGameOver == false)
         {
@@ -310,7 +310,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    private void SuperModeItem_Collision(Item item, Collider col, COLLIDE_OPT col_opt)
+    private void SuperModeItem_Collision(Item item, COLLIDE_OPT col_opt)
     {
         if (player.isGameOver == false)
         {
@@ -326,7 +326,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    private void MagnetItem_Collision(Item item, Collider col, COLLIDE_OPT col_opt)
+    private void MagnetItem_Collision(Item item, COLLIDE_OPT col_opt)
     {
         if (player.isGameOver == false)
         {
@@ -357,7 +357,7 @@ public class ObjectManager : MonoBehaviour
         CommonItemUpdate(item, shootOpt);
     }
 
-    private void downSpeedItem_Collision(Item item, Collider col, COLLIDE_OPT col_opt)
+    private void downSpeedItem_Collision(Item item, COLLIDE_OPT col_opt)
     {
         if (player.isGameOver == false)
         {
@@ -376,7 +376,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    private void PushAllObjItem_Collision(Item item, Collider col, COLLIDE_OPT col_opt)
+    private void PushAllObjItem_Collision(Item item, COLLIDE_OPT col_opt)
     {
         if (player.isGameOver == false)
         {
@@ -404,7 +404,6 @@ public class ObjectManager : MonoBehaviour
         if ((shootOpt & SHOOT_OPT.LC_ROTATE) != 0)
         {
             spawned.transform.Rotate(Vector3.up * 120 * Time.deltaTime);
-
         }
 
         if ((shootOpt & SHOOT_OPT.GL_ROTATE) == 0)
@@ -433,7 +432,7 @@ public class ObjectManager : MonoBehaviour
         CommonObstacleUpdate(spawned, shootOpt);
     }
 
-    private void Truck_Collision(Obstacle obs, Collision col, COLLIDE_OPT col_opt)
+    private void Truck_Collision(Obstacle obs, COLLIDE_OPT col_opt)
     {
         // 다른 기능을 추가할 수 있음
         if (player.isGameOver == false)
@@ -454,7 +453,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    private void Flight_Collision(Obstacle obs, Collision col, COLLIDE_OPT col_opt)
+    private void Flight_Collision(Obstacle obs, COLLIDE_OPT col_opt)
     {
         if (player.isGameOver == false)
         {
@@ -473,7 +472,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    private void Car_Collision(Obstacle obs, Collision col, COLLIDE_OPT col_opt)
+    private void Car_Collision(Obstacle obs, COLLIDE_OPT col_opt)
     {
         if (player.isGameOver == false)
         {
@@ -492,7 +491,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    private void Rocket_Collision(Obstacle obs, Collision col, COLLIDE_OPT col_opt)
+    private void Rocket_Collision(Obstacle obs, COLLIDE_OPT col_opt)
     {
         if (player.isGameOver == false)
         {

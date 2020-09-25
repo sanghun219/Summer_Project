@@ -8,6 +8,7 @@ using UnityEngine;
 [Flags]
 public enum PlayerMode
 {
+    EMPTY = 0x00000000,
     NORMAL = 0x00000001,
     PUSH = 0x00000002,
     DOUBLE_POINT = 0x00000004,
@@ -166,6 +167,15 @@ public class Player : MonoBehaviour
                 superMode.gameObject.SetActive(false);
                 anim.SetBool("superMode", false);
             }
+            if (playerMode == PlayerMode.EMPTY)
+            {
+                doublePoint.gameObject.SetActive(false);
+                pushObj.gameObject.SetActive(false);
+                downSpeed.gameObject.SetActive(false);
+                magnet.gameObject.SetActive(false);
+                superMode.gameObject.SetActive(false);
+                anim.SetBool("superMode", false);
+            }
         };
 
         playerModeToAction[PlayerMode.SUPER] = () =>
@@ -206,6 +216,11 @@ public class Player : MonoBehaviour
             downSpeed.gameObject.SetActive(true);
             downSpeed.StartUpdate();
         };
+
+        playerModeToAction[PlayerMode.EMPTY] = () =>
+        {
+            playerMode = PlayerMode.EMPTY;
+        };
     }
 
     // GameOverEvent를 통해 나중에 플레이어가 게임오버 됐을때 다른 클래스들이
@@ -219,6 +234,7 @@ public class Player : MonoBehaviour
             gameObject.GetComponent<Collider>().enabled = false;
             Debug.Log("Game Over");
             StopCoroutine(SpeedControllerCoroutine);
+            SetPlayerMode(playerMode, PlayerMode.EMPTY);
             GameOverEvent();
         }
     }
@@ -245,13 +261,16 @@ public class Player : MonoBehaviour
         MoveHorizontal(hCurrentSpeed);
 
         //전진만 하게끔 vertical 입력 값 양수일경우에만 가속
-        AccelerateForward();
+        //AccelerateForward();
     }
 
     public void PlayerUpdate()
     {
-        //h = Input.GetAxisRaw("Horizontal");
-        //v = Input.GetAxisRaw("Vertical");
+        if (Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            h = Input.GetAxisRaw("Horizontal");
+            v = Input.GetAxisRaw("Vertical");
+        }
     }
 
     public void StartPlayer()
@@ -279,13 +298,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    //플레이어 가속 함수
-    private void AccelerateForward()
-    {
-        if ((playerMode & PlayerMode.DOWN_SPEED) != 0 || (playerMode & PlayerMode.SUPER) != 0)
-            rigid.AddForce(new Vector3(0, 0, AccForward));
-    }
-
     //좌우로 이동을 수행해주는 함수
     private void MoveHorizontal(float c)
     {
@@ -302,34 +314,34 @@ public class Player : MonoBehaviour
             }
         }
 
-        //if (Application.platform == RuntimePlatform.WindowsEditor)
-        //{
-        //    if (!Input.anyKey || h == 0)
-        //    {
-        //        anim.SetBool("isLeft", false);
-        //        anim.SetBool("isRight", false);
-        //    }
-        //    else if (Input.GetKey(KeyCode.LeftArrow) || h < 0)
-        //    {
-        //        anim.SetBool("isLeft", true);
-        //        anim.SetBool("isRight", false);
-        //    }
-        //    else if (Input.GetKey(KeyCode.RightArrow) || h > 0)
-        //    {
-        //        anim.SetBool("isRight", true);
-        //        anim.SetBool("isLeft", false);
-        //    }
-        //    if ((Input.GetKeyUp(KeyCode.LeftArrow)) || h > 0)
-        //    {
-        //        anim.SetBool("isLeft", false);
-        //        h = 0;
-        //    }
-        //    if (Input.GetKeyUp(KeyCode.RightArrow) || h < 0)
-        //    {
-        //        anim.SetBool("isRight", false);
-        //        h = 0;
-        //    }
-        //}
+        if (Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            if (!Input.anyKey || h == 0)
+            {
+                anim.SetBool("isLeft", false);
+                anim.SetBool("isRight", false);
+            }
+            else if (Input.GetKey(KeyCode.LeftArrow) || h < 0)
+            {
+                anim.SetBool("isLeft", true);
+                anim.SetBool("isRight", false);
+            }
+            else if (Input.GetKey(KeyCode.RightArrow) || h > 0)
+            {
+                anim.SetBool("isRight", true);
+                anim.SetBool("isLeft", false);
+            }
+            if ((Input.GetKeyUp(KeyCode.LeftArrow)) || h > 0)
+            {
+                anim.SetBool("isLeft", false);
+                h = 0;
+            }
+            if (Input.GetKeyUp(KeyCode.RightArrow) || h < 0)
+            {
+                anim.SetBool("isRight", false);
+                h = 0;
+            }
+        }
 
         if (Input.touchCount > 0)
         {

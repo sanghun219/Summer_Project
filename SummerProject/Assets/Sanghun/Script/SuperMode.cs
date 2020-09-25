@@ -31,10 +31,11 @@ public class SuperMode : MonoBehaviour
         player.GetComponent<CapsuleCollider>().isTrigger = true;
         particle.Play();
         player.VelocityZ = 1500;
-        while (previousTimer <= SuperModeTimer)
+        while (previousTimer <= SuperModeTimer && player.isGameOver == false)
         {
             yield return new WaitForFixedUpdate();
             previousTimer += Time.fixedDeltaTime;
+            Debug.Log("SupderMode : " + previousTimer);
         }
 
         particle.Stop();

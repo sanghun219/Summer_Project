@@ -36,8 +36,10 @@ ScriptsOnlyBuild:
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.StateNode
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
@@ -88,27 +90,27 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11306}
     - Class: 114
-      Script: {instanceID: 11330}
+      Script: {instanceID: 11348}
     - Class: 114
-      Script: {instanceID: 11480}
+      Script: {instanceID: 11498}
     - Class: 114
-      Script: {instanceID: 11590}
+      Script: {instanceID: 11608}
     - Class: 114
-      Script: {instanceID: 11804}
+      Script: {instanceID: 11822}
     - Class: 114
-      Script: {instanceID: 12076}
+      Script: {instanceID: 12094}
     - Class: 114
-      Script: {instanceID: 12798}
+      Script: {instanceID: 12816}
     - Class: 114
-      Script: {instanceID: 13154}
+      Script: {instanceID: 13172}
     - Class: 114
-      Script: {instanceID: 13270}
+      Script: {instanceID: 13288}
     - Class: 114
-      Script: {instanceID: 13560}
+      Script: {instanceID: 13578}
     - Class: 114
-      Script: {instanceID: 13610}
+      Script: {instanceID: 13628}
     - Class: 114
-      Script: {instanceID: 13646}
+      Script: {instanceID: 13664}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -175,87 +177,87 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11308}
     - Class: 114
-      Script: {instanceID: 11330}
+      Script: {instanceID: 11348}
     - Class: 114
-      Script: {instanceID: 11364}
+      Script: {instanceID: 11382}
     - Class: 114
-      Script: {instanceID: 11480}
+      Script: {instanceID: 11498}
     - Class: 114
-      Script: {instanceID: 11542}
+      Script: {instanceID: 11560}
     - Class: 114
-      Script: {instanceID: 11590}
+      Script: {instanceID: 11608}
     - Class: 114
-      Script: {instanceID: 11606}
+      Script: {instanceID: 11624}
     - Class: 114
-      Script: {instanceID: 11646}
+      Script: {instanceID: 11664}
     - Class: 114
-      Script: {instanceID: 11708}
+      Script: {instanceID: 11726}
     - Class: 114
-      Script: {instanceID: 11784}
+      Script: {instanceID: 11802}
     - Class: 114
-      Script: {instanceID: 11928}
+      Script: {instanceID: 11946}
     - Class: 114
-      Script: {instanceID: 11966}
+      Script: {instanceID: 11984}
     - Class: 114
-      Script: {instanceID: 12004}
+      Script: {instanceID: 12022}
     - Class: 114
-      Script: {instanceID: 12068}
+      Script: {instanceID: 12086}
     - Class: 114
-      Script: {instanceID: 12076}
+      Script: {instanceID: 12094}
     - Class: 114
-      Script: {instanceID: 12106}
+      Script: {instanceID: 12124}
     - Class: 114
-      Script: {instanceID: 12196}
+      Script: {instanceID: 12214}
     - Class: 114
-      Script: {instanceID: 12304}
+      Script: {instanceID: 12322}
     - Class: 114
-      Script: {instanceID: 12332}
+      Script: {instanceID: 12350}
     - Class: 114
-      Script: {instanceID: 12418}
+      Script: {instanceID: 12436}
     - Class: 114
-      Script: {instanceID: 12452}
+      Script: {instanceID: 12470}
     - Class: 114
-      Script: {instanceID: 12468}
+      Script: {instanceID: 12486}
     - Class: 114
-      Script: {instanceID: 12510}
+      Script: {instanceID: 12528}
     - Class: 114
-      Script: {instanceID: 12564}
+      Script: {instanceID: 12582}
     - Class: 114
-      Script: {instanceID: 12690}
+      Script: {instanceID: 12708}
     - Class: 114
-      Script: {instanceID: 12798}
+      Script: {instanceID: 12816}
     - Class: 114
-      Script: {instanceID: 12828}
-    - Class: 114
-      Script: {instanceID: 12836}
+      Script: {instanceID: 12846}
     - Class: 114
       Script: {instanceID: 12854}
     - Class: 114
-      Script: {instanceID: 13058}
+      Script: {instanceID: 12872}
     - Class: 114
-      Script: {instanceID: 13154}
+      Script: {instanceID: 13076}
     - Class: 114
-      Script: {instanceID: 13226}
+      Script: {instanceID: 13172}
     - Class: 114
-      Script: {instanceID: 13254}
+      Script: {instanceID: 13244}
     - Class: 114
-      Script: {instanceID: 13402}
+      Script: {instanceID: 13272}
     - Class: 114
-      Script: {instanceID: 13422}
-    - Class: 114
-      Script: {instanceID: 13436}
+      Script: {instanceID: 13420}
     - Class: 114
       Script: {instanceID: 13440}
     - Class: 114
-      Script: {instanceID: 13480}
+      Script: {instanceID: 13454}
+    - Class: 114
+      Script: {instanceID: 13458}
     - Class: 114
       Script: {instanceID: 13498}
     - Class: 114
-      Script: {instanceID: 13524}
+      Script: {instanceID: 13516}
     - Class: 114
-      Script: {instanceID: 13560}
+      Script: {instanceID: 13542}
     - Class: 114
-      Script: {instanceID: 13610}
+      Script: {instanceID: 13578}
+    - Class: 114
+      Script: {instanceID: 13628}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -479,7 +481,7 @@ ScriptsOnlyBuild:
     className: NetworkTransform
   - hash:
       serializedVersion: 2
-      Hash: b97af4421e524f98e65074ad5a1125a2
+      Hash: 127255bede17003e35b01c95437ee132
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ObjectManager
@@ -617,7 +619,7 @@ ScriptsOnlyBuild:
     className: AnimationPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: d16eeb38a82efdbd887feaf5ec63a646
+      Hash: 327e956b9d0d98d5515c30ee4a17366a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ScoreManager
@@ -1315,4 +1317,4 @@ ScriptsOnlyBuild:
   scenePathNames:
   - Assets/Scenes/Loading.unity
   - Assets/Scenes/TESTEST.unity
-  playerPath: "C:/Users/bbang7/Desktop/\uBFCC\uC5D0\uC5D0\uC5D0\uC5E5.apk"
+  playerPath: C:/Users/User/Desktop/tt.apk

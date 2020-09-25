@@ -42,6 +42,7 @@ public class PushObj : MonoBehaviour
     {
         float previousTimer = 0.0f;
         particle.Play(true);
+        Debug.Log("실행되니?");
         while (pushTimer >= previousTimer)
         {
             yield return new WaitForFixedUpdate();
@@ -51,6 +52,7 @@ public class PushObj : MonoBehaviour
             {
                 spCollider.radius += Time.fixedDeltaTime * 1500;
             }
+            Debug.Log("pushObj : " + previousTimer);
         }
 
         player.SetPlayerMode(PlayerMode.PUSH, PlayerMode.NORMAL);
@@ -63,7 +65,9 @@ public class PushObj : MonoBehaviour
         if (collision.gameObject.CompareTag("Obstacle"))
         {
             if (collision.gameObject.activeSelf == false)
-                collision.gameObject.GetComponent<Obstacle>().DestroyObs(1.0f);
+                collision.gameObject.GetComponent<Collider>().enabled = false;
+            collision.gameObject.GetComponent<Obstacle>().DestroyObs(1.0f, () =>
+            { collision.gameObject.GetComponent<Collider>().enabled = true; });
         }
     }
 }

@@ -43,6 +43,8 @@ public class Item : MonoBehaviour, ISpawned
 
     private void OnEnable()
     {
+        if (IsInvoking("DestroyItem"))
+            CancelInvoke("DestroyItem");
         Invoke("DestroyItem", destroyTime);
         isRestart = false;
     }
@@ -58,12 +60,15 @@ public class Item : MonoBehaviour, ISpawned
 
     private void OnDisable()
     {
+        if (IsInvoking("DestroyItem"))
+            CancelInvoke("DestroyItem");
         DestroyItem();
+        Debug.Log(name);
     }
 
     private void DestroyItem()
     {
-        if (isRestart == false) return;
+        // if (isRestart == false) return;
         if (IsInvoking("DestroyItem"))
             CancelInvoke("DestroyItem");
         isRestart = false;
@@ -75,9 +80,17 @@ public class Item : MonoBehaviour, ISpawned
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        //if (other.CompareTag("Player"))
+        //{
+        //    ObjectManager.GetInstance.ItemType_Collide[itemType](this, colideOpt);
+        //}
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
         {
-            ObjectManager.GetInstance.ItemType_Collide[itemType](this, other, colideOpt);
+            ObjectManager.GetInstance.ItemType_Collide[itemType](this, colideOpt);
         }
     }
 }

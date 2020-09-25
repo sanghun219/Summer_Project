@@ -131,6 +131,10 @@ public class Spawner : MonoBehaviour
         EndOfSpawnPoint[1].z = center.z;
     }
 
+    private void LevetController()
+    {
+    }
+
     // 매 주기마다 스폰이 됨
     private void SpawnObjects(Vector3 playerPos)
     {
@@ -171,7 +175,7 @@ public class Spawner : MonoBehaviour
             else
             {
                 randZ = UnityEngine.Random.Range(pz + 250, pz + 100);
-                randX = UnityEngine.Random.Range(px - 250, px + 250);
+                randX = px;//UnityEngine.Random.Range(px - 250, px + 250);
             }
             var obj = wave[i];
             // 빈공간
@@ -182,7 +186,6 @@ public class Spawner : MonoBehaviour
                 obj.SetActive(true);
             }
         }
-        Debug.Log("clear");
         wave.Clear();
     }
 
@@ -208,7 +211,7 @@ public class Spawner : MonoBehaviour
             spawningPool[i] = new Queue<GameObject>(NumOfMaxInitObject);
         }
 
-        for (int i = 0; i < NumOfMaxInitObject * 2; i++)
+        for (int i = 0; i < NumOfMaxInitObject; i++)
         {
             if (i % 2 == 0)
             {
@@ -216,7 +219,7 @@ public class Spawner : MonoBehaviour
                 GameObject tempGO = InstOfObstacles[UnityEngine.Random.Range(0, InstOfObstacles.Count)].gameObject;
                 GameObject spawned = Instantiate(tempGO
                     , tempGO.transform.position + transform.position, transform.rotation);
-
+                spawned.name = "Obstacle" + i;
                 spawned.SetActive(false);
                 spawningPool[(int)SPAWN_OBJ.OBSTACLE].Enqueue(spawned);
             }
@@ -232,12 +235,14 @@ public class Spawner : MonoBehaviour
                     GameObject tempGO = InstOfItems[UnityEngine.Random.Range(0, 3)].gameObject;
                     spawned = Instantiate(tempGO
                     , tempGO.transform.position + transform.position, transform.rotation);
+                    spawned.name = "ItemCoin" + i;
                 }
                 else
                 {
                     GameObject tempGO = InstOfItems[UnityEngine.Random.Range(3, InstOfItems.Count)].gameObject;
                     spawned = Instantiate(tempGO
                     , tempGO.transform.position + transform.position, transform.rotation);
+                    spawned.name = "Item" + i;
                 }
 
                 spawned.SetActive(false);
@@ -285,10 +290,9 @@ public class Spawner : MonoBehaviour
         else return null;
     }
 
-    // SpawnedObj가 Destroy될 때 다시 회수함( 실제로는 사본이 넘겨지는 것)
+    // SpawnedObj가 Destroy될 때 다시 회수함
     public void ReturnObj(GameObject obj, SPAWN_OBJ spawnObj)
     {
-        Debug.Log("회수");
         if (spawnObj == SPAWN_OBJ.ITEM)
         {
             obj.gameObject.SetActive(false);

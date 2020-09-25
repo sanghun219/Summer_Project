@@ -72,12 +72,12 @@ public class Obstacle : MonoBehaviour, ISpawned
         Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.OBSTACLE);
     }
 
-    public void DestroyObs(float later)
+    public void DestroyObs(float later, Action action = null)
     {
-        StartCoroutine(IDestroyObs(later));
+        StartCoroutine(IDestroyObs(later, action));
     }
 
-    private IEnumerator IDestroyObs(float later)
+    private IEnumerator IDestroyObs(float later, Action action = null)
     {
         float timer = 0.0f;
         while (timer <= later)
@@ -85,6 +85,7 @@ public class Obstacle : MonoBehaviour, ISpawned
             yield return null;
             timer += Time.deltaTime;
         }
+        action();
         DestroyObs();
     }
 
@@ -94,7 +95,7 @@ public class Obstacle : MonoBehaviour, ISpawned
         {
             if (collision.gameObject.GetComponent<Player>().isGameOver == false)
             {
-                ObjectManager.GetInstance.ObsType_Collide[Obs_type](this, collision, colideOpt);
+                ObjectManager.GetInstance.ObsType_Collide[Obs_type](this, colideOpt);
                 Handheld.Vibrate();
             }
         }
