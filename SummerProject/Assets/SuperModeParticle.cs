@@ -8,7 +8,13 @@ public class SuperModeParticle : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangePlayer;
+    }
+
+    private void ChangePlayer()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
     }
 
     private void FixedUpdate()

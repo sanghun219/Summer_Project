@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
 
     // 다른 클래스들이 플레이어가 죽었을 때 이벤트 발생시키도록 함
     // 조건 발생시 딱 한 번만 호출하기 때문에 성능up, 코드가 깔끔해짐
-    public static event GameOverHandler GameOverEvent;
+    public event GameOverHandler GameOverEvent;
 
     // 플레이어가 특정 아이템 먹었을 경우 상태가 바뀜
     private PlayerMode playerMode;

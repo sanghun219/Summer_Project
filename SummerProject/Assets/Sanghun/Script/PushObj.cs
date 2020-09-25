@@ -22,9 +22,14 @@ public class PushObj : MonoBehaviour
     {
         rigidy = gameObject.GetComponent<Rigidbody>();
         spCollider = gameObject.GetComponent<SphereCollider>();
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
         particle = Instantiate<ParticleSystem>(particle);
+    }
+
+    private void ChangeCharacter()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
     }
 
     private void OnDisable()

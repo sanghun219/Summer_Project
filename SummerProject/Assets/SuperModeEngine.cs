@@ -9,18 +9,27 @@ public class SuperModeEngine : MonoBehaviour
     private Player player;
     private bool OptimizeKey = false;
 
+    [SerializeField]
+    private float multiSize = 15.0f;
+
     private void Awake()
     {
         main = gameObject.GetComponent<ParticleSystem>().main;
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangePlayer;
         originSize = main.startSize.constant;
+    }
+
+    private void ChangePlayer()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
     }
 
     private void FixedUpdate()
     {
         if ((player.GetPlayerMode() & PlayerMode.SUPER) != 0 && OptimizeKey == false)
         {
-            main.startSize = originSize * 15;
+            main.startSize = originSize * multiSize;
             OptimizeKey = true;
         }
         else if ((player.GetPlayerMode() & PlayerMode.SUPER) == 0)

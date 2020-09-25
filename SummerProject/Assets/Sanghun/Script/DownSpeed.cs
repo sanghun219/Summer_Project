@@ -13,7 +13,13 @@ public class DownSpeed : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
+    }
+
+    private void ChangeCharacter()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
     }
 
     public void StartUpdate()

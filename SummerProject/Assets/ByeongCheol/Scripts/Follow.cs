@@ -10,7 +10,14 @@ public class Follow : MonoBehaviour
 
     private void Awake()
     {
-        target = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        target = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        originRotation = transform.rotation.eulerAngles;
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
+    }
+
+    private void ChangeCharacter()
+    {
+        target = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
         originRotation = transform.rotation.eulerAngles;
     }
 

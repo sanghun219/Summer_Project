@@ -68,7 +68,7 @@ public class Obstacle : MonoBehaviour, ISpawned
         if (IsInvoking("DestroyObs"))
             CancelInvoke("DestroyObs");
         isRestart = false;
-        if (Spawner.GetInstance == null) { Debug.Log("게임 종료시 Spawner가 먼저 힙에서 사라짐 문제없음"); return; }
+        if (Spawner.GetInstance == null) { /*Debug.Log("게임 종료시 Spawner가 먼저 힙에서 사라짐 문제없음");*/ return; }
         Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.OBSTACLE);
     }
 
@@ -93,8 +93,9 @@ public class Obstacle : MonoBehaviour, ISpawned
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (collision.gameObject.GetComponent<Player>().isGameOver == false)
+            if (collision.gameObject.GetComponentInChildren<Player>().isGameOver == false)
             {
+                Debug.Log("먼데 ㅅㅂ ㅠㅠ");
                 ObjectManager.GetInstance.ObsType_Collide[Obs_type](this, colideOpt);
                 Handheld.Vibrate();
             }

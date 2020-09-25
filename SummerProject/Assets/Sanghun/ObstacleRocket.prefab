@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -2224889263061748390}
   - component: {fileID: 61893371377492257}
   - component: {fileID: 2872113281658773975}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ObstacleRocket
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -90,6 +90,10 @@ PrefabInstance:
     - target: {fileID: 195238, guid: 7e1de4f9e5871044e998ef5368887f07, type: 3}
       propertyPath: m_Name
       value: SM_Veh_Missle_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 195238, guid: 7e1de4f9e5871044e998ef5368887f07, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 489688, guid: 7e1de4f9e5871044e998ef5368887f07, type: 3}
       propertyPath: m_LocalPosition.x

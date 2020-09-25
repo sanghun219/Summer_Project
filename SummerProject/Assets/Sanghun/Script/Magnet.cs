@@ -21,8 +21,15 @@ public class Magnet : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        Player.GameOverEvent += StopUpdate;
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
+        player.GameOverEvent += StopUpdate;
+    }
+
+    private void ChangeCharacter()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player.GameOverEvent += StopUpdate;
     }
 
     public void StopUpdate()
@@ -53,7 +60,10 @@ public class Magnet : MonoBehaviour
             foreach (var col in collide)
             {
                 if (col.CompareTag("Item"))
+                {
                     col.gameObject.GetComponent<Item>().shootOpt |= SHOOT_OPT.MAGNET;
+                    Physics.IgnoreLayerCollision(10, 11, true);
+                }
             }
             Debug.Log("Magnet : " + previousTimer);
         }
@@ -62,6 +72,7 @@ public class Magnet : MonoBehaviour
         {
             if (col.CompareTag("Item"))
                 col.gameObject.GetComponent<Item>().shootOpt &= ~SHOOT_OPT.MAGNET;
+            Physics.IgnoreLayerCollision(10, 11, false);
         }
 
         player.SetPlayerMode(PlayerMode.MAGNET, PlayerMode.NORMAL);

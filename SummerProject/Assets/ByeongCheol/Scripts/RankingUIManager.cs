@@ -11,6 +11,8 @@ public class RankingUIManager : MonoBehaviour
 
     public Sprite[] RankgImages;
 
+    private Player player;
+
     [SerializeField]
     private WebServer webserver;
 
@@ -33,7 +35,15 @@ public class RankingUIManager : MonoBehaviour
     private void Awake()
     {
         webserver.InsertedEventHandler += ViewRankContent;
-        Player.GameOverEvent += InsertData;
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player.GameOverEvent += InsertData;
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangePlayer;
+    }
+
+    private void ChangePlayer()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player.GameOverEvent += InsertData;
     }
 
     private void InsertData()

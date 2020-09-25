@@ -23,17 +23,22 @@ public class InGameLoop : MonoBehaviour
     private void Awake()
     {
         fade.FadeOut(1.0f);
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        player.AwakePlayer();
+
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+    }
+
+    private void ChangePlayer()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
     }
 
     public void ReStart()
     {
         if (player.isGameOver == false) return;
 
+        SelectCharacter.GetInstance.Restart();
         StopCoroutine(IFixedUpdate());
         StopCoroutine(IUpdate());
-
         player.ReStart();
         Spawner.GetInstance.Restart();
         Spawner.GetInstance.WaitRestart = false;
@@ -46,7 +51,7 @@ public class InGameLoop : MonoBehaviour
     {
         StartCoroutine(IFixedUpdate());
         StartCoroutine(IUpdate());
-        player.StartPlayer();
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangePlayer;
     }
 
     private IEnumerator IUpdate()
@@ -68,6 +73,7 @@ public class InGameLoop : MonoBehaviour
             if (isGameStart)
             {
                 player.PlayerFixedUpdate();
+
                 Spawner.GetInstance.UpdateSpawnerPosition(player.transform.position);
             }
         }
@@ -77,6 +83,7 @@ public class InGameLoop : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
             // player를 극적으로 날려보낼수 있음
+
             player.transform.Rotate(new Vector3(1, 1, 1) * 120 * Time.deltaTime);
             player.transform.position += transform.forward * 30 * Time.deltaTime;
         }

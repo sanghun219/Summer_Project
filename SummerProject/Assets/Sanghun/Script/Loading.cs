@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using UnityEngine.SceneManagement;
+using System.Threading;
 
 public class Loading : MonoBehaviour
 {
@@ -50,7 +51,6 @@ public class Loading : MonoBehaviour
         yield return null;
         AsyncOperation op = SceneManager.LoadSceneAsync("Scenes/TESTEST");
         op.allowSceneActivation = false;
-
         while (!op.isDone)
         {
             yield return null;
@@ -86,7 +86,6 @@ public class Loading : MonoBehaviour
                 if (isMoveNextScene && loadingBar.value >= 1.0f && inputField.text.Length > 0)
                 {
                     op.allowSceneActivation = true;
-                    yield break;
                 }
             }
             else
@@ -94,7 +93,6 @@ public class Loading : MonoBehaviour
                 if (isMoveNextScene && loadingBar.value >= 1.0f)
                 {
                     op.allowSceneActivation = true;
-                    yield break;
                 }
             }
         }

@@ -51,7 +51,18 @@ public class ScoreManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangePlayer;
+        StartCoroutine(NormalCalculateScore());
+        StartCoroutine(ScoreUIUpdate());
+        StartCoroutine(UpdateSpeedUI());
+        StartCoroutine(UpdateCurItem());
+    }
+
+    private void ChangePlayer()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        StopAllCoroutines();
         StartCoroutine(NormalCalculateScore());
         StartCoroutine(ScoreUIUpdate());
         StartCoroutine(UpdateSpeedUI());
@@ -90,7 +101,7 @@ public class ScoreManager : MonoBehaviour
                     break;
 
                 case PlayerMode.SUPER:
-                    curItemUI.text = "Spuer Mode !";
+                    curItemUI.text = "Super Mode !";
                     break;
 
                 default:
@@ -108,6 +119,7 @@ public class ScoreManager : MonoBehaviour
             if (InGameLoop.isGameStart == true)
             {
                 int speed = (int)player.VelocityZ;
+                if (speed <= 0) speed = 0;
                 speedUI.text = speed.ToString();
             }
         }

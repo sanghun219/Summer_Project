@@ -70,20 +70,28 @@ public class ObjectManager : MonoBehaviour
 {
     [SerializeField]
     private string pointUpSound_100;
+
     [SerializeField]
     private string pointUpSound_500;
+
     [SerializeField]
     private string pointUpSound_1000;
+
     [SerializeField]
     private string itemSound_PushObject;
+
     [SerializeField]
     private string itemSound_DoublePoint;
+
     [SerializeField]
     private string itemSound_SuperMode;
+
     [SerializeField]
     private string itemSound_Magnet;
+
     [SerializeField]
     private string itemSound_DownSpeed;
+
     [SerializeField]
     private string obstacle_PlayerGameOver;
 
@@ -129,8 +137,9 @@ public class ObjectManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
 
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
         // TODO : 장애물/아이템 추가시 Key/value 형식으로 집어넣으면 됨
         ObsType_Update[OBSTACLE_TYPE.TRUCK] = Truck_Update;
         ObsType_Update[OBSTACLE_TYPE.FLIGHT] = Flight_Update;
@@ -157,6 +166,11 @@ public class ObjectManager : MonoBehaviour
         ItemType_Collide[ITEM_TYPE.POINTUP_100] = PointUPItem_100_Collision;
         ItemType_Collide[ITEM_TYPE.POINTUP_500] = PointUPItem_500_Collision;
         ItemType_Collide[ITEM_TYPE.POINTUP_1000] = PointUPItem_1000_Collision;
+    }
+
+    private void ChangeCharacter()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
     }
 
     private void CommonItemUpdate(Item item, SHOOT_OPT shootOpt)
@@ -334,11 +348,11 @@ public class ObjectManager : MonoBehaviour
 
             if (col_opt == COLLIDE_OPT.VANISH)
 
-            // 아이템 연출 효과
-            if (col_opt == COLLIDE_OPT.VANISH)
-            {
-                item.gameObject.SetActive(false);
-            }
+                // 아이템 연출 효과
+                if (col_opt == COLLIDE_OPT.VANISH)
+                {
+                    item.gameObject.SetActive(false);
+                }
             if (col_opt == COLLIDE_OPT.EXPLODE)
             {
             }
@@ -437,7 +451,6 @@ public class ObjectManager : MonoBehaviour
         // 다른 기능을 추가할 수 있음
         if (player.isGameOver == false)
         {
-
             SoundManager.instance.PlaySE(obstacle_PlayerGameOver);
 
             player.GameOver();

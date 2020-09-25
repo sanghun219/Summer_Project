@@ -12,11 +12,17 @@ public class PushObjParticle : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangePlayer;
         originRadius = main.startSize.constant;
         particleSys = gameObject.GetComponent<ParticleSystem>();
         main = particleSys.main;
         delta = 10000;
+    }
+
+    private void ChangePlayer()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
     }
 
     private float timer = 0.0f;
