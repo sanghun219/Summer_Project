@@ -5,14 +5,18 @@ using System;
 
 public class SelectCharacter : MonoBehaviour
 {
-    public int character;
+    public int character = 1;
     private GameObject player;
-    private GameObject[] childPlayers;
+    public GameObject[] childPlayers;
     private bool changed = false;
+    public string testtext;
+    private int tempCharacter = 1;
 
     public event Action ChangeCharacterHandler;
 
     private static SelectCharacter Instance = null;
+
+    private static GameObject container;
 
     public static SelectCharacter GetInstance
     {
@@ -20,11 +24,9 @@ public class SelectCharacter : MonoBehaviour
         {
             if (!Instance)
             {
-                Instance = GameObject.Find("GameManager").GetComponent<SelectCharacter>();
-                if (Instance == null)
-                {
-                    Debug.Log("no singleton obj");
-                }
+                container = new GameObject();
+                container.name = "SelectManager";
+                Instance = container.AddComponent(typeof(SelectCharacter)) as SelectCharacter;
             }
             return Instance;
         }
@@ -32,28 +34,22 @@ public class SelectCharacter : MonoBehaviour
 
     private void Awake()
     {
-        //if (Instance == null)
-        //{
-        //    Instance = this;
-        //}
-        //else if (Instance != null)
-        //{
-        //    Destroy(gameObject);
-        //}
-        //DontDestroyOnLoad(gameObject);
-
         player = GameObject.FindGameObjectWithTag("Player");
         childPlayers = new GameObject[player.transform.childCount];
 
         for (int i = 0; i < player.transform.childCount; i++)
         {
             childPlayers[i] = player.transform.GetChild(i).gameObject;
-
+            childPlayers[i].SetActive(true);
             childPlayers[i].GetComponent<Player>().AwakePlayer();
             childPlayers[i].GetComponent<Player>().StartPlayer();
-            if (i != 0)
+
+            if (i != character)
+            {
                 childPlayers[i].SetActive(false);
+            }
         }
+        ChangeCharacter();
     }
 
     public void ChangeCharacter()
@@ -68,9 +64,11 @@ public class SelectCharacter : MonoBehaviour
     {
         if (changed)
         {
-            int selectedCharacter = character;
+            int selectedCharacter = tempCharacter;
+            character = tempCharacter;
             childPlayers[selectedCharacter].SetActive(true);
-
+            childPlayers[selectedCharacter].GetComponent<Player>().AwakePlayer();
+            childPlayers[selectedCharacter].GetComponent<Player>().StartPlayer();
             for (int i = 0; i < childPlayers.Length; i++)
             {
                 if (i != selectedCharacter)
@@ -86,16 +84,20 @@ public class SelectCharacter : MonoBehaviour
     public void OnMouseUpAsButton(int selectedCharacter)
     {
         //DataMgr.instance.currentCharacter = (Character)selectedCharacter;
+        character = selectedCharacter;
 
-        if (GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>().isGameOver)
+        if (GameObject.FindGameObjectWithTag("Player").transform.GetChild(tempCharacter)
+            .gameObject.GetComponent<Player>().isGameOver)
         {
-            character = selectedCharacter;
+            tempCharacter = character;
             changed = true;
         }
         else
         {
             childPlayers[selectedCharacter].SetActive(true);
-
+            childPlayers[selectedCharacter].GetComponent<Player>().AwakePlayer();
+            childPlayers[selectedCharacter].GetComponent<Player>().StartPlayer();
+            tempCharacter = selectedCharacter;
             for (int i = 0; i < childPlayers.Length; i++)
             {
                 if (i != selectedCharacter)

@@ -8,16 +8,19 @@ public class Follow : MonoBehaviour
     public Vector3 offset;
     private Vector3 originRotation;
 
-    private void Awake()
+    private void Start()
     {
-        target = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
-        originRotation = transform.rotation.eulerAngles;
         SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
+        target = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+          (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
+        // target = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        originRotation = transform.rotation.eulerAngles;
     }
 
     private void ChangeCharacter()
     {
-        target = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        target = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+            (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         originRotation = transform.rotation.eulerAngles;
     }
 

@@ -22,14 +22,16 @@ public class PushObj : MonoBehaviour
     {
         rigidy = gameObject.GetComponent<Rigidbody>();
         spCollider = gameObject.GetComponent<SphereCollider>();
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+            (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
         particle = Instantiate<ParticleSystem>(particle);
     }
 
     private void ChangeCharacter()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
     }
 
     private void OnDisable()
@@ -47,7 +49,7 @@ public class PushObj : MonoBehaviour
     {
         float previousTimer = 0.0f;
         particle.Play(true);
-        Debug.Log("실행되니?");
+
         while (pushTimer >= previousTimer)
         {
             yield return new WaitForFixedUpdate();
@@ -57,7 +59,6 @@ public class PushObj : MonoBehaviour
             {
                 spCollider.radius += Time.fixedDeltaTime * 1500;
             }
-            Debug.Log("pushObj : " + previousTimer);
         }
 
         player.SetPlayerMode(PlayerMode.PUSH, PlayerMode.NORMAL);

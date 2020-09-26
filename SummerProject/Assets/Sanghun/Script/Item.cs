@@ -19,6 +19,8 @@ public class Item : MonoBehaviour, ISpawned
     [SerializeField]
     private COLLIDE_OPT colideOpt;
 
+    private float destroyTemptime = 0;
+
     public float speed
     {
         get { return _speed; }
@@ -43,10 +45,11 @@ public class Item : MonoBehaviour, ISpawned
 
     private void OnEnable()
     {
-        if (IsInvoking("DestroyItem"))
-            CancelInvoke("DestroyItem");
-        Invoke("DestroyItem", destroyTime);
+        //if (IsInvoking("DestroyItem"))
+        //    CancelInvoke("DestroyItem");
+        //Invoke("DestroyItem", destroyTime);
         isRestart = false;
+        StartCoroutine(IDestroyItem());
     }
 
     private void FixedUpdate()
@@ -60,20 +63,31 @@ public class Item : MonoBehaviour, ISpawned
 
     private void OnDisable()
     {
-        if (IsInvoking("DestroyItem"))
-            CancelInvoke("DestroyItem");
+        //if (IsInvoking("DestroyItem"))
+        //    CancelInvoke("DestroyItem");
+        DestroyItem();
+    }
+
+    private IEnumerator IDestroyItem()
+    {
+        while (destroyTemptime <= destroyTime)
+        {
+            yield return new WaitForFixedUpdate();
+            destroyTemptime += Time.fixedDeltaTime;
+        }
+        destroyTemptime = 0.0f;
         DestroyItem();
     }
 
     private void DestroyItem()
     {
         // if (isRestart == false) return;
-        if (IsInvoking("DestroyItem"))
-            CancelInvoke("DestroyItem");
+        //if (IsInvoking("DestroyItem"))
+        //    CancelInvoke("DestroyItem");
         isRestart = false;
         shootOpt &= ~SHOOT_OPT.MAGNET;
         if (Spawner.GetInstance == null) { /*Debug.Log("게임 종료시 Spawner가 먼저 힙에서 사라짐 문제없음");*/ return; }
-
+        gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
         Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.ITEM);
     }
 

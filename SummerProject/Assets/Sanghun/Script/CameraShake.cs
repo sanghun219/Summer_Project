@@ -21,7 +21,8 @@ public class CameraShake : MonoBehaviour
     private void Start()
     {
         originPos = transform.localPosition;
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+            (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         cm = gameObject.GetComponent<Follow>();
         player.GameOverEvent += Shaking;
         SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
@@ -29,7 +30,8 @@ public class CameraShake : MonoBehaviour
 
     private void ChangeCharacter()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+             (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         player.GameOverEvent += Shaking;
     }
 

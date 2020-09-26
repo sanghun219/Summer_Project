@@ -9,7 +9,8 @@ public class BackGroundMove : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         originPos = transform.position;
     }
 

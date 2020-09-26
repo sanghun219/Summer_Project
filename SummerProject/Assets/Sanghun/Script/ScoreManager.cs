@@ -51,17 +51,25 @@ public class ScoreManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
-        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangePlayer;
+        // player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+            (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         StartCoroutine(NormalCalculateScore());
         StartCoroutine(ScoreUIUpdate());
         StartCoroutine(UpdateSpeedUI());
         StartCoroutine(UpdateCurItem());
     }
 
+    private void Start()
+    {
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangePlayer;
+    }
+
     private void ChangePlayer()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
+        //player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
         StopAllCoroutines();
         StartCoroutine(NormalCalculateScore());
         StartCoroutine(ScoreUIUpdate());

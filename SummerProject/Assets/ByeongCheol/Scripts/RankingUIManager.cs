@@ -35,14 +35,16 @@ public class RankingUIManager : MonoBehaviour
     private void Awake()
     {
         webserver.InsertedEventHandler += ViewRankContent;
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+            (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         player.GameOverEvent += InsertData;
         SelectCharacter.GetInstance.ChangeCharacterHandler += ChangePlayer;
     }
 
     private void ChangePlayer()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+            (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         player.GameOverEvent += InsertData;
     }
 

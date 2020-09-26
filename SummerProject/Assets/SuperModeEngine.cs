@@ -12,17 +12,21 @@ public class SuperModeEngine : MonoBehaviour
     [SerializeField]
     private float multiSize = 15.0f;
 
-    private void Awake()
+    private void Start()
     {
         main = gameObject.GetComponent<ParticleSystem>().main;
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+            (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         SelectCharacter.GetInstance.ChangeCharacterHandler += ChangePlayer;
         originSize = main.startSize.constant;
     }
 
     private void ChangePlayer()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+            (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
+        main = gameObject.GetComponent<ParticleSystem>().main;
+        originSize = main.startSize.constant;
     }
 
     private void FixedUpdate()

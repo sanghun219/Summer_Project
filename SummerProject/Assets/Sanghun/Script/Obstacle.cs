@@ -11,6 +11,7 @@ public class Obstacle : MonoBehaviour, ISpawned
     [SerializeField]
     private float _destroyTime;
 
+    private float tempdestroyTime = 0;
     public SHOOT_OPT shootOpt;
 
     [SerializeField]
@@ -54,7 +55,8 @@ public class Obstacle : MonoBehaviour, ISpawned
 
     private void OnEnable()
     {
-        Invoke("DestroyObs", destroyTime);
+        //Invoke("DestroyObs", destroyTime);
+        StartCoroutine(IDestroyObs());
         isRestart = false;
     }
 
@@ -63,12 +65,24 @@ public class Obstacle : MonoBehaviour, ISpawned
         DestroyObs();
     }
 
+    private IEnumerator IDestroyObs()
+    {
+        while (tempdestroyTime <= destroyTime)
+        {
+            yield return new WaitForFixedUpdate();
+            tempdestroyTime += Time.fixedDeltaTime;
+        }
+        tempdestroyTime = 0.0f;
+        DestroyObs();
+    }
+
     private void DestroyObs()
     {
-        if (IsInvoking("DestroyObs"))
-            CancelInvoke("DestroyObs");
+        //if (IsInvoking("DestroyObs"))
+        //    CancelInvoke("DestroyObs");
         isRestart = false;
         if (Spawner.GetInstance == null) { /*Debug.Log("게임 종료시 Spawner가 먼저 힙에서 사라짐 문제없음");*/ return; }
+        gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
         Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.OBSTACLE);
     }
 
@@ -95,9 +109,9 @@ public class Obstacle : MonoBehaviour, ISpawned
         {
             if (collision.gameObject.GetComponentInChildren<Player>().isGameOver == false)
             {
-                Debug.Log("먼데 ㅅㅂ ㅠㅠ");
                 ObjectManager.GetInstance.ObsType_Collide[Obs_type](this, colideOpt);
-                Handheld.Vibrate();
+                if (ToggleManager.isVibrate)
+                    Handheld.Vibrate();
             }
         }
     }

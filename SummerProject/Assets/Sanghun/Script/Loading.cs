@@ -34,10 +34,13 @@ public class Loading : MonoBehaviour
         fade.FadeIn(0.5f, () => { isMoveNextScene = bo; });
     }
 
-    private void Start()
+    private void Awake()
     {
         PlayerManager.GetInstance.PlayerManagerAwake();
+    }
 
+    private void Start()
+    {
         if (PlayerManager.GetInstance.isFirstLogin == false)
         {
             inputField.gameObject.SetActive(false);
@@ -48,12 +51,13 @@ public class Loading : MonoBehaviour
 
     private IEnumerator LoadAsyncScene()
     {
-        yield return null;
-        AsyncOperation op = SceneManager.LoadSceneAsync("Scenes/TESTEST");
+        AsyncOperation op = SceneManager.LoadSceneAsync(1);
         op.allowSceneActivation = false;
+
         while (!op.isDone)
         {
             yield return null;
+
             loadText.text = Math.Truncate(loadingBar.value * 100).ToString() + "%";
 
             if (loadingBar.value < 0.9f)
@@ -64,6 +68,7 @@ public class Loading : MonoBehaviour
             {
                 loadingBar.value = Mathf.MoveTowards(loadingBar.value, 1f, Time.deltaTime);
             }
+
             if (loadingBar.value >= 1.0f)
             {
                 if (PlayerManager.GetInstance.isFirstLogin)

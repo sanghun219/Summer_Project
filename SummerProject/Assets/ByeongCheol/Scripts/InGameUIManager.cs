@@ -13,7 +13,9 @@ public class InGameUIManager : MonoBehaviour
 
     private void OnEnable()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
+        //player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
         player.GameOverEvent += this.GameOverEvent;
         SelectCharacter.GetInstance.ChangeCharacterHandler += ChangePlayer;
     }
@@ -25,7 +27,9 @@ public class InGameUIManager : MonoBehaviour
 
     private void ChangePlayer()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
+        //player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
         player.GameOverEvent += this.GameOverEvent;
     }
 
@@ -52,7 +56,6 @@ public class InGameUIManager : MonoBehaviour
             //this.InGameUI.SetActive(false);
             if (GameObject.Find("UI").transform.Find("GameOverUI"))
             {
-                Debug.Log("게임오버 UI 찾기 성공");
                 GameObject.Find("UI").transform.Find("GameOverUI").gameObject.SetActive(true);
             }
             else

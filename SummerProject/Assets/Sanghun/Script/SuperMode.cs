@@ -15,14 +15,16 @@ public class SuperMode : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+            (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         particle = Instantiate<ParticleSystem>(particle);
         SelectCharacter.GetInstance.ChangeCharacterHandler += ChangePlayer;
     }
 
     private void ChangePlayer()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
     }
 
     public void StartUpdate()
@@ -41,7 +43,6 @@ public class SuperMode : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
             previousTimer += Time.fixedDeltaTime;
-            Debug.Log("SupderMode : " + previousTimer);
         }
 
         particle.Stop();

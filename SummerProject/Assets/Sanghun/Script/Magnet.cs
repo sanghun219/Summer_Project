@@ -21,14 +21,18 @@ public class Magnet : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        //player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
         player.GameOverEvent += StopUpdate;
     }
 
     private void ChangeCharacter()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        // player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         player.GameOverEvent += StopUpdate;
     }
 
@@ -65,7 +69,6 @@ public class Magnet : MonoBehaviour
                     Physics.IgnoreLayerCollision(10, 11, true);
                 }
             }
-            Debug.Log("Magnet : " + previousTimer);
         }
 
         foreach (var col in collide)

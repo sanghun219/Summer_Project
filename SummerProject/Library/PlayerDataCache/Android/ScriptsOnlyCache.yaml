@@ -16,12 +16,12 @@ ScriptsOnlyBuild:
     - ObjectManager
     - Obstacle
     - Player
-    - PlayerManager
     - PushObj
     - PushObjParticle
     - RankingUIManager
     - ScoreManager
     - SelectCharacter
+    - SelectCharacterUI
     - SoundManager
     - SpawnCharacter
     - Spawner
@@ -88,27 +88,25 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11306}
     - Class: 114
-      Script: {instanceID: 11330}
+      Script: {instanceID: 11308}
     - Class: 114
-      Script: {instanceID: 11480}
+      Script: {instanceID: 11332}
     - Class: 114
-      Script: {instanceID: 11590}
+      Script: {instanceID: 11482}
     - Class: 114
-      Script: {instanceID: 11804}
+      Script: {instanceID: 11592}
     - Class: 114
-      Script: {instanceID: 12076}
+      Script: {instanceID: 11806}
     - Class: 114
-      Script: {instanceID: 12798}
+      Script: {instanceID: 12078}
     - Class: 114
-      Script: {instanceID: 13154}
+      Script: {instanceID: 12800}
     - Class: 114
-      Script: {instanceID: 13270}
+      Script: {instanceID: 13156}
     - Class: 114
-      Script: {instanceID: 13560}
+      Script: {instanceID: 13564}
     - Class: 114
-      Script: {instanceID: 13610}
-    - Class: 114
-      Script: {instanceID: 13646}
+      Script: {instanceID: 13614}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -173,89 +171,91 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11306}
     - Class: 114
-      Script: {instanceID: 11308}
+      Script: {instanceID: 11310}
     - Class: 114
-      Script: {instanceID: 11330}
+      Script: {instanceID: 11332}
     - Class: 114
-      Script: {instanceID: 11364}
+      Script: {instanceID: 11366}
     - Class: 114
-      Script: {instanceID: 11480}
+      Script: {instanceID: 11482}
     - Class: 114
-      Script: {instanceID: 11542}
+      Script: {instanceID: 11544}
     - Class: 114
-      Script: {instanceID: 11590}
+      Script: {instanceID: 11592}
     - Class: 114
-      Script: {instanceID: 11606}
+      Script: {instanceID: 11608}
     - Class: 114
-      Script: {instanceID: 11646}
+      Script: {instanceID: 11648}
     - Class: 114
-      Script: {instanceID: 11708}
+      Script: {instanceID: 11710}
     - Class: 114
-      Script: {instanceID: 11784}
+      Script: {instanceID: 11786}
     - Class: 114
-      Script: {instanceID: 11928}
+      Script: {instanceID: 11930}
     - Class: 114
-      Script: {instanceID: 11966}
+      Script: {instanceID: 11968}
     - Class: 114
-      Script: {instanceID: 12004}
+      Script: {instanceID: 12006}
     - Class: 114
-      Script: {instanceID: 12068}
+      Script: {instanceID: 12070}
     - Class: 114
-      Script: {instanceID: 12076}
+      Script: {instanceID: 12078}
     - Class: 114
-      Script: {instanceID: 12106}
+      Script: {instanceID: 12108}
     - Class: 114
-      Script: {instanceID: 12196}
+      Script: {instanceID: 12198}
     - Class: 114
-      Script: {instanceID: 12304}
+      Script: {instanceID: 12306}
     - Class: 114
-      Script: {instanceID: 12332}
+      Script: {instanceID: 12334}
     - Class: 114
-      Script: {instanceID: 12418}
+      Script: {instanceID: 12420}
     - Class: 114
-      Script: {instanceID: 12452}
+      Script: {instanceID: 12454}
     - Class: 114
-      Script: {instanceID: 12468}
+      Script: {instanceID: 12470}
     - Class: 114
-      Script: {instanceID: 12510}
+      Script: {instanceID: 12512}
     - Class: 114
-      Script: {instanceID: 12564}
+      Script: {instanceID: 12566}
     - Class: 114
-      Script: {instanceID: 12690}
+      Script: {instanceID: 12692}
     - Class: 114
-      Script: {instanceID: 12798}
+      Script: {instanceID: 12800}
     - Class: 114
-      Script: {instanceID: 12828}
+      Script: {instanceID: 12830}
     - Class: 114
-      Script: {instanceID: 12836}
+      Script: {instanceID: 12838}
     - Class: 114
-      Script: {instanceID: 12854}
+      Script: {instanceID: 12856}
     - Class: 114
-      Script: {instanceID: 13058}
+      Script: {instanceID: 13060}
     - Class: 114
-      Script: {instanceID: 13154}
+      Script: {instanceID: 13156}
     - Class: 114
-      Script: {instanceID: 13226}
+      Script: {instanceID: 13228}
     - Class: 114
-      Script: {instanceID: 13254}
+      Script: {instanceID: 13256}
     - Class: 114
-      Script: {instanceID: 13402}
+      Script: {instanceID: 13392}
     - Class: 114
-      Script: {instanceID: 13422}
+      Script: {instanceID: 13406}
     - Class: 114
-      Script: {instanceID: 13436}
+      Script: {instanceID: 13426}
     - Class: 114
       Script: {instanceID: 13440}
     - Class: 114
-      Script: {instanceID: 13480}
+      Script: {instanceID: 13444}
     - Class: 114
-      Script: {instanceID: 13498}
+      Script: {instanceID: 13484}
     - Class: 114
-      Script: {instanceID: 13524}
+      Script: {instanceID: 13502}
     - Class: 114
-      Script: {instanceID: 13560}
+      Script: {instanceID: 13528}
     - Class: 114
-      Script: {instanceID: 13610}
+      Script: {instanceID: 13564}
+    - Class: 114
+      Script: {instanceID: 13614}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -297,6 +297,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: Text
+  - hash:
+      serializedVersion: 2
+      Hash: 7072231382eb3c4871b3dd75ad0227e1
+    assemblyName: UnityEngine.UI.dll
+    namespaceName: UnityEngine.UI
+    className: Slider
   - hash:
       serializedVersion: 2
       Hash: aa88ae22474df55295327e4ee99e5a24
@@ -833,7 +839,7 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: 45413e4499a9c2b92f63f06ef397988c
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SuperModeEngine
@@ -1109,7 +1115,13 @@ ScriptsOnlyBuild:
     className: NetworkAnimator
   - hash:
       serializedVersion: 2
-      Hash: 9f830359d982ed4f9603a0d2251d14e6
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SelectCharacterUI
+  - hash:
+      serializedVersion: 2
+      Hash: 2a3fc4089a778225d96f85069ba13705
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ToggleManager
@@ -1139,7 +1151,7 @@ ScriptsOnlyBuild:
     className: Obstacle
   - hash:
       serializedVersion: 2
-      Hash: 5a8f4f531b2106044dca1a3ec62446a3
+      Hash: 7cb0e2002ad706401cc8abd0404b8411
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SelectCharacter
@@ -1283,12 +1295,6 @@ ScriptsOnlyBuild:
     className: AnalogGlitch
   - hash:
       serializedVersion: 2
-      Hash: 7072231382eb3c4871b3dd75ad0227e1
-    assemblyName: UnityEngine.UI.dll
-    namespaceName: UnityEngine.UI
-    className: Slider
-  - hash:
-      serializedVersion: 2
       Hash: 0fd6822f6177297bd0eb4d83cc7a9030
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -1315,4 +1321,4 @@ ScriptsOnlyBuild:
   scenePathNames:
   - Assets/Scenes/Loading.unity
   - Assets/Scenes/TESTEST.unity
-  playerPath: C:/Users/User/Desktop/tt.apk
+  playerPath: C:/Users/User/Desktop/kk.apk

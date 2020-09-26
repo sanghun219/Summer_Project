@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 [System.Serializable]
 public class Sound
 {
@@ -13,16 +12,15 @@ public class Sound
 
 public class SoundManager : MonoBehaviour
 {
-
     static public SoundManager instance;
 
     //public Button soundBtn;
     private bool bToggleSM = true;
 
-
     //싱글턴화
 
     #region singleton
+
     private void Awake()
     {
         if (instance == null)
@@ -35,7 +33,8 @@ public class SoundManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    #endregion
+
+    #endregion singleton
 
     public AudioSource[] audioSourceEffects;
     public AudioSource audioSourceBgm;
@@ -44,9 +43,10 @@ public class SoundManager : MonoBehaviour
 
     [SerializeField]
     public Sound[] effectSounds;
+
     public Sound[] bgmSounds;
 
-    void Start()
+    private void Start()
     {
         playSoundName = new string[audioSourceEffects.Length];
     }
@@ -60,19 +60,17 @@ public class SoundManager : MonoBehaviour
         }
         else if (bToggleSM)
         {
-
             for (int i = 0; i < effectSounds.Length; i++)
             {
                 if (_name == effectSounds[i].name)
                 {
-                            playSoundName[i] = effectSounds[i].name;
-                            audioSourceEffects[i].clip = effectSounds[i].clip;
-                            audioSourceEffects[i].Play();
+                    playSoundName[i] = effectSounds[i].name;
+                    audioSourceEffects[i].clip = effectSounds[i].clip;
+                    audioSourceEffects[i].Play();
                     //for (int j = 0; j < audioSourceEffects.Length; j++)
                     //{
                     //    if (!audioSourceEffects[j].isPlaying)
                     //    {
-
                     //        return;
                     //    }
                     //    //Debug.Log("모든 가용 AudioSource가 사용중입니다.");
@@ -83,7 +81,6 @@ public class SoundManager : MonoBehaviour
             }
             //Debug.Log(_name + "사운드가 SoundManager에 등록되지 않았습니다.");
         }
-
     }
 
     public void StopAllSE()
@@ -109,20 +106,18 @@ public class SoundManager : MonoBehaviour
 
     public void ToggleSound()
     {
-
         bToggleSM = !bToggleSM;
-        Debug.Log("bToggleSM : "+bToggleSM);
+        Debug.Log("bToggleSM : " + bToggleSM);
     }
-
 }
 
 /*
- * 
+ *
  해당 스크립트에서 변수 선언
 
  [SerializedField]
  private string 변수이름;
- 
+
   해당 스크립트 콜리전 등 함수에
   SoundManager.instance.PlaySE(변수이름);
 

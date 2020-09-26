@@ -13,13 +13,15 @@ public class DownSpeed : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
     }
 
     private void ChangeCharacter()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
     }
 
     public void StartUpdate()
@@ -37,7 +39,6 @@ public class DownSpeed : MonoBehaviour
             yield return new WaitForFixedUpdate();
             previousTimer += Time.deltaTime;
             player.VelocityZ = Mathf.Lerp(player.VelocityZ, player.forwardSpeed, Time.deltaTime);
-            Debug.Log("DownSpeed : " + previousTimer);
         }
         player.SetPlayerMode(PlayerMode.DOWN_SPEED, PlayerMode.NORMAL);
     }

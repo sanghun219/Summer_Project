@@ -77,6 +77,8 @@ public class Spawner : MonoBehaviour
     // SINGLETON PATTERN
     private static Spawner Instance = null;
 
+    private static GameObject container = null;
+
     public static Spawner GetInstance
     {
         get
@@ -98,7 +100,6 @@ public class Spawner : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            Debug.Log("instanciate");
         }
         else if (Instance != null)
         {
@@ -129,10 +130,6 @@ public class Spawner : MonoBehaviour
         EndOfSpawnPoint[0].z = center.z;
         EndOfSpawnPoint[1].x = center.x + lengOfSpawner / 2;
         EndOfSpawnPoint[1].z = center.z;
-    }
-
-    private void LevetController()
-    {
     }
 
     // 매 주기마다 스폰이 됨

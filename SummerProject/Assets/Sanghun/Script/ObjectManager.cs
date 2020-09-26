@@ -138,8 +138,9 @@ public class ObjectManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
 
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
-        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
+        //player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         // TODO : 장애물/아이템 추가시 Key/value 형식으로 집어넣으면 됨
         ObsType_Update[OBSTACLE_TYPE.TRUCK] = Truck_Update;
         ObsType_Update[OBSTACLE_TYPE.FLIGHT] = Flight_Update;
@@ -168,9 +169,15 @@ public class ObjectManager : MonoBehaviour
         ItemType_Collide[ITEM_TYPE.POINTUP_1000] = PointUPItem_1000_Collision;
     }
 
+    private void Start()
+    {
+        SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
+    }
+
     private void ChangeCharacter()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+            (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
     }
 
     private void CommonItemUpdate(Item item, SHOOT_OPT shootOpt)

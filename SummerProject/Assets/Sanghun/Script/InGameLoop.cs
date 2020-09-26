@@ -24,12 +24,15 @@ public class InGameLoop : MonoBehaviour
     {
         fade.FadeOut(1.0f);
 
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
     }
 
     private void ChangePlayer()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild(SelectCharacter.GetInstance.character)
+            .gameObject.GetComponent<Player>();
+        player.ReStart();
     }
 
     public void ReStart()
@@ -73,7 +76,6 @@ public class InGameLoop : MonoBehaviour
             if (isGameStart)
             {
                 player.PlayerFixedUpdate();
-
                 Spawner.GetInstance.UpdateSpawnerPosition(player.transform.position);
             }
         }

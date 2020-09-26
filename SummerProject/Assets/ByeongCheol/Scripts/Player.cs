@@ -232,7 +232,6 @@ public class Player : MonoBehaviour
             isGameOver = true;
             anim.enabled = false;
             gameObject.GetComponent<Collider>().enabled = false;
-            Debug.Log("Game Over");
             StopCoroutine(SpeedControllerCoroutine);
             SetPlayerMode(playerMode, PlayerMode.EMPTY);
             GameOverEvent();
@@ -276,7 +275,7 @@ public class Player : MonoBehaviour
     public void StartPlayer()
     {
         //플레이어 고정 속도증가 코루틴
-
+        if (this.gameObject.activeSelf == false) return;
         SpeedControllerCoroutine = StartCoroutine(GameSpeedController());
         playerMode = PlayerMode.NORMAL;
         playerModeObj = gameObject.transform.Find("PlayerMode");
@@ -290,7 +289,9 @@ public class Player : MonoBehaviour
         while (true)
         {
             yield return null;
+
             if (InGameLoop.isGameStart == false) continue;
+
             if (rigid.velocity.z <= fMaxSpeed && (playerMode & PlayerMode.DOWN_SPEED) == 0 || (playerMode & PlayerMode.SUPER) != 0)
             {
                 rigid.AddForce(new Vector3(0, 0, forwardSpeed), ForceMode.Force);

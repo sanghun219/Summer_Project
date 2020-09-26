@@ -11,7 +11,6 @@ public class PlayerManager : MonoBehaviour
     public void SetPlayerID(string id)
     {
         playerid = id;
-        Debug.Log(playerid);
         PlayerPrefs.SetString("Login", playerid);
     }
 
@@ -22,34 +21,33 @@ public class PlayerManager : MonoBehaviour
 
     public bool isFirstLogin { get; set; }
 
+    private static GameObject container;
+
     public static PlayerManager GetInstance
     {
         get
         {
             if (!Instance)
             {
-                Instance = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
-                if (Instance == null)
-                {
-                    GameObject.Find("PlayerManager").AddComponent<PlayerManager>();
-                    Instance = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
-                }
+                container = new GameObject();
+                container.name = "PlayerManager";
+                Instance = container.AddComponent(typeof(PlayerManager)) as PlayerManager;
             }
+
             return Instance;
         }
     }
 
     public void PlayerManagerAwake()
     {
-        //PlayerPrefs.DeleteAll();
         playerid = PlayerPrefs.GetString("Login");
-        if (playerid == null || playerid.Length <= 0)
+        if (PlayerPrefs.HasKey("Login"))
         {
-            isFirstLogin = true;
+            isFirstLogin = false;
         }
         else
         {
-            isFirstLogin = false;
+            isFirstLogin = true;
         }
     }
 

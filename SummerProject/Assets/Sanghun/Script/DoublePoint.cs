@@ -14,13 +14,15 @@ public class DoublePoint : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+            (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
         SelectCharacter.GetInstance.ChangeCharacterHandler += ChangeCharacter;
     }
 
     private void ChangeCharacter()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").transform.GetChild
+           (SelectCharacter.GetInstance.character).gameObject.GetComponent<Player>();
     }
 
     public void StartUpdate()
@@ -35,7 +37,6 @@ public class DoublePoint : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
             previousTimer += Time.fixedDeltaTime;
-            Debug.Log("DoublePoint : " + previousTimer);
         }
 
         player.SetPlayerMode(PlayerMode.DOUBLE_POINT, PlayerMode.NORMAL);
