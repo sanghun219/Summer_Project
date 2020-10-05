@@ -179,7 +179,8 @@ public class Spawner : MonoBehaviour
             if (obj == null) continue;
             if (!obj.activeSelf)
             {
-                obj.transform.position = new Vector3(randX, obj.transform.position.y + playerPos.y, randZ);
+                //스포너에서 오브젝트를 플레이어 y 축에 맞춰서 생성
+                obj.transform.position = new Vector3(randX,  playerPos.y, randZ);
                 obj.SetActive(true);
             }
         }

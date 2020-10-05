@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
 
     private DownSpeed downSpeed;
 
-    // Restart용 변수
+    // art용 변수
     private float re_forwardSpeed;
 
     private Coroutine SpeedControllerCoroutine;

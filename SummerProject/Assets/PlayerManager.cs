@@ -40,6 +40,7 @@ public class PlayerManager : MonoBehaviour
 
     public void PlayerManagerAwake()
     {
+        PlayerPrefs.DeleteAll();
         playerid = PlayerPrefs.GetString("Login");
         if (PlayerPrefs.HasKey("Login"))
         {

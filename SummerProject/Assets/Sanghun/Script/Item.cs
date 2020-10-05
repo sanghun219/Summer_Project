@@ -65,7 +65,7 @@ public class Item : MonoBehaviour, ISpawned
     {
         //if (IsInvoking("DestroyItem"))
         //    CancelInvoke("DestroyItem");
-        DestroyItem();
+        //DestroyItem();
     }
 
     private IEnumerator IDestroyItem()
@@ -91,13 +91,13 @@ public class Item : MonoBehaviour, ISpawned
         Spawner.GetInstance.ReturnObj(gameObject, SPAWN_OBJ.ITEM);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        //if (other.CompareTag("Player"))
-        //{
-        //    ObjectManager.GetInstance.ItemType_Collide[itemType](this, colideOpt);
-        //}
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.CompareTag("Player"))
+    //    {
+    //        ObjectManager.GetInstance.ItemType_Collide[itemType](this, colideOpt);
+    //    }
+    //}
 
     private void OnCollisionEnter(Collision collision)
     {

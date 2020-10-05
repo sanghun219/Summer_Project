@@ -93,23 +93,23 @@ public class ScoreManager : MonoBehaviour
             switch (player.GetPlayerMode())
             {
                 case PlayerMode.DOUBLE_POINT:
-                    curItemUI.text = "Double Point !";
+                    curItemUI.text = "DoublePoint";
                     break;
 
                 case PlayerMode.DOWN_SPEED:
-                    curItemUI.text = "Down Speed !";
+                    curItemUI.text = "DownSpeed";
                     break;
 
                 case PlayerMode.MAGNET:
-                    curItemUI.text = "Magnet !";
+                    curItemUI.text = "Magnet";
                     break;
 
                 case PlayerMode.PUSH:
-                    curItemUI.text = "Push Obstacle !";
+                    curItemUI.text = "PushObstacle";
                     break;
 
                 case PlayerMode.SUPER:
-                    curItemUI.text = "Super Mode !";
+                    curItemUI.text = "SuperMode";
                     break;
 
                 default:

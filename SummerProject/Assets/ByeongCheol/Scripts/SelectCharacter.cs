@@ -5,12 +5,12 @@ using System;
 
 public class SelectCharacter : MonoBehaviour
 {
-    public int character = 1;
+    public int character = 0;
     private GameObject player;
     public GameObject[] childPlayers;
     private bool changed = false;
     public string testtext;
-    private int tempCharacter = 1;
+    private int tempCharacter = 0;
 
     public event Action ChangeCharacterHandler;
 

@@ -62,7 +62,7 @@ public class Obstacle : MonoBehaviour, ISpawned
 
     private void OnDisable()
     {
-        DestroyObs();
+        //DestroyObs();
     }
 
     private IEnumerator IDestroyObs()
